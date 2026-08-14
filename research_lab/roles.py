@@ -25,6 +25,18 @@ AGENTS: Dict[str, AgentSpec] = {
         "Identify the exact logical/analytic obstruction and prove why naive known estimates cannot cross it.",
         "Do not propose a final RH proof; isolate the bottleneck first.",
     ),
+    "constraint_hunter": AgentSpec(
+        "Constraint / No-Go Law Hunter",
+        "invention",
+        "Search for an independently provable law that the genuine zeta/xi structure must obey and that off-critical configurations cannot obey: positivity or definiteness, moment/Hankel constraints, trace inequalities, conservation or monotonicity, total positivity, convexity, uncertainty-type bounds, prime-side inequalities, or other no-go laws. Work from established structure such as the Euler product, functional equation, explicit formula, heat flow, and proven analytic estimates.",
+        "Do not merely state Weil/Li/Laguerre or another RH-equivalent criterion. A proposed constraint is valuable only if there is a route to prove it independently of RH and its known equivalents.",
+    ),
+    "violation_amplifier": AgentSpec(
+        "Sparse-Violation Amplifier",
+        "invention",
+        "Assume a minimal off-critical zero or sparse exceptional configuration and derive an unavoidable amplified signature in a rigorously accessible observable: a negative quadratic direction, Li/Weil-type oscillation, moment determinant defect, horizontal multiplicity excess, pair statistic, heat-flow instability, mollified defect, or prime-side discrepancy. Seek mechanisms where one local violation cannot remain asymptotically invisible.",
+        "Do not assume the desired amplification. Prove the map from a local off-line defect to the global observable, including cancellation, multiplicity, and uniformity issues.",
+    ),
     "object_inventor": AgentSpec(
         "Object Inventor",
         "invention",
@@ -40,7 +52,7 @@ AGENTS: Dict[str, AgentSpec] = {
     "bridge_builder": AgentSpec(
         "Bridge Builder",
         "invention",
-        "Construct rigorous theorem-shaped bridges among heat-flow zero dynamics, Laguerre-Pólya/Jensen hyperbolicity, pair correlation, horizontal multiplicity, zero-density estimates, mollification, and analytic number theory.",
+        "Construct rigorous theorem-shaped bridges among heat-flow zero dynamics, Laguerre-Pólya/Jensen hyperbolicity, pair correlation, horizontal multiplicity, zero-density estimates, mollification, positivity criteria, and analytic number theory.",
         "A metaphor, analogy, or numerical correlation is not a bridge; state a precise implication with checkable hypotheses.",
     ),
     "definition_inventor": AgentSpec(
@@ -66,6 +78,12 @@ AGENTS: Dict[str, AgentSpec] = {
         "certification",
         "Detect hidden RH/PCC/ES/theta-infinity assumptions, equivalent criteria, circular dependence, and hypotheses that are as hard as the target.",
         "Do not count a new equivalent formulation as a proof tool without an independent route to establish it.",
+    ),
+    "exclusion_completeness_auditor": AgentSpec(
+        "Exclusion Completeness Auditor",
+        "certification",
+        "For every proposed no-go law, verify the full exclusion theorem: every admissible RH-false configuration must violate the law. Audit all symmetry classes, conjugate/functional-equation partners, multiplicities, cancellations, accumulation and sparse-exception regimes. Distinguish exclusion of some false scenarios from exclusion of all false scenarios.",
+        "Never infer completeness from examples, genericity, density-one conclusions, or numerics. If one logically possible off-line configuration survives the constraint, mark the exclusion as incomplete.",
     ),
     "independent_referee": AgentSpec(
         "Fresh-Context Referee",
