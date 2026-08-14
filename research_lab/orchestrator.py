@@ -15,6 +15,8 @@ from roles import AGENTS, render_agent_prompt
 ROOT = Path(__file__).resolve().parent
 MEMORY = ROOT / "memory"
 CONSTITUTION_PATH = ROOT / "prompts" / "constitution.md"
+FRONTIER_PATH = ROOT / "knowledge" / "frontier_map.md"
+SOURCE_REGISTRY_PATH = ROOT / "knowledge" / "source_registry.yaml"
 DEFAULT_MODEL = os.getenv("OPENAI_DEFAULT_MODEL", "gpt-5.6-sol")
 
 INVENTION_KEYS = [
@@ -39,21 +41,40 @@ GENERALIZATION_KEYS = [
 ]
 
 DEFAULT_TARGET = """
-We are studying the de Bruijn-Newman heat-flow route to RH. The current program
-has a partially controlled regime but retains an unresolved low-shoulder /
-transversality obstruction. Do not merely improve constants. Seek the weakest
-new structural theorem, exact identity, invariant, monotonicity principle,
-non-collision mechanism, or abstract entire-function theorem that could remove
-this obstruction without assuming RH or an equivalent hidden statement.
+Start from the dated external frontier map, not from any presumed project progress.
+Seek the weakest genuinely new and plausibly provable intermediate theorem that
+advances the Riemann Hypothesis beyond the strongest currently established
+frontier. Prefer cross-frontier mechanisms, especially:
 
-A useful proposal must state exactly how it would imply the missing
-transversality/non-multiple-zero conclusion and why the proposed theorem could
-plausibly be proved from established mathematics plus genuinely new lemmas.
+1. sparse-exception amplification/rigidity;
+2. unconditional horizontal-multiplicity or horizontally weighted pair bounds;
+3. a bridge from current zero-density estimates to pair-correlation horizontal information;
+4. a structural de Bruijn-Newman mechanism independent of finite-height verification;
+5. a non-tautological long-mollifier/variational mechanism;
+6. a new hyperbolicity/Laguerre propagation theorem that reaches low-shift/high-degree territory.
+
+Do not merely improve a numerical constant. Do not restate an RH-equivalent
+criterion as the proposed advance. A high-value result should have independent
+mathematical content and, ideally, applications beyond the Riemann xi-function.
 """.strip()
 
 
+def load_text(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
 def load_constitution() -> str:
-    return CONSTITUTION_PATH.read_text(encoding="utf-8")
+    return load_text(CONSTITUTION_PATH)
+
+
+def build_research_context(target: str) -> str:
+    frontier = load_text(FRONTIER_PATH)
+    registry = load_text(SOURCE_REGISTRY_PATH)
+    return (
+        f"USER/ROUND TARGET:\n{target}\n\n"
+        f"DATED EXTERNAL FRONTIER MAP:\n{frontier}\n\n"
+        f"SOURCE PROVENANCE REGISTRY:\n{registry}\n"
+    )
 
 
 def ensure_memory() -> None:
@@ -70,17 +91,17 @@ def append_jsonl(name: str, payload: Dict) -> None:
         f.write(json.dumps(payload, ensure_ascii=False) + "\n")
 
 
-def make_agent(key: str, target: str, constitution: str) -> Agent:
+def make_agent(key: str, research_context: str, constitution: str) -> Agent:
     spec = AGENTS[key]
     return Agent(
         name=spec.name,
-        instructions=render_agent_prompt(key, constitution, target),
+        instructions=render_agent_prompt(key, constitution, research_context),
         model=DEFAULT_MODEL,
     )
 
 
-async def run_one(key: str, task: str, target: str, constitution: str) -> Dict:
-    agent = make_agent(key, target, constitution)
+async def run_one(key: str, task: str, research_context: str, constitution: str) -> Dict:
+    agent = make_agent(key, research_context, constitution)
     result = await Runner.run(
         agent,
         task,
@@ -94,56 +115,77 @@ async def run_one(key: str, task: str, target: str, constitution: str) -> Dict:
     }
 
 
-async def independent_invention_round(target: str, constitution: str) -> List[Dict]:
+async def independent_invention_round(research_context: str, constitution: str) -> List[Dict]:
     task = """
-Work independently. Do not assume access to other agents' proposals. Produce
-up to four genuinely distinct candidate mechanisms. At least one should attempt
-an exact identity/invariant-style route rather than a refined estimate. Freeze
-each candidate with a precise statement, hypotheses, proof plan, failure modes,
-and the exact implication that would close the current target. Do not call any
-proposal a theorem.
+Work independently. Do not assume access to other agents' proposals.
+
+First select one or two exact frontier obstructions from the supplied dated map.
+Then produce up to four genuinely distinct candidate mechanisms. At least one
+proposal must be a cross-frontier bridge and at least one must attempt an exact
+identity, invariant, propagation law, rigidity theorem, or new structural
+statistic rather than a refined estimate.
+
+For every proposal:
+- quote the exact strongest known input from the frontier map;
+- state the current limitation;
+- state a precise new intermediate theorem;
+- give the implication chain showing what it would improve;
+- explain why it is not merely RH/PCC/ES/theta=infinity/LP membership in disguise;
+- give the fastest way to falsify it;
+- identify which source tiers it depends on.
+
+Freeze each candidate. Do not call any proposal a theorem.
 """.strip()
     results = await asyncio.gather(
-        *(run_one(key, task, target, constitution) for key in INVENTION_KEYS)
+        *(run_one(key, task, research_context, constitution) for key in INVENTION_KEYS)
     )
     for item in results:
         append_jsonl("ideas", item)
     return results
 
 
-async def synthesize_candidates(target: str, constitution: str, inventions: List[Dict]) -> Dict:
+async def synthesize_candidates(research_context: str, constitution: str, inventions: List[Dict]) -> Dict:
     transcript = "\n\n".join(
         f"### {x['agent_name']}\n{x['output']}" for x in inventions
     )
     task = f"""
 You are the synthesis stage. Compare the independently frozen proposals below.
-Do NOT reward agreement or verbosity. Select at most five candidates that are
-most structurally novel, falsifiable, non-circular, and plausibly provable.
-Merge two proposals only if the mathematical mechanism is genuinely the same.
-For each selected candidate output a frozen statement and a list of exact proof
-obligations. Explicitly reject proposals that only rename RH, improve a constant
-without crossing a logical threshold, or depend on numerical evidence.
+Do NOT reward agreement, grandiosity, or verbosity. Select at most five
+candidates using this order of preference:
+
+1. closes a precisely documented frontier obstruction;
+2. has hypotheses strictly weaker/different from an RH-equivalent endpoint;
+3. creates a rigorous bridge between established partial theories;
+4. is falsifiable and plausibly provable with current inputs plus a genuinely new lemma;
+5. has potential independent mathematical value beyond RH.
+
+For each selected candidate output a frozen statement and an explicit dependency
+graph. Reject proposals that merely rename RH, assume PCC/ES, assume every zero
+lies in a 1/log(T) box, assume unrestricted theta=infinity, ask directly for all
+Jensen hyperbolicities, improve a constant without a logical threshold, or rely
+on numerical evidence. Merge proposals only if their mechanisms are genuinely
+the same.
 
 INDEPENDENT PROPOSALS:
 {transcript}
 """.strip()
-    result = await run_one("proof_architect", task, target, constitution)
+    result = await run_one("proof_architect", task, research_context, constitution)
     append_jsonl("candidates", result)
     return result
 
 
-async def certification_round(target: str, constitution: str, candidate_bundle: Dict) -> List[Dict]:
+async def certification_round(research_context: str, constitution: str, candidate_bundle: Dict) -> List[Dict]:
     frozen = candidate_bundle["output"]
     tasks = {
-        "proof_architect": "Attempt a complete dependency-explicit proof of each frozen candidate. Mark every missing implication as GAP.",
-        "destroyer": "Attack each frozen candidate. Search for countermodels, perturbations, limiting-regime failures, multiplicity issues, and hidden nonuniformity. Refute whenever possible.",
-        "equivalence_auditor": "Audit each frozen candidate for hidden RH dependence, equivalence to RH, circular reasoning, or a hypothesis as hard as the target.",
-        "independent_referee": "Act as a fresh hostile expert referee. You are given only the frozen candidate bundle below. Determine which claims, if any, are fully proved. Do not infer missing arguments from author intent.",
+        "proof_architect": "Attempt a complete dependency-explicit proof of each frozen candidate from allowed frontier inputs. Mark every missing implication as GAP. Do not silently upgrade source tiers.",
+        "destroyer": "Attack each frozen candidate with abstract countermodels, perturbations, limiting regimes, sparse exceptional zero configurations, multiplicity issues, hidden nonuniformity, and rigorous numerical counterexample searches where useful. Refute whenever possible.",
+        "equivalence_auditor": "Audit each frozen candidate for hidden RH/PCC/ES/theta=infinity dependence, equivalence to a known endpoint criterion, circular reasoning, or a hypothesis as hard as the target. Trace every dependency to the source registry.",
+        "independent_referee": "Act as a fresh hostile expert referee. You are given only the frozen candidate bundle, the dated frontier, and permitted sources. Determine which claims, if any, are fully proved. Do not infer missing arguments from author intent.",
     }
 
     async def certify(key: str) -> Dict:
         prompt = f"{tasks[key]}\n\nFROZEN CANDIDATE BUNDLE:\n{frozen}"
-        return await run_one(key, prompt, target, constitution)
+        return await run_one(key, prompt, research_context, constitution)
 
     results = await asyncio.gather(*(certify(k) for k in CERTIFICATION_KEYS))
     for item in results:
@@ -151,24 +193,25 @@ async def certification_round(target: str, constitution: str, candidate_bundle: 
     return results
 
 
-async def generalization_round(target: str, constitution: str, candidate_bundle: Dict, certification: List[Dict]) -> List[Dict]:
+async def generalization_round(research_context: str, constitution: str, candidate_bundle: Dict, certification: List[Dict]) -> List[Dict]:
     cert_text = "\n\n".join(f"### {x['agent_name']}\n{x['output']}" for x in certification)
     frozen = candidate_bundle["output"]
     task_base = f"""
 Only analyze candidates that genuinely survive the certification evidence.
-Do not treat a proof draft with a GAP as a theorem.
+Do not treat a proof draft with a GAP as a theorem. Distinguish a proved lemma
+from a conjectural bridge and from a merely numerically supported statement.
 
 FROZEN CANDIDATES:\n{frozen}\n\nCERTIFICATION REPORTS:\n{cert_text}
 """.strip()
 
     tasks = {
-        "abstraction_agent": task_base + "\n\nFind the weakest natural abstract setting in which any surviving result remains rigorously true.",
-        "transfer_agent": task_base + "\n\nSeek rigorous non-Riemann applications or independent consequences of any surviving structure.",
-        "novelty_auditor": task_base + "\n\nTry to show that any surviving object/theorem is already known, equivalent to a known theorem, or a disguised special case. Be aggressive and specific.",
+        "abstraction_agent": task_base + "\n\nFind the weakest natural abstract setting in which any surviving result remains rigorously true. Seek a theorem that applies beyond xi/RH.",
+        "transfer_agent": task_base + "\n\nSeek rigorous non-Riemann applications or independent consequences. An example without a proved consequence does not count as transfer.",
+        "novelty_auditor": task_base + "\n\nTry aggressively to show that any surviving object/theorem is already known, equivalent to a known theorem, or a disguised special case. Respect source tiers and report uncertainty.",
     }
 
     results = await asyncio.gather(
-        *(run_one(k, tasks[k], target, constitution) for k in GENERALIZATION_KEYS)
+        *(run_one(k, tasks[k], research_context, constitution) for k in GENERALIZATION_KEYS)
     )
     for item in results:
         append_jsonl("runs", item)
@@ -178,14 +221,16 @@ FROZEN CANDIDATES:\n{frozen}\n\nCERTIFICATION REPORTS:\n{cert_text}
 async def run_lab(target: str) -> None:
     ensure_memory()
     constitution = load_constitution()
+    research_context = build_research_context(target)
 
-    inventions = await independent_invention_round(target, constitution)
-    bundle = await synthesize_candidates(target, constitution, inventions)
-    certification = await certification_round(target, constitution, bundle)
-    generalization = await generalization_round(target, constitution, bundle, certification)
+    inventions = await independent_invention_round(research_context, constitution)
+    bundle = await synthesize_candidates(research_context, constitution, inventions)
+    certification = await certification_round(research_context, constitution, bundle)
+    generalization = await generalization_round(research_context, constitution, bundle, certification)
 
     report = {
         "target": target,
+        "frontier_as_of": "2026-08-14",
         "model": DEFAULT_MODEL,
         "inventions": inventions,
         "candidate_bundle": bundle,
@@ -199,7 +244,7 @@ async def run_lab(target: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run the Riemann Mathematical Invention Lab")
-    parser.add_argument("--target", default=DEFAULT_TARGET, help="Precise obstruction to attack")
+    parser.add_argument("--target", default=DEFAULT_TARGET, help="Optional precise obstruction; default uses the full dated frontier portfolio")
     args = parser.parse_args()
     asyncio.run(run_lab(args.target))
 
