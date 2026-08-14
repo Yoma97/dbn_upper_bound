@@ -1,0 +1,75 @@
+mission:
+  name: "Riemann Mathematical Invention Lab"
+  primary_target: >-
+    Find a genuinely new structural theorem capable of closing the unresolved
+    low-shoulder/transversality obstruction in the de Bruijn-Newman heat-flow
+    route, without assuming RH or an equivalent hidden hypothesis.
+  success_condition: >-
+    A complete, independently reconstructed proof that closes the stated gap,
+    or a new general mathematical tool with a rigorous theorem and non-RH scope
+    that materially advances that closure.
+
+execution:
+  independent_invention_rounds: 5
+  candidates_per_inventor: 4
+  max_promoted_candidates_per_round: 5
+  blind_first_round: true
+  require_fresh_context_referee: true
+  require_independent_proof_reconstruction: true
+
+statuses:
+  - IDEA
+  - CANDIDATE
+  - SUPPORTED
+  - REFUTED
+  - PROPOSITION
+  - THEOREM
+  - NEW_TOOL
+
+promotion_gates:
+  CANDIDATE:
+    - precise_statement
+    - explicit_hypotheses
+    - explicit_target_connection
+    - nontriviality_check
+  PROPOSITION:
+    - complete_proof_draft
+    - dependency_graph
+    - no_numerical_step_used_as_infinite_proof
+  THEOREM:
+    - independent_proof_reconstruction_pass
+    - adversarial_referee_pass
+    - circularity_audit_pass
+    - counterexample_attack_pass
+    - all_dependencies_verified_or_standard_cited_results
+  NEW_TOOL:
+    - theorem_status
+    - abstract_definition
+    - scope_beyond_riemann
+    - transfer_application_or_general_structure_theorem
+    - novelty_audit
+
+numerics:
+  role:
+    - refute_false_conjectures
+    - discover_patterns
+    - rigorously_certify_finite_subproblems
+  forbidden:
+    - infer_global_truth_from_large_finite_sampling
+    - promote_SUPPORTED_to_THEOREM_without_analytic_or_formal_proof
+
+research_preferences:
+  reward:
+    exact_identity: 10
+    monotonicity_or_invariant: 10
+    structural_noncollision_principle: 10
+    new_general_theorem: 10
+    bridge_between_fields: 9
+    independently_useful_definition: 8
+  penalize:
+    hidden_RH_equivalence: 100
+    circular_reasoning: 100
+    numerical_only_argument: 100
+    rephrasing_known_result: 30
+    constant_improvement_without_threshold_crossing: 15
+    long_argument_without_new_mechanism: 10
