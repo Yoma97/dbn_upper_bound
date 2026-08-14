@@ -9,7 +9,7 @@ from typing import Dict, List
 
 from agents import Agent, RunConfig, Runner
 
-from agents import AGENTS, render_agent_prompt
+from roles import AGENTS, render_agent_prompt
 
 
 ROOT = Path(__file__).resolve().parent
