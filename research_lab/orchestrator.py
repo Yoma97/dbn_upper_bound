@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 from typing import Dict, List
 
-from agents import Agent, RunConfig, Runner
+from agents import Agent, RunConfig, Runner, WebSearchTool
 
 from roles import AGENTS, render_agent_prompt
 
@@ -40,6 +40,8 @@ GENERALIZATION_KEYS = [
     "novelty_auditor",
 ]
 
+WEB_ENABLED_KEYS = {"frontier_curator", "novelty_auditor"}
+
 DEFAULT_TARGET = """
 Start from the dated external frontier map, not from any presumed project progress.
 Seek the weakest genuinely new and plausibly provable intermediate theorem that
@@ -67,19 +69,25 @@ def load_constitution() -> str:
     return load_text(CONSTITUTION_PATH)
 
 
-def build_research_context(target: str) -> str:
+def build_research_context(target: str, live_delta: str = "") -> str:
     frontier = load_text(FRONTIER_PATH)
     registry = load_text(SOURCE_REGISTRY_PATH)
+    delta_section = (
+        f"\n\nLIVE FRONTIER AUDIT FOR THIS RUN:\n{live_delta}\n"
+        if live_delta
+        else ""
+    )
     return (
         f"USER/ROUND TARGET:\n{target}\n\n"
         f"DATED EXTERNAL FRONTIER MAP:\n{frontier}\n\n"
-        f"SOURCE PROVENANCE REGISTRY:\n{registry}\n"
+        f"SOURCE PROVENANCE REGISTRY:\n{registry}"
+        f"{delta_section}"
     )
 
 
 def ensure_memory() -> None:
     MEMORY.mkdir(parents=True, exist_ok=True)
-    for name in ["ideas", "candidates", "theorems", "refuted", "dead_ends", "runs"]:
+    for name in ["frontier_audits", "ideas", "candidates", "theorems", "refuted", "dead_ends", "runs"]:
         path = MEMORY / f"{name}.jsonl"
         if not path.exists():
             path.touch()
@@ -93,10 +101,14 @@ def append_jsonl(name: str, payload: Dict) -> None:
 
 def make_agent(key: str, research_context: str, constitution: str) -> Agent:
     spec = AGENTS[key]
+    tools = []
+    if key in WEB_ENABLED_KEYS:
+        tools = [WebSearchTool(search_context_size="high")]
     return Agent(
         name=spec.name,
         instructions=render_agent_prompt(key, constitution, research_context),
         model=DEFAULT_MODEL,
+        tools=tools,
     )
 
 
@@ -115,18 +127,42 @@ async def run_one(key: str, task: str, research_context: str, constitution: str)
     }
 
 
+async def live_frontier_audit(target: str, constitution: str) -> Dict:
+    baseline_context = build_research_context(target)
+    task = """
+Audit the dated frontier against the live literature before any invention begins.
+Search primarily official sources, journal pages, arXiv records/full text, and
+author-maintained research sources. Focus on results that could materially change
+a KNOWN claim, a LIMITATION, or a MISSING-THEOREM target.
+
+For every possible update:
+1. give title/authors/date/source;
+2. state the exact theorem and hypotheses, not a headline paraphrase;
+3. classify source tier A/B/C/D using the registry rules;
+4. say whether it CONFIRMS, SUPERSEDES, NARROWS, or DOES NOT CHANGE the baseline;
+5. distinguish a proof, conditional theorem, computational certificate, and claimed proof;
+6. reject extraordinary RH claims that lack community/official validation as theorem premises.
+
+Return a concise delta. If no verified material change is found, say so explicitly.
+Do not invent new mathematics in this stage.
+""".strip()
+    result = await run_one("frontier_curator", task, baseline_context, constitution)
+    append_jsonl("frontier_audits", result)
+    return result
+
+
 async def independent_invention_round(research_context: str, constitution: str) -> List[Dict]:
     task = """
 Work independently. Do not assume access to other agents' proposals.
 
-First select one or two exact frontier obstructions from the supplied dated map.
-Then produce up to four genuinely distinct candidate mechanisms. At least one
-proposal must be a cross-frontier bridge and at least one must attempt an exact
-identity, invariant, propagation law, rigidity theorem, or new structural
-statistic rather than a refined estimate.
+First select one or two exact frontier obstructions from the supplied dated map
+and live audit. Then produce up to four genuinely distinct candidate mechanisms.
+At least one proposal must be a cross-frontier bridge and at least one must
+attempt an exact identity, invariant, propagation law, rigidity theorem, or new
+structural statistic rather than a refined estimate.
 
 For every proposal:
-- quote the exact strongest known input from the frontier map;
+- quote the exact strongest known input from the frontier map/live audit;
 - state the current limitation;
 - state a precise new intermediate theorem;
 - give the implication chain showing what it would improve;
@@ -180,7 +216,7 @@ async def certification_round(research_context: str, constitution: str, candidat
         "proof_architect": "Attempt a complete dependency-explicit proof of each frozen candidate from allowed frontier inputs. Mark every missing implication as GAP. Do not silently upgrade source tiers.",
         "destroyer": "Attack each frozen candidate with abstract countermodels, perturbations, limiting regimes, sparse exceptional zero configurations, multiplicity issues, hidden nonuniformity, and rigorous numerical counterexample searches where useful. Refute whenever possible.",
         "equivalence_auditor": "Audit each frozen candidate for hidden RH/PCC/ES/theta=infinity dependence, equivalence to a known endpoint criterion, circular reasoning, or a hypothesis as hard as the target. Trace every dependency to the source registry.",
-        "independent_referee": "Act as a fresh hostile expert referee. You are given only the frozen candidate bundle, the dated frontier, and permitted sources. Determine which claims, if any, are fully proved. Do not infer missing arguments from author intent.",
+        "independent_referee": "Act as a fresh hostile expert referee. You are given only the frozen candidate bundle, the dated frontier, live audit, and permitted sources. Determine which claims, if any, are fully proved. Do not infer missing arguments from author intent.",
     }
 
     async def certify(key: str) -> Dict:
@@ -207,7 +243,7 @@ FROZEN CANDIDATES:\n{frozen}\n\nCERTIFICATION REPORTS:\n{cert_text}
     tasks = {
         "abstraction_agent": task_base + "\n\nFind the weakest natural abstract setting in which any surviving result remains rigorously true. Seek a theorem that applies beyond xi/RH.",
         "transfer_agent": task_base + "\n\nSeek rigorous non-Riemann applications or independent consequences. An example without a proved consequence does not count as transfer.",
-        "novelty_auditor": task_base + "\n\nTry aggressively to show that any surviving object/theorem is already known, equivalent to a known theorem, or a disguised special case. Respect source tiers and report uncertainty.",
+        "novelty_auditor": task_base + "\n\nUse live web search as needed to try aggressively to show that any surviving object/theorem is already known, equivalent to a known theorem, or a disguised special case. Prefer primary sources. Report search scope and uncertainty.",
     }
 
     results = await asyncio.gather(
@@ -221,7 +257,9 @@ FROZEN CANDIDATES:\n{frozen}\n\nCERTIFICATION REPORTS:\n{cert_text}
 async def run_lab(target: str) -> None:
     ensure_memory()
     constitution = load_constitution()
-    research_context = build_research_context(target)
+
+    frontier_audit = await live_frontier_audit(target, constitution)
+    research_context = build_research_context(target, frontier_audit["output"])
 
     inventions = await independent_invention_round(research_context, constitution)
     bundle = await synthesize_candidates(research_context, constitution, inventions)
@@ -232,6 +270,7 @@ async def run_lab(target: str) -> None:
         "target": target,
         "frontier_as_of": "2026-08-14",
         "model": DEFAULT_MODEL,
+        "live_frontier_audit": frontier_audit,
         "inventions": inventions,
         "candidate_bundle": bundle,
         "certification": certification,
