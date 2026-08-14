@@ -1,0 +1,106 @@
+as_of: 2026-08-14
+
+trust_policy:
+  tier_A:
+    meaning: "Published/accepted mathematics or official status; may seed KNOWN claims, subject to exact-hypothesis checking."
+  tier_B:
+    meaning: "Serious current preprint by established researchers; may seed FRONTIER claims but must be independently reconstructed before promotion."
+  tier_C:
+    meaning: "Very recent/unreviewed preprint or record package; mine for ideas only until independently audited."
+  tier_D:
+    meaning: "Unverified, unclear-provenance, self-published, or extraordinary claim; never use as a theorem. Counterexample/idea mining only."
+
+sources:
+  - id: clay_rh_status
+    tier: A
+    type: official
+    result: "RH remains an unsolved Millennium Prize Problem."
+    locator: "Clay Mathematics Institute, Riemann Hypothesis / Millennium Prize Problems"
+
+  - id: przz_2018_2020
+    tier: A
+    type: published
+    arxiv: "1802.10521"
+    result: "Slightly more than 5/12 of zeta zeros are on the critical line unconditionally."
+
+  - id: platt_trudgian_2021
+    tier: A
+    type: published
+    arxiv: "2004.09765"
+    result: "Rigorous interval-arithmetic verification of RH up to height 3*10^12."
+    restriction: "Finite-height verification only."
+
+  - id: rodgers_tao
+    tier: A
+    type: published
+    arxiv: "1801.05914"
+    result: "de Bruijn-Newman constant Lambda >= 0."
+
+  - id: polymath_dbn
+    tier: A
+    type: published
+    arxiv: "1904.12438"
+    result: "Lambda <= 0.22 via effective heat-flow estimates, numerical verification, and barrier method."
+
+  - id: guth_maynard_large_values
+    tier: B
+    type: current_preprint
+    arxiv: "2405.20552"
+    result: "N(sigma,T) <= T^(30(1-sigma)/13+o(1)) and new Dirichlet-polynomial large-value estimates."
+
+  - id: bgstb_unconditional_montgomery
+    tier: B
+    type: current_preprint
+    arxiv: "2306.04799"
+    result: "Unconditional form of Montgomery pair-correlation theorem; applications under narrow-box/strong zero-density assumptions."
+
+  - id: bgstb_pair_correlation_critical
+    tier: B
+    type: current_preprint
+    arxiv: "2501.14545"
+    result: "Under a narrow box around Re(s)=1/2, pair correlation yields positive proportions of simple and critical zeros; b=0.3185 gives 2/3 critical in the 2026 exposition."
+
+  - id: goldston_suriajaya_exposition
+    tier: B
+    type: current_preprint
+    arxiv: "2511.20059"
+    result: "Horizontal multiplicity theorem: C<2 gives at least 2-C critical; isolates ES mechanism."
+
+  - id: glss_pcc
+    tier: B
+    type: current_preprint
+    arxiv: "2503.15449"
+    result: "PCC without RH implies asymptotically 100% simple and critical zeros."
+    restriction: "PCC is conjectural; density-one critical zeros is not logically RH."
+
+  - id: short_mollifiers
+    tier: B
+    type: current_preprint
+    arxiv: "2508.11108"
+    result: "Calculus-of-variations optimization of derivative combinations in Levinson's method; positive proportion for arbitrarily short mollifiers."
+
+  - id: bettin_gonek_theta_infinity
+    tier: A
+    type: published_or_established_preprint
+    arxiv: "1604.02740"
+    result: "The theta=infinity mollifier conjecture implies RH."
+    restriction: "Use as an equivalence-strength warning, not as a free hypothesis."
+
+  - id: holland_jensen_2026
+    tier: C
+    type: very_recent_preprint
+    arxiv: "2608.08682"
+    result: "Claims/proves a joint hyperbolicity wedge n^3 log^2(n+2) >= K d^5."
+    restriction: "Submitted 2026-08-09; independently audit before treating as established."
+
+  - id: tao_expdb_dbn_records
+    tier: C
+    type: certified_computational_record_listing
+    result: "Current Tao optimization page lists Lambda <= 0.1965 and <= 0.1875 June-2026 record packages."
+    restriction: "Do not promote to Tier A without independent provenance/proof/certificate audit."
+
+  - id: arbitrary_unverified_rh_claims
+    tier: D
+    type: unverified
+    result: "Any standalone claimed RH proof, AI-generated proof, unclear-provenance Zenodo package, or unsupported manuscript."
+    restriction: "Never seed KNOWN_THEOREM. Mine only for explicit lemmas that can be reconstructed from scratch."
