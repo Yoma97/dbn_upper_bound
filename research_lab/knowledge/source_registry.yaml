@@ -42,6 +42,74 @@ sources:
     arxiv: "1904.12438"
     result: "Lambda <= 0.22 via effective heat-flow estimates, numerical verification, and barrier method."
 
+  - id: li_positivity_1997
+    tier: A
+    type: published
+    journal: "Journal of Number Theory 65 (1997), 325-333"
+    doi: "10.1006/jnth.1997.2137"
+    result: "RH is equivalent to nonnegativity of the Li coefficient sequence."
+    restriction: "Endpoint-equivalent criterion; not progress unless positivity is proved by an independent mechanism."
+
+  - id: bombieri_lagarias_li_1999
+    tier: A
+    type: published
+    journal: "Journal of Number Theory 77 (1999), 274-287"
+    doi: "10.1006/jnth.1999.2392"
+    result: "Li's criterion follows from general inequalities for multisets of complex numbers; Li positivity is related through the Guinand-Weil explicit formula to Weil's RH positivity criterion."
+    restriction: "Use as a structural template for no-go laws and violation amplification, not as a free proof of positivity."
+
+  - id: lagarias_xi_positivity_1999
+    tier: A
+    type: published
+    journal: "Acta Arithmetica 89 (1999), 217-234"
+    doi: "10.4064/aa-89-3-217-234"
+    result: "Develops positivity properties and criteria associated with the Riemann xi function."
+
+  - id: voros_li_asymptotic_2006
+    tier: A
+    type: published
+    arxiv: "math/0506326"
+    journal: "Mathematical Physics, Analysis and Geometry 9 (2006), 53-63"
+    result: "Under RH, Li coefficients have tempered n(A log n+B)-type asymptotics; if RH is false, their asymptotic behavior is non-tempered and oscillatory."
+    restriction: "A model of violation amplification, not an independent proof of Li positivity."
+
+  - id: suzuki_screw_2023
+    tier: A
+    type: published
+    arxiv: "2206.03682"
+    journal: "Journal of the London Mathematical Society (2023)"
+    doi: "10.1112/jlms.12785"
+    result: "Develops the zeta screw function and RH-equivalent positivity/moment/Hankel determinant conditions; under RH-false scenarios obtains associated degeneracy identities."
+    restriction: "Moment/Hankel positivity is endpoint-equivalent unless an independent source of positivity is found."
+
+  - id: conrey_li_debranges_difficulty
+    tier: B
+    type: historical_preprint
+    arxiv: "math/9812166"
+    result: "Examines de Branges positivity approaches and identifies their difficulty."
+    restriction: "Use as an anti-tautology warning when proposing positivity from de Branges-type structures."
+
+  - id: connes_consani_weil_trace
+    tier: B
+    type: research_preprint
+    arxiv: "2006.13771"
+    result: "Provides a conceptual trace-formula source for positivity of the archimedean Weil functional and develops machinery intended for the semilocal setting."
+    restriction: "Do not infer full Weil positivity/RH from the archimedean case. Mine the compression/trace/Toeplitz mechanism for independent positivity ideas."
+
+  - id: suzuki_weil_screw_2026
+    tier: C
+    type: very_recent_preprint
+    arxiv: "2606.09096"
+    result: "Recasts Weil's quadratic form through the screw function without assuming RH and formulates a self-adjoint operator limit conjecture related to zero ordinates."
+    restriction: "Very recent; use for mechanism generation and independently check any crucial theorem before promotion."
+
+  - id: function_field_weil_model
+    tier: B
+    type: expository_preprint
+    arxiv: "0806.0044"
+    result: "Explains Weil/Bombieri proofs of RH for curves over finite fields, where geometric/intersection structure supplies global constraints rather than selecting roots individually."
+    restriction: "Analogy/model only for classical zeta unless a rigorous bridge is constructed."
+
   - id: guth_maynard_large_values
     tier: B
     type: current_preprint
