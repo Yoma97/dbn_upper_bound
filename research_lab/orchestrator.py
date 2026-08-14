@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parent
 MEMORY = ROOT / "memory"
 CONSTITUTION_PATH = ROOT / "prompts" / "constitution.md"
 FRONTIER_PATH = ROOT / "knowledge" / "frontier_map.md"
+CONSTRAINT_FRONTIER_PATH = ROOT / "knowledge" / "constraint_frontier.md"
 SOURCE_REGISTRY_PATH = ROOT / "knowledge" / "source_registry.yaml"
 DEFAULT_MODEL = os.getenv("OPENAI_DEFAULT_MODEL", "gpt-5.6-sol")
 
@@ -80,6 +81,7 @@ def load_constitution() -> str:
 
 def build_research_context(target: str, live_delta: str = "") -> str:
     frontier = load_text(FRONTIER_PATH)
+    constraint_frontier = load_text(CONSTRAINT_FRONTIER_PATH)
     registry = load_text(SOURCE_REGISTRY_PATH)
     delta_section = (
         f"\n\nLIVE FRONTIER AUDIT FOR THIS RUN:\n{live_delta}\n"
@@ -89,6 +91,7 @@ def build_research_context(target: str, live_delta: str = "") -> str:
     return (
         f"USER/ROUND TARGET:\n{target}\n\n"
         f"DATED EXTERNAL FRONTIER MAP:\n{frontier}\n\n"
+        f"CONSTRAINT-FIRST / NO-GO FRONTIER:\n{constraint_frontier}\n\n"
         f"SOURCE PROVENANCE REGISTRY:\n{registry}"
         f"{delta_section}"
     )
