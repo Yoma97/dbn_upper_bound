@@ -1,12 +1,7 @@
-name: Unified Collision Geometry Lab
+name: Unified Collision Geometry Lab — FREE ONLY
 
 on:
   workflow_dispatch:
-    inputs:
-      target:
-        description: Optional focused target override
-        required: false
-        default: ""
 
 jobs:
   collision-research:
@@ -14,9 +9,10 @@ jobs:
     timeout-minutes: 120
     permissions:
       contents: read
+      models: read
 
     steps:
-      - name: Checkout focused branch
+      - name: Checkout focused research branch
         uses: actions/checkout@v4
         with:
           ref: research-lab-agents
@@ -26,38 +22,36 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install research lab dependencies
+      - name: Static validation — no model calls
         run: |
-          python -m pip install --upgrade pip
-          pip install -r research_lab/requirements.txt
+          python -m py_compile research_lab/collision_lab_free.py research_lab/roles.py
+          python - <<'PY'
+          from pathlib import Path
+          required = [
+              Path('research_lab/collision_lab_free.py'),
+              Path('research_lab/knowledge/unified_collision_geometry_program.md'),
+              Path('research_lab/knowledge/frontier_map.md'),
+          ]
+          missing = [str(p) for p in required if not p.exists()]
+          if missing:
+              raise SystemExit(f'Missing required files: {missing}')
+          print('Free-only static validation passed.')
+          PY
 
-      - name: Verify OpenAI API secret exists
+      - name: Run free-only collision lab
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_MODELS_MODEL: openai/gpt-4.1-mini
         run: |
-          if [ -z "$OPENAI_API_KEY" ]; then
-            echo "OPENAI_API_KEY repository secret is not configured."
-            exit 1
-          fi
-
-      - name: Run focused collision lab
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_DEFAULT_MODEL: gpt-5.6-sol
-          TARGET: ${{ github.event.inputs.target }}
-        run: |
-          if [ -n "$TARGET" ]; then
-            python research_lab/collision_lab.py --target "$TARGET" | tee collision_lab_report.json
-          else
-            python research_lab/collision_lab.py | tee collision_lab_report.json
-          fi
+          python research_lab/collision_lab_free.py | tee collision_lab_console.json
 
       - name: Upload research report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: unified-collision-lab-report
+          name: unified-collision-lab-free-report
           path: |
             collision_lab_report.json
-            research_lab/memory/collision_*.jsonl
+            collision_lab_console.json
+            research_lab/memory/collision_free_*.jsonl
           if-no-files-found: warn
