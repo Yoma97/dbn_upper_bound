@@ -1,42 +1,46 @@
 # Current Collision Program State
 
-**Updated:** 2026-08-15 after Round 19.
+**Updated:** 2026-08-15 after Round 22.
 
 **RH status:** OPEN.
 
-## Executive state
+## Executive verdict
 
-Two complementary structures are now rigorously established:
-
-\[
-\boxed{\text{A: exact relative Vandermonde / V-energy / flux identities}}
-\]
-
-and
+The program has now separated three logically distinct layers:
 
 \[
-\boxed{\text{B: all-multiplicity negative local collision degree}.}
+\boxed{\text{local collision geometry}}
 \]
-
-Round 18 proved that **flux control alone cannot exclude collision**: the entropy itself carries the logarithmic collision divergence. Round 19 then proved that every isolated multiplicity-\(m\) heat collision has local Brouwer degree
 
 \[
-\boxed{-\lfloor m/2\rfloor<0.}
+\boxed{\text{relative energy / entropy / cutoff transport}}
 \]
-
-Thus the working priority is upgraded to
 
 \[
-\boxed{B\gtrsim A\gg C.}
+\boxed{\text{topological collision count}}.
 \]
 
-Round 15 finite oscillatory sign-regularity remains **FROZEN / AUXILIARY**.
+The first layer is largely understood. The second has exact algebraic balance laws but still lacks an independent finite one-sided entropy/coercive budget. The third has a complete local degree formula, but Round 21 shows that its global finite-dimensional meaning is exactly the change in the number of nonreal conjugate root pairs; hence a global degree-zero theorem risks being a disguised real-rootedness theorem.
+
+The current priority is therefore
+
+\[
+\boxed{A\gtrsim B\gg C.}
+\]
+
+where:
+
+- **A:** relative Vandermonde / Bregman / exact Rodgers--Tao \(V\)-energy / cutoff commutator, seeking an independent finite budget;
+- **B:** all-multiplicity collision degree, retained only if a boundary winding estimate can be proved from genuinely weaker Riemann-specific information;
+- **C:** low-complexity arithmetic separator, tertiary.
+
+Round-15 oscillatory sign-regularity is **FROZEN / AUXILIARY**.
 
 ---
 
 ## 1. Local collision section — PROVED
 
-For a finite simple real-zero cluster \(I\) of
+For a finite simple real-zero cluster \(I\) of a real analytic backward-heat family
 
 \[
 \partial_tF=-F_{xx},
@@ -54,151 +58,217 @@ Then
 \Delta_I=\prod_{i<j\in I}(x_i-x_j)^2,
 \]
 
-and
+and the oriented local collision section
 
 \[
 \mathcal D_I=(-1)^{m(m-1)/2}\prod_{i\in I}F_x(t,x_i)
-=\Delta_I\prod_{i\in I}a(t,x_i).
+\]
+
+factorizes as
+
+\[
+\boxed{
+\mathcal D_I=\Delta_I\prod_{i\in I}a(t,x_i).
+}
 \]
 
 Thus \(\Delta_I\) is zero-set-only, while \(\mathcal D_I\) is a gauge-completed local entire-function section. No global canonical regularized discriminant is assumed.
 
----
-
-## 2. Fixed-root trace versus infinite-volume energy — PROVED / CORRECTED
-
-At a simple root,
+At a simple zero,
 
 \[
-A_i=\frac{F_{xx}}{2F_x}(t,x_i).
+A_i=\frac{F_{xx}}{2F_x}(t,x_i),
+\qquad
+B_i=A_i^2-\frac{F_{xxx}}{3F_x}(t,x_i).
 \]
 
-The fixed-root inverse-square trace
+For an order-one entire zero divisor,
 
 \[
-\boxed{B_i=\sum_{\rho\ne x_i}\frac1{(x_i-\rho)^2}}
+\boxed{
+B_i=\sum_{\rho\ne x_i}\frac1{(x_i-\rho)^2}
+}
 \]
 
-is absolutely convergent for an order-one zero divisor. The first-order velocity field requires a principal-value/canonical-pairing convention in the infinite system. The true infinite-volume divergence is the global positive pair energy.
+is absolutely convergent. The true divergence problem is the **global infinite-volume pair energy**, not the fixed-root inverse-square trace.
 
 ---
 
-## 3. Finite Vandermonde conventions — PROVED
+## 2. Finite Vandermonde / Hamiltonian conventions — PROVED
 
-For a finite zero set,
+For a finite real-simple zero set,
 
 \[
 E_{\rm ord}=\sum_{i\ne j}(x_i-x_j)^{-2},
 \qquad
-E_{\rm unord}=\sum_{i<j}(x_i-x_j)^{-2}.
+E_{\rm unord}=\sum_{i<j}(x_i-x_j)^{-2},
 \]
-
-Then
 
 \[
-\boxed{\partial_t\log\Delta=4E_{\rm ord}=8E_{\rm unord}.}
+\boxed{
+\partial_t\log\Delta=4E_{\rm ord}=8E_{\rm unord}.
+}
 \]
 
-For
+With ordered Hamiltonian
 
 \[
 \mathcal H=\sum_{i\ne j}\log|x_i-x_j|^{-1},
 \]
 
 \[
-\boxed{\mathcal H=-\log\Delta,\qquad \dot{\mathcal H}=-4E_{\rm ord}.}
+\boxed{
+\mathcal H=-\log\Delta,
+\qquad
+\dot{\mathcal H}=-4E_{\rm ord}.
+}
 \]
+
+Thus finite discriminant and inverse-square energy are literally the same gradient-flow structure.
 
 ---
 
-## 4. Hard-window flux — PROVED
+## 3. Hard-window boundary flux — PROVED
 
 For a finite window \(I\),
 
 \[
 A_i^I=\sum_{j\in I,j\ne i}(x_i-x_j)^{-1},
 \qquad
-A_i^{\rm ext}=A_i-A_i^I.
+A_i^{\rm ext}=A_i-A_i^I,
 \]
 
-Then
+one has
 
 \[
-\boxed{\partial_t\log\Delta_I=4E_{\rm ord}(I)+\mathcal F_I,}
+\boxed{
+\partial_t\log\Delta_I
+=4E_{\rm ord}(I)
++4\sum_{i\in I}A_i^I A_i^{\rm ext}.
+}
 \]
 
-where
-
-\[
-\boxed{\mathcal F_I=4\sum_{i\in I}A_i^IA_i^{\rm ext},}
-\]
-
-and the local zero-chart factorization gives
+The local factorization gives
 
 \[
 \boxed{A_i^{\rm ext}=a_z/a(t,x_i).}
 \]
 
----
-
-## 5. Generic double collision — SHARPENED
-
-Let \(\tau=t-t_c\downarrow0\). For an isolated generic analytic double collision,
+At an isolated generic double collision, with \(\tau=t-t_c\downarrow0\),
 
 \[
-\boxed{g(\tau)^2=8\tau+O(\tau^2).}
-\]
-
-Hence
-
-\[
-\boxed{E_{\rm pair,ord}=\frac2{g^2}=\frac1{4\tau}+O(1),}
+\boxed{g(\tau)^2=8\tau+O(\tau^2),}
 \]
 
 so
 
 \[
-\boxed{4E_{\rm pair,ord}=\frac1\tau+O(1).}
+4E_{\rm pair,ord}=\frac1\tau+O(1),
 \]
 
-For a hard window containing the isolated pair,
-
-\[
-\boxed{\mathcal F_I=O(1).}
-\]
-
-The older weaker \(O(\tau^{-1/2})\) remainder for the raw pair energy is superseded.
+while the hard-window external flux is \(O(1)\).
 
 ---
 
-## 6. Round 17 Bregman entropy — PROVED / RETAINED
+## 4. Laguerre bridge — PROVED LOCALLY
 
-For a fixed ordered reference \(\xi_j\), Round 17 uses
+At a simple zero,
 
 \[
-L(r)=-\log r+r-1\ge0
+L_1=F_x^2-FF_{xx},
 \]
 
-and obtains an exact localized balance
+and the previously derived \(L_2\) identity gives
 
 \[
+\boxed{B_i=\frac{L_2(x_i)}{L_1(x_i)},}
+\qquad
+\boxed{A_i=\frac{\partial_xL_1(x_i)}{2L_1(x_i)}.}
+\]
+
+Hence
+
+\[
+\boxed{
+\frac d{dt}\log|F_x(t,x_i(t))|
+=\frac14(\partial_x\log L_1)^2+3\frac{L_2}{L_1}.
+}
+\]
+
+The phase current is permanently removed as an independent route because
+
+\[
+\Im(\overline{(F+iF_x)}(F+iF_x)_x)=-L_1.
+\]
+
+Ordinary \(L_1\ge0\) is not a complete Laguerre--Polya criterion; complete generalized real and complex Laguerre characterizations must be distinguished from it.
+
+---
+
+## 5. Positive-threshold finite collision attainment — PROVED AS REDUCTION
+
+Using Polymath high-positive-time asymptotics and compactness, if
+
+\[
+\Lambda>0,
+\]
+
+then the transition at \(t=\Lambda\) is attained by a multiple real zero at finite height. Thus a hypothetical positive threshold cannot exist solely through collisions escaping to infinity.
+
+Together with Rodgers--Tao \(\Lambda\ge0\), this reduces RH to positive-time no-collision, but this reduction is itself RH-equivalent and is **not** counted as progress toward a proof without an independent no-collision input.
+
+---
+
+## 6. Round 17 Bregman balance — PROVED FINITELY
+
+For a fixed ordered reference \(\xi_j\), cutoff \(\psi_j\),
+
+\[
+r_{jk}=\frac{x_j-x_k}{\xi_j-\xi_k}>0,
+\qquad
+L(r)=-\log r+r-1,
+\]
+
+let
+
+\[
+\mathcal C_\psi
+=\sum_{j\ne k}\psi_j\psi_kL(r_{jk}),
+\]
+
+\[
+\delta_{jk}=(x_j-x_k)^{-1}-(\xi_j-\xi_k)^{-1},
+\qquad
+D_j^\psi=\sum_{k\ne j}\psi_k\delta_{jk}.
+\]
+
+Round 17 gives an exact force-square balance. Round 22 sharpens its bookkeeping by introducing
+
+\[
+K_j^\psi
+=\sum_{k\ne j}(\psi_j-\psi_k)\delta_{jk}.
+\]
+
+Then exactly
+
+\[
+\boxed{
 \partial_t\mathcal C_\psi
-=-\mathscr B_\psi+\mathscr F_{\partial\psi}+\mathscr R_{\xi,\psi},
+=-4\sum_j(D_j^\psi)^2
+-4\sum_jD_j^\psi K_j^\psi
+-4\sum_j\psi_jD_j^\psi S_j^\xi.
+}
 \]
 
-with positive force-square bulk
+Thus the cutoff channel is an exact discrete commutator and vanishes for constant cutoff.
 
-\[
-\boxed{\mathscr B_\psi=4\sum_j\psi_j(D_j^\psi)^2\ge0.}
-\]
-
-At an exact arithmetic lattice, this force-square bulk agrees to quadratic order with the Rodgers--Tao \(V\)-energy. It is not exactly the pairwise \(V\)-energy for a general reference.
+The infinite countable version remains conditional on the justified principal-value / absolute-convergence / differentiation interchange.
 
 ---
 
-## 7. Round 18 exact \(V\)-energy balance — PROVED ALGEBRAICALLY
+## 7. Round 18 exact Rodgers--Tao V-energy law — PROVED ALGEBRAICALLY
 
-Let \(w_{jk}=w_{kj}\ge0\), \(w_{jj}=0\), and
+For any symmetric pair weight \(w_{jk}\), define
 
 \[
 \mathscr C_w
@@ -206,71 +276,13 @@ Let \(w_{jk}=w_{kj}\ge0\), \(w_{jj}=0\), and
 \log\left|\frac{x_j-x_k}{\xi_j-\xi_k}\right|.
 \]
 
-Set
-
-\[
-a_{jk}=(x_j-x_k)^{-1},
-\qquad
-b_{jk}=(\xi_j-\xi_k)^{-1},
-\qquad
-\eta_j=x_j-\xi_j.
-\]
-
-Define
-
-\[
-A_j^w=\sum_{k\ne j}w_{jk}a_{jk},
-\qquad
-A_j=\operatorname{PV}\sum_{i\ne j}a_{ji}.
-\]
-
-Then
-
-\[
-\boxed{\partial_t\mathscr C_w=4S_w(x),\qquad S_w(x)=\sum_jA_jA_j^w.}
-\]
-
-Write
-
-\[
-S_w(x)=E_w(x)+K_w(x),
-\]
-
-with
-
-\[
-E_w(x)=\sum_{j\ne k}w_{jk}a_{jk}^2,
-\]
-
-\[
-K_w(x)=\sum_j\sum_{\substack{i,k\ne j\\ i\ne k}}w_{jk}a_{ji}a_{jk}.
-\]
-
-The triple partial-fraction identity makes \(K_w\) an exact discrete cutoff commutator: an unordered triple contributes zero whenever its three edge weights agree.
-
-For
+With Rodgers--Tao
 
 \[
 V(r)=r^{-2}-1+2(r-1),
 \]
 
-define
-
-\[
-\widetilde E_w^V
-=\sum_{j\ne k}w_{jk}(\xi_j-\xi_k)^{-2}
-V\left(\frac{x_j-x_k}{\xi_j-\xi_k}\right)\ge0,
-\]
-
-and
-
-\[
-\Lambda_w(\eta)
-=\sum_{j\ne k}w_{jk}
-\frac{\eta_j-\eta_k}{(\xi_j-\xi_k)^3}.
-\]
-
-Then exactly
+there is an exact decomposition
 
 \[
 \boxed{
@@ -279,198 +291,285 @@ Then exactly
 }
 \]
 
-where
+where \(\widetilde E_w^V\ge0\) is exactly the weighted Rodgers--Tao pair energy, \(\mathscr F_w\) is an explicit triple cutoff commutator, and \(\mathscr R_w\) is an explicit reference/tangent term.
 
-\[
-\boxed{\mathscr F_w=K_w(x)-K_w(\xi),}
-\]
-
-and
-
-\[
-\boxed{\mathscr R_w=S_w(\xi)-2\Lambda_w(\eta).}
-\]
-
-For the Rodgers--Tao near-pair cutoff \(w_{jk}=\psi_T(j)\psi_T(k)1_{j\sim_T k}\), this is the exact bookkeeping beneath their asymptotic truncated Hamiltonian identity, with opposite sign under the \(\log(1/|d|)\) convention.
-
-**Novelty:** UNVERIFIED.
+This is exact algebraic bookkeeping. It does not replace Rodgers--Tao's analytic estimates.
 
 ---
 
-## 8. Entropy-budget obstruction — PROVED
+## 8. Entropy-budget obstruction — PROVED / DECISIVE
 
-Flux control alone cannot exclude collision.
-
-The exact heat polynomial
+The heat polynomial
 
 \[
 P_t(z)=z^2-2t
 \]
 
-has roots \(\pm\sqrt{2t}\) for \(t>0\), colliding at \(t=0\). Taking all roots gives
+has a collision at \(t=0\), zero external flux, and
 
 \[
-\mathcal F_I=0,
-\qquad
-\Delta_I=8t,
+\Delta=8t,
 \qquad
 E_{\rm ord}=\frac1{4t},
+\qquad
+\partial_t\log\Delta=\frac1t.
 \]
-
-hence
-
-\[
-\boxed{\partial_t\log\Delta_I=1/t}
-\]
-
-with zero boundary flux. The divergence is carried by \(\log\Delta_I\to-\infty\).
-
-Therefore
-
-\[
-\boxed{\text{nonintegrable bulk + integrable flux does not imply no collision}.}
-\]
-
-Program A requires an independent one-sided entropy/coercive budget. Any such bound must be audited to ensure it is not merely a lower-gap/no-collision assumption in disguise.
-
----
-
-## 9. Round 19 all-multiplicity local degree — PROVED
-
-Let \((t_c,c)\) be a multiplicity-\(m\ge2\) real zero of a nontrivial real-analytic backward-heat family. Define
-
-\[
-\Gamma(t,x)=(F(t,x),F_x(t,x)).
-\]
-
-The parabolic blow-up is the Hermite heat polynomial
-
-\[
-P_m(T,X)=e^{-T\partial_X^2}X^m
-=m!\sum_{k=0}^{\lfloor m/2\rfloor}
-\frac{(-T)^kX^{m-2k}}{k!(m-2k)!}.
-\]
-
-After positive-determinant input/output rescaling,
-
-\[
-(F,F_x)\to(P_m,\partial_XP_m)
-\]
-
-in \(C^1\) on compact sets. The model has only the origin as a common zero.
-
-Computing the degree with the regular value \((0,\varepsilon)\), \(\varepsilon>0\):
-
-- for \(T>0\), the Hermite roots with positive derivative contribute \(-1\) each; there are \(\lceil m/2\rceil\) of them;
-- for \(T<0\), there is no real root when \(m\) is even;
-- when \(m\) is odd, the unique negative-time real root branch \(X=0\) contributes \(+1\).
 
 Therefore
 
 \[
 \boxed{
-\deg_{\rm loc}(F,F_x;(t_c,c))
-=-\left\lfloor\frac m2\right\rfloor.
+\text{nonintegrable bulk + integrable/zero flux does not imply no collision}.
 }
 \]
 
-Thus **every isolated collision has strictly negative local degree**, for every multiplicity. The old restriction “only generic double collisions have known charge” is removed.
+The divergent bulk is paid for by the divergent entropy itself. Consequently **Program A cannot close by flux control alone**.
 
-A nontrivial analytic heat family cannot have a curve of common zeros of \(F\) and \(F_x\): differentiating along such a curve and repeatedly using the heat equation forces all spatial derivatives to vanish, hence local triviality. Collision points are therefore locally isolated.
+The decisive missing A-gate is an independently provable one-sided finite entropy/coercive budget, or a compensated quantity with an independently meaningful cancellation of the collision divergence.
+
+Any proposed budget must be rejected if it is merely a lower-gap or real-rootedness hypothesis in disguise.
 
 ---
 
-## 10. Program B global reduction — NEW PRIMARY TEST
+## 9. Round 20 reference-force asymptotic — PROVED / NOVELTY UNVERIFIED
 
-For any bounded domain \(D\subset\mathbb R_t\times\mathbb R_x\) with \(\Gamma\ne0\) on \(\partial D\) and finitely many collision points inside,
+For Rodgers--Tao classical locations
+
+\[
+\Psi(\xi_j)=j,
+\qquad
+\Psi(x)=\frac{x}{4\pi}\left(\log\frac{x}{4\pi}-1\right),
+\qquad
+\xi_{-j}=-\xi_j,
+\]
+
+the reference force satisfies
 
 \[
 \boxed{
-\deg(\Gamma,D,0)
-=-\sum_{p\in D}\left\lfloor\frac{m_p}{2}\right\rfloor.
+S_j^\xi
+=-\frac\pi8+O\!\left(\frac{\log j}{\sqrt j}\right),
+\qquad j\to+\infty,
 }
 \]
 
-Hence
+and by odd symmetry
 
 \[
-\boxed{\deg(\Gamma,D,0)=0\Longrightarrow\text{no collision in }D.}
+S_{-j}^\xi
+=+\frac\pi8+O\!\left(\frac{\log j}{\sqrt j}\right).
 \]
 
-No cancellation among different collision multiplicities is possible.
+The proof uses only the explicit reference counting map. It is independent of RH and actual zero estimates.
 
-The remaining problem is global boundary control:
-
-1. prove \(\Gamma\ne0\) on the chosen boundary;
-2. compute the winding of \(H_t+iH_t'\) on that boundary;
-3. control the vertical faces as \(X\to\infty\);
-4. control the horizontal faces without assuming RH or \(\Lambda\le0\).
-
-A nowhere-vanishing normalizer may simplify amplitudes, but nonvanishing alone does not determine the winding.
-
----
-
-## 11. Circularity guard
-
-Assuming \(\Lambda>0\) for contradiction and working in the relevant positive-time region does not assume RH.
-
-Rodgers--Tao's quantitative negative-time estimates are proved under the opposite contradiction hypothesis \(\Lambda<0\), which implies RH; they cannot be imported into a proof of \(\Lambda\le0\) without independent justification.
-
-Safe imports are structural identities, definitions, and unconditional positive-time estimates. Polymath's positive-time asymptotics may be used only in the ranges they actually establish.
-
----
-
-## 12. Laguerre status
-
-Ordinary
+The induced formal collective speed
 
 \[
-L_1=(H')^2-HH''\ge0
+2S_j^\xi\to-\pi/4
 \]
 
-is only necessary in general for Laguerre--Polya membership. The generalized real Laguerre inequalities and the complex Laguerre criterion provide the relevant complete characterizations. The phase-current route remains a local shadow because \(J=-L_1\).
+is consistent with the independent Polymath high-positive-time zero-velocity asymptotic.
 
 ---
 
-## 13. Program ranking
+## 10. Round 22 reference and cutoff control — PROVED STRUCTURALLY
+
+### Pointwise V-domination
+
+For every positive relative spacing \(r=(x_j-x_k)/(\xi_j-\xi_k)>0\),
 
 \[
-\boxed{B\gtrsim A\gg C.}
+\boxed{
+\delta_{jk}^2
+\le
+\frac1{(\xi_j-\xi_k)^2}V(r)
+=\widetilde E^V_{jk}.
+}
 \]
 
-### B — CO-PRIMARY / MOST URGENT TEST
+Indeed,
 
-All-multiplicity negative local degree + global boundary winding/exhaustion.
+\[
+V(r)-(r^{-1}-1)^2
+=2(r+r^{-1}-2)\ge0.
+\]
 
-### A — CO-PRIMARY STRUCTURAL
+### Finite-range cutoff commutator
 
-Exact relative \(V\)-energy/flux identities + search for an independent finite entropy/coercive budget.
+If
 
-### C — TERTIARY
+\[
+|\psi_j-\psi_k|
+\le L_\psi|j-k|\sqrt{\psi_j\psi_k}
+\]
 
-Low-complexity arithmetic separator, only after genuine non-density/non-equivalence is proved.
+for \(0<|j-k|\le R\), then
 
-Round 15 sign-regularity: **FROZEN / AUXILIARY**.
+\[
+\boxed{
+\sum_j|K_{j,R}^\psi|^2
+\ll L_\psi^2R^3\widetilde E^{V,\rm ord}_{\psi,R}.
+}
+\]
+
+For Rodgers--Tao's
+
+\[
+\psi_T(j)=\left(1+\frac{|j|}{T\log T}\right)^{-100}
+\]
+
+and their nearby scale in the main window, the coefficient is of size
+
+\[
+L_\psi^2R^3\ll T^{-1.4}\log^{-2}T
+\]
+
+up to harmless nearby-scale variation. Thus the **near cutoff commutator is perturbative** at the cutoff-geometric level.
+
+The far commutator is still open in the positive-time regime relevant to proving \(\Lambda\le0\).
+
+### Signed reference decomposition
+
+For even \(\psi\) and symmetric zero/reference configurations,
+
+\[
+\boxed{
+\mathscr R_{\xi,\psi}
+=
+\pi\sum_{j,l>0}\psi_j\psi_l
+\left(
+\frac1{x_j+x_l}-\frac1{\xi_j+\xi_l}
+\right)
+-4\sum_j\psi_jD_j e_j,
+}
+\]
+
+where
+
+\[
+S_j^\xi=-\frac\pi8\operatorname{sgn}j+e_j.
+\]
+
+Thus the leading signed drift becomes a **regular cross-origin interaction**, not a singular same-sign collision term.
+
+For \(\psi_T\),
+
+\[
+\boxed{
+\sum_j\psi_T(j)e_j^2\ll\log^3(T\log T+2),
+}
+\]
+
+so the residual reference channel is absorbable into the force-square bulk at only polylogarithmic additive cost.
 
 ---
 
-## 14. Current status table
+## 11. Round 19 / 21 collision degree — PROVED LOCALLY, GLOBAL RISK IDENTIFIED
+
+For every multiplicity-\(m\ge2\) real collision of a nontrivial analytic backward-heat family,
+
+\[
+\Gamma=(F,F_x)
+\]
+
+has local Brouwer degree
+
+\[
+\boxed{
+\deg_{\rm loc}\Gamma=-\left\lfloor\frac m2\right\rfloor.
+}
+\]
+
+A parabolic blow-up argument also proves local isolation directly.
+
+However Round 21 proves that for finite polynomial heat flow this local degree equals the change in the number of nonreal conjugate root pairs across the collision. Globally,
+
+\[
+\boxed{
+\sum_{p}\deg_{\rm loc}(P,P_x;p)
+=C(t_+)-C(t_-),
+}
+\]
+
+where \(C(t)\) counts nonreal conjugate pairs.
+
+Therefore a global boundary theorem giving degree zero can be **exactly a topological restatement of real-rootedness defect**. Program B is independent progress only if its boundary winding is computed from an input genuinely weaker than the desired real-rootedness conclusion.
+
+A particularly dangerous circular route is horizontal phase monotonicity, because
+
+\[
+\partial_x\arg(H+iH')
+=-\frac{L_1(H)}{H^2+(H')^2}.
+\]
+
+Using global \(L_1\ge0\) to control winding simply returns to a Laguerre/Hermite--Biehler type criterion.
+
+---
+
+## 12. Safe and unsafe source imports
+
+### Safe
+
+- structural zero ODE and principal-value conventions;
+- explicit Rodgers--Tao reference \(\xi_j\) and cutoff \(\psi_T\);
+- purely algebraic identities involving \(V,L\), cutoffs, and finite configurations;
+- unconditional Polymath positive-time asymptotics in the ranges actually proved;
+- source-established kernel properties independent of RH.
+
+### Unsafe for proving \(\Lambda\le0\)
+
+Rodgers--Tao quantitative negative-time estimates that are proved under their contradiction hypothesis \(\Lambda<0\). That hypothesis already implies RH, so such estimates may not be imported into our positive-time no-collision argument without independent reproof.
+
+---
+
+## 13. Current single targets
+
+### A1 — DECISIVE
+Construct or derive an **independent one-sided entropy/coercive budget** for a localized relative entropy/compensated entropy, valid in the positive-time candidate-collision regime, that cannot diverge in the collision direction.
+
+It must not assume a lower gap bound, real-rootedness, \(L_1\ge0\), or an RH-equivalent criterion.
+
+### A2 — SUPPORTING
+Control the **far cutoff commutator** and the regular cross-origin reference interaction using positive-time/unconditional inputs.
+
+### B1 — AUDIT ONLY UNTIL INDEPENDENCE IS SHOWN
+Seek a boundary winding estimate for \(H+iH'\) only if its proof avoids Laguerre/Hermite--Biehler/real-rootedness equivalents. Otherwise classify Program B as structurally circular and freeze it.
+
+---
+
+## 14. Ranking
+
+\[
+\boxed{A\gtrsim B\gg C.}
+\]
+
+- **A PRIMARY:** exact relative energy/entropy transport + missing finite one-sided budget.
+- **B SECONDARY LIVE:** exact local collision count, but high global equivalence risk.
+- **C TERTIARY:** low-complexity arithmetic separator.
+- **Round 15 sign-regularity:** frozen auxiliary material.
+- **Phase current:** permanently removed as an independent route.
+
+---
+
+## 15. Status table
 
 - local collision divisor geometry: **PROVED**;
 - fixed-root inverse-square trace: **PROVED**;
 - global canonical regularized discriminant: **NOT ASSUMED / OPEN**;
-- hard-window Vandermonde flux identity: **PROVED**;
-- sharpened generic double-collision law \(g^2=8\tau+O(\tau^2)\): **PROVED**;
-- raw hard-window collision flux \(O(1)\): **PROVED locally**;
-- Round-17 Bregman force-square law: **PROVED**;
-- Round-18 exact smooth pair-cutoff relative log-Vandermonde law: **PROVED**;
-- exact bulk equality with Rodgers--Tao \(V\)-energy: **PROVED algebraically**;
-- “integrable flux prevents collision”: **REFUTED**;
-- finite entropy/coercive budget: **OPEN**;
+- finite Vandermonde / energy identity: **PROVED**;
+- hard-window external flux identity: **PROVED**;
+- exact Bregman force-square law: **PROVED FINITELY**;
+- exact relative log-Vandermonde / Rodgers--Tao \(V\)-energy law: **PROVED ALGEBRAICALLY**;
+- near cutoff commutator perturbativity: **PROVED structurally**;
+- far cutoff commutator in needed positive-time regime: **OPEN**;
+- reference-force asymptotic \(\mp\pi/8\): **PROVED / NOVELTY UNVERIFIED**;
+- residual reference channel polylog control: **PROVED**;
+- regular cross-origin reference interaction: **IDENTIFIED / coarse V-control proved**;
+- flux-only no-collision mechanism: **REFUTED**;
+- independent finite entropy/coercive budget: **OPEN — DECISIVE A GATE**;
 - all-multiplicity local degree \(-\lfloor m/2\rfloor\): **PROVED**;
-- no local sign cancellation among collision multiplicities: **PROVED**;
-- global boundary degree/winding: **OPEN — NEXT B TARGET**;
-- degree exhaustion as \(X\to\infty\): **OPEN**;
-- independent no-collision theorem: **OPEN**;
+- finite polynomial degree = nonreal-pair-count change: **PROVED**;
+- global degree as automatically independent no-collision mechanism: **REFUTED / equivalence risk high**;
+- independent Riemann boundary winding theorem: **OPEN**;
 - RH: **OPEN**;
-- novelty of Round-18/19 packaging/results in the literature: **UNVERIFIED**.
+- novelty of the new packaging/results: **UNVERIFIED**.
