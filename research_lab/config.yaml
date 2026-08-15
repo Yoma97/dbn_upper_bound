@@ -1,13 +1,18 @@
 mission:
   name: "Riemann Mathematical Invention Lab"
   primary_target: >-
-    Find a genuinely new structural theorem capable of closing the unresolved
-    low-shoulder/transversality obstruction in the de Bruijn-Newman heat-flow
-    route, without assuming RH or an equivalent hidden hypothesis.
+    Treat the Riemann Hypothesis as an open research problem. Starting only from
+    verified frontier results, identify the smallest non-circular intermediate
+    theorem or genuinely new mathematical structure that removes a documented
+    obstruction and could force critical-line rigidity. Do not privilege any
+    single route (heat flow, spectral, Weil/Li, Laguerre, pair correlation, etc.)
+    unless the current evidence justifies it.
   success_condition: >-
-    A complete, independently reconstructed proof that closes the stated gap,
-    or a new general mathematical tool with a rigorous theorem and non-RH scope
-    that materially advances that closure.
+    Either (i) a completely certified new theorem that closes a documented
+    intermediate obstruction without assuming RH-equivalent strength, or
+    (ii) a rigorously proved new mathematical tool/theory with non-RH scope that
+    materially reduces such an obstruction. RH itself is not to be claimed
+    solved unless every dependency edge is independently certified.
 
 execution:
   independent_invention_rounds: 5
@@ -16,47 +21,114 @@ execution:
   blind_first_round: true
   require_fresh_context_referee: true
   require_independent_proof_reconstruction: true
+  require_second_independent_reconstruction_for_theorem: true
+  require_structured_outputs: true
+  freeze_claim_before_certification: true
+  one_new_lemma_rule: true
+  reject_multi_gap_chains: true
+  dead_end_requires_material_delta_to_reopen: true
+
+claim_hygiene:
+  atomic_claims_only: true
+  explicit_quantifiers: true
+  explicit_domains_and_parameter_ranges: true
+  explicit_uniformity_for_asymptotics: true
+  explicit_normalization_and_conventions: true
+  separate_correctness_from_novelty: true
+  separate_equivalence_from_progress: true
+  separate_numerical_support_from_proof: true
+  require_dependency_dag: true
+  require_assumption_ledger: true
+  require_fast_falsification_test: true
+  require_edge_case_matrix: true
 
 statuses:
-  - IDEA
-  - CANDIDATE
-  - SUPPORTED
-  - REFUTED
-  - PROPOSITION
-  - THEOREM
-  - NEW_TOOL
+  truth:
+    - IDEA
+    - CANDIDATE
+    - INTERNALLY_PROVED
+    - INDEPENDENTLY_RECONSTRUCTED
+    - REFEREE_VERIFIED
+    - REFUTED
+  novelty:
+    - NOT_ASSESSED
+    - NOVELTY_UNVERIFIED
+    - KNOWN_OR_SUBSUMED
+    - PLAUSIBLY_NEW
+    - LITERATURE_AUDITED
+  relevance:
+    - REFORMULATION_ONLY
+    - DIAGNOSTIC_TOOL
+    - INTERMEDIATE_LEMMA
+    - FRONTIER_ADVANCE
+    - GENERAL_NEW_TOOL
 
 promotion_gates:
   CANDIDATE:
-    - precise_statement
+    - precise_atomic_statement
+    - explicit_quantifiers
     - explicit_hypotheses
+    - convention_lock
     - explicit_target_connection
     - nontriviality_check
-  PROPOSITION:
-    - complete_proof_draft
-    - dependency_graph
+    - fastest_falsification_test
+  INTERNALLY_PROVED:
+    - complete_proof
+    - dependency_dag
+    - assumption_ledger
+    - edge_case_audit
     - no_numerical_step_used_as_infinite_proof
-  THEOREM:
-    - independent_proof_reconstruction_pass
+    - no_unresolved_gap
+  REFEREE_VERIFIED:
+    - two_independent_proof_reconstructions
     - adversarial_referee_pass
     - circularity_audit_pass
     - counterexample_attack_pass
-    - all_dependencies_verified_or_standard_cited_results
-  NEW_TOOL:
-    - theorem_status
+    - dependency_verification_pass
+    - convention_and_normalization_audit_pass
+  GENERAL_NEW_TOOL:
+    - referee_verified_truth
     - abstract_definition
     - scope_beyond_riemann
-    - transfer_application_or_general_structure_theorem
-    - novelty_audit
+    - independent_non_rh_theorem_or_application
+    - novelty_literature_audit
+
+proof_discipline:
+  one_new_lemma_rule: >-
+    A proposed implication chain may contain at most one genuinely new unproved
+    lemma at a time. If two independent new lemmas are required, split the
+    project and prove the earlier one first.
+  gap_budget: 0
+  proof_reconstruction: >-
+    Independent reconstructors receive only the frozen statement, definitions,
+    allowed dependencies and conventions, not the author's proof text.
+  failed_candidate_policy: >-
+    A refuted/failing claim is frozen. A repaired version receives a new claim ID
+    and must state the exact mathematical delta that addresses the failure.
+
+edge_case_matrix:
+  required:
+    - lowest_degree_toy_models
+    - symmetry_preserving_fake_xi_models
+    - multiple_zero_models
+    - even_and_odd_collision_multiplicity
+    - t_to_0_and_boundary_time_limits
+    - x_to_infinity_or_height_to_infinity
+    - parameters_to_endpoint
+    - sparse_exception_regime
+    - cancellation_between_symmetry_partners
+    - scaling_and_normalization_changes
 
 numerics:
   role:
     - refute_false_conjectures
     - discover_patterns
     - rigorously_certify_finite_subproblems
+    - verify_symbolic_identities_on_independent_test_families
   forbidden:
     - infer_global_truth_from_large_finite_sampling
-    - promote_SUPPORTED_to_THEOREM_without_analytic_or_formal_proof
+    - promote_any_claim_to_proved_from_floating_point_only
+    - replace_uniform_estimates_with_grid_checks
 
 research_preferences:
   reward:
@@ -66,10 +138,15 @@ research_preferences:
     new_general_theorem: 10
     bridge_between_fields: 9
     independently_useful_definition: 8
+    reduction_to_one_new_lemma: 10
+    falsifiable_statement: 8
   penalize:
     hidden_RH_equivalence: 100
     circular_reasoning: 100
     numerical_only_argument: 100
     rephrasing_known_result: 30
+    multiple_independent_unproved_lemmas: 40
+    ambiguous_quantifiers_or_uniformity: 40
+    convention_or_normalization_drift: 40
     constant_improvement_without_threshold_crossing: 15
     long_argument_without_new_mechanism: 10
