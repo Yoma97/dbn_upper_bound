@@ -1,10 +1,10 @@
 # Current Collision Program State
 
-**Updated:** 2026-08-15 after Round 14.
+**Updated:** 2026-08-15 after Round 15.
 
-## Core local geometry
+## 1. Local collision geometry
 
-For a finite simple real-zero cluster of a real entire backward-heat family,
+For a finite simple real-zero cluster of a real entire backward-heat family
 
 \[
 \partial_tF=-F_{xx},
@@ -16,271 +16,194 @@ the local collision section
 \mathcal D_I(t)=(-1)^{m(m-1)/2}\prod_{k\in I}F_x(t,x_k(t))
 \]
 
-has the local factorization
+satisfies
 
 \[
 \mathcal D_I=\Delta_I A_{\rm tail},\qquad A_{\rm tail}\ne0,
 \]
 
-and exact evolution
-
-\[
-\frac d{dt}\log|\mathcal D_I|
-=\sum_{k\in I}(A_k^2+3B_k),
-\]
-
-with
-
-\[
-A_k=\frac{F_{xx}}{2F_x}(x_k),
-\qquad
-B_k=A_k^2-\frac{F_{xxx}}{3F_x}(x_k).
-\]
-
-At a simple real zero in the real-rooted order-one setting,
-
-\[
-B_k=\sum_{j\ne k}(x_k-x_j)^{-2},
-\]
-
 and
+
+\[
+\frac d{dt}\log|\mathcal D_I|=\sum_{k\in I}(A_k^2+3B_k).
+\]
+
+At a simple real zero in the real-rooted order-one regime,
 
 \[
 R_k:=\frac d{dt}\log|F_x(t,x_k(t))|
 =\frac14(\partial_x\log L_1)^2+3\frac{L_2}{L_1}.
 \]
 
-**Status:** PROVED under the stated hypotheses.
+**Status:** PROVED under stated hypotheses.
 
 ---
 
-## Positive-threshold compactness correction
+## 2. Positive-threshold compactness
 
-Polymath Theorem 1.5 rules out loss of real-rootedness escaping solely to infinite height when a hypothetical threshold is positive.
-
-If \(\Lambda>0\), high zeros are uniformly real and simple on
-
-\[
-t\in[\Lambda/2,\Lambda]
-\]
-
-outside a safe finite cutoff
-
-\[
-X_\Lambda=\exp(2C/\Lambda).
-\]
-
-Compactness and Rouche continuation then imply
+Using Polymath Theorem 1.5, if \(\Lambda>0\) then all sufficiently high zeros are uniformly real and simple on \([\Lambda/2,\Lambda]\). Compactness and Rouche continuation imply
 
 \[
 \boxed{\Lambda>0\Longrightarrow H_\Lambda\text{ has a multiple real zero at finite height}.}
 \]
 
-Thus the previous Round-12 assertion that C6 must begin with a height-uniform \(R_k\) bound is **REFUTED for the Riemann family at a positive threshold**.
+Hence the old Round-12 requirement of a height-uniform C6 estimate is not primary for the Riemann family.
 
-Together with Rodgers--Tao \(\Lambda\ge0\),
+Together with Rodgers--Tao,
 
 \[
-\boxed{
-RH\iff \Lambda=0
-\iff H_t,H_t'\text{ have no common real zero for all }t>0.
-}
+\boxed{RH\iff \Lambda=0\iff H_t,H_t'\text{ have no common real zero for all }t>0.}
 \]
 
-This is an **RH-EQUIVALENT reduction**, not a proof input.
+This is RH-equivalent and may be used only as a reduction.
 
 ---
 
-## Universal collision residue
+## 3. Universal collision residue
 
-At a zero of exact multiplicity \(m\ge2\) at \((t_c,x_c)\), on the forward real-rooted side,
-
-\[
-F_{t_c+\tau}(x_c+\sqrt\tau X)
-=a\tau^{m/2}Q_m(X)+O(\tau^{(m+1)/2}),
-\]
-
-where
-
-\[
-Q_m=e^{-D^2}X^m=H_m(X/2).
-\]
-
-For each local branch,
+At a multiplicity-m collision,
 
 \[
 \boxed{
-R_k(t)=\frac{m-1}{2(t-t_c)}+O((t-t_c)^{-1/2}),
+R_k(t)=\frac{m-1}{2(t-t_c)}+O((t-t_c)^{-1/2})
 }
 \]
 
-so
+on the forward real-rooted side, equivalently
 
 \[
-\boxed{
 \lim_{t\downarrow t_c}(t-t_c)R_k(t)=\frac{m-1}{2}.
-}
 \]
 
 **Status:** PROVED local theorem; novelty unverified.
 
 ---
 
-## Monotone Riemann kernel-ratio interface
+## 4. Riemann kernel ratio
 
-Let
+Set
 
 \[
-\psi_t(u)=e^{tu^2}\Phi(u),\quad
-w_t(u)=u\psi_t(u),\quad
+K(r)=\Phi(\sqrt r),\quad K_t(r)=e^{tr}K(r),
+\]
+
+\[
 q(u)=-\frac{\Phi'(u)}{u\Phi(u)}.
 \]
 
-The established strict concavity of
+The established strict concavity of \(\log\Phi(\sqrt r)\) implies \(q'(u)>0\). Direct bounds from the defining theta series give the conservative estimate
 
 \[
-r\mapsto\log\Phi(\sqrt r)
+q(0)>33>1.
 \]
 
-implies
+Therefore for \(0\le t\le1/2\), \(K_t\) is strictly decreasing and strictly log-concave.
+
+With
 
 \[
-\boxed{q'(u)>0\quad(u>0).}
-\]
-
-Define
-
-\[
-S_0(t,x)=\int_0^\infty w_t(u)\sin(xu)\,du=-H_t'(x),
-\]
-
-\[
-S_1(t,x)=\int_0^\infty q(u)w_t(u)\sin(xu)\,du.
-\]
-
-Then
-
-\[
-\boxed{S_1=xH_t-2tH_t'.}
-\]
-
-Thus a collision is a common zero of two sine transforms whose positive kernels have a strictly increasing, time-independent ratio q.
-
-At a critical point \(H_t'(x)=0\), with
-
-\[
-M_{t,x}(v)=\int_0^v w_t(u)\sin(xu)\,du,
+w_t(u)=u e^{tu^2}\Phi(u)=uK_t(u^2),
 \]
 
 one has
 
 \[
-\boxed{
-xH_t(x)=-\int_0^\infty q'(u)M_{t,x}(u)\,du.}
+\boxed{w_t\text{ strictly log-concave on }(0,\infty).}
 \]
 
 ---
 
-## Round-14 falsification
+## 5. Half-wave theorem
 
-The proposed lemma
-
-\[
-H_t'(x)=0\Longrightarrow M_{t,x}(v)\ge0\ \forall v
-\]
-
-is **REFUTED rigorously**.
-
-At \(t=1/2\), \(H_{1/2}\) has infinitely many simple real zeros. Between consecutive zeros its sign alternates, so there are positive critical extrema. At such a critical point,
+For \(h=\pi/x\), define
 
 \[
-xH_{1/2}(x)>0
+a_n(t,x)=\int_{nh}^{(n+1)h}w_t(u)|\sin(xu)|\,du,
 \]
-
-and hence
 
 \[
-\int q'M<0,
+b_n(t,x)=\int_{nh}^{(n+1)h}q(u)w_t(u)|\sin(xu)|\,du.
 \]
 
-forcing \(M<0\) somewhere. Thus cumulative overshoot is ordinary behavior, not a collision detector.
+Prekopa--Leindler applied to the convolution with \(\sin(xs)1_{(0,h)}\) gives
+
+\[
+\boxed{a_n^2\ge a_{n-1}a_{n+1}.}
+\]
+
+Thus \((a_n)\) is positive log-concave. Also monotonicity of q gives
+
+\[
+\boxed{b_n/a_n\text{ strictly increasing in }n.}
+\]
+
+Both are independent kernel facts.
 
 ---
 
-## Current single target: half-wave shape theorem
+## 6. TP2/log-concavity barrier
 
-For fixed \(x>0\), set
+Round 15 gives an exact infinite abstract counterexample showing that
 
-\[
-I_n=[n\pi/x,(n+1)\pi/x]
-\]
+1. positive log-concavity of \((a_n)\), and
+2. strict increase of \(b_n/a_n\),
 
-and define
-
-\[
-a_n(t,x)=\int_{I_n}w_t(u)|\sin(xu)|\,du,
-\]
+**do not imply** that the two alternating sums
 
 \[
-b_n(t,x)=\int_{I_n}q(u)w_t(u)|\sin(xu)|\,du.
+\sum(-1)^na_n,\qquad \sum(-1)^nb_n
 \]
 
-Then
+cannot vanish simultaneously.
 
-\[
-S_0=\sum_{n\ge0}(-1)^n a_n,
-\qquad
-S_1=\sum_{n\ge0}(-1)^n b_n.
-\]
+Therefore TP2/log-concavity plus monotone likelihood-ratio reweighting is **provably insufficient as an abstract C6 mechanism**.
 
-Because q is strictly increasing and the half-wave intervals are ordered,
-
-\[
-\boxed{\frac{b_{n+1}}{a_{n+1}}>\frac{b_n}{a_n}}
-\]
-
-for all nonzero masses.
-
-This monotone-likelihood-ratio fact is **PROVED**, but by itself does not prevent both alternating sums from vanishing.
-
-### Single next research question
-
-Find or refute a **strict discrete shape/sign-regularity theorem** for the half-wave mass sequence \(a_n(t,x)\), derived from the special Riemann density
-
-\[
-w_t(u)=u e^{tu^2}\Phi(u),
-\]
-
-that, together with the increasing ratios \(b_n/a_n\), prevents
-
-\[
-\sum(-1)^n a_n=\sum(-1)^n b_n=0.
-\]
-
-The theorem must not assume real-rootedness, interlacing, the sign of H between zeros, global L1 positivity, or an all-n positive-definite-kernel criterion.
-
-Preferred structural input:
-
-\[
-K_t(r)=e^{tr}\Phi(\sqrt r),
-\qquad
-\log K_t(r)=tr+\log\Phi(\sqrt r),
-\]
-
-which is strictly concave for every real t.
+This prevents further attempts to derive RH from kernel log-concavity alone.
 
 ---
 
-## Status table
+## 7. Current single target
 
-- Local collision divisor geometry: **PROVED**.
-- Laguerre/gap reduction: **PROVED**.
-- Positive-threshold finite collision attainment: **PROVED**.
-- Universal Hermite collision residue: **PROVED**.
-- Monotone q kernel ratio: **PROVED**.
-- Simple cumulative nonnegative-balance lemma: **REFUTED**.
-- Half-wave ratio monotonicity: **PROVED**.
-- Sufficient half-wave shape theorem: **OPEN**.
-- Independent C6 no-collision theorem: **OPEN**.
-- RH: **OPEN**.
-- Novelty: **UNVERIFIED**.
+### Finite oscillatory sign-regularity bridge
+
+Seek the weakest fixed finite-order determinant/variation-diminishing property of
+
+\[
+K_t(r)=e^{tr}\Phi(\sqrt r)
+\]
+
+that controls simultaneously
+
+\[
+\sin(x\sqrt r),\qquad q(\sqrt r)\sin(x\sqrt r)
+\]
+
+and forbids their \(K_t(r)dr\)-integrals from vanishing together.
+
+Mandatory requirements:
+
+- fixed finite complexity independent of x;
+- independently provable from the Riemann kernel;
+- not an all-orders sign-regularity/LP criterion;
+- not global L1 positivity;
+- must survive known low-order determinantal limitations in the literature;
+- must have a non-RH application or a natural kernel-class theorem.
+
+If the required determinant order necessarily grows with the number of sine oscillations, classify the route as **REFUTED/structurally circular** and abandon it.
+
+---
+
+## 8. Status
+
+- local collision geometry: **PROVED**;
+- positive-threshold finite collision attainment: **PROVED**;
+- Hermite collision residue: **PROVED**;
+- q monotonicity and heat-weighted density log-concavity: **PROVED**;
+- half-wave mass log-concavity: **PROVED**;
+- half-wave likelihood-ratio ordering: **PROVED**;
+- cumulative nonnegative-balance lemma: **REFUTED**;
+- TP2/log-concavity alone as C6: **REFUTED**;
+- finite oscillatory sign-regularity bridge: **OPEN / CANDIDATE**;
+- independent C6 theorem: **OPEN**;
+- RH: **OPEN**;
+- novelty: **UNVERIFIED**.
