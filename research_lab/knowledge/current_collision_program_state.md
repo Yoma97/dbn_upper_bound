@@ -1,209 +1,372 @@
 # Current Collision Program State
 
-**Updated:** 2026-08-15 after Round 15.
+**Updated:** 2026-08-15 after Round 16.
 
-## 1. Local collision geometry
+## Executive pivot
 
-For a finite simple real-zero cluster of a real entire backward-heat family
+The primary program is now
+
+\[
+\boxed{\text{Local Relative Vandermonde/Hamiltonian Renormalization + Explicit Flux}.}
+\]
+
+We do **not** assume that a canonical finite global regularized discriminant exists. The infinite-volume problem is treated only after exact finite-window identities have been established.
+
+Round 15 finite-order oscillatory sign-regularity is retained as an auxiliary kernel program but is no longer the main path.
+
+---
+
+## 1. Exact local collision section — PROVED
+
+For a finite simple real-zero cluster `I` of a real entire backward-heat family
 
 \[
 \partial_tF=-F_{xx},
 \]
 
-the local collision section
+define
 
 \[
-\mathcal D_I(t)=(-1)^{m(m-1)/2}\prod_{k\in I}F_x(t,x_k(t))
+\mathcal D_I(t)=(-1)^{m(m-1)/2}\prod_{i\in I}F_x(t,x_i(t)).
 \]
 
-satisfies
+In a zero chart
 
 \[
-\mathcal D_I=\Delta_I A_{\rm tail},\qquad A_{\rm tail}\ne0,
-\]
-
-and
-
-\[
-\frac d{dt}\log|\mathcal D_I|=\sum_{k\in I}(A_k^2+3B_k).
-\]
-
-At a simple real zero in the real-rooted order-one regime,
-
-\[
-R_k:=\frac d{dt}\log|F_x(t,x_k(t))|
-=\frac14(\partial_x\log L_1)^2+3\frac{L_2}{L_1}.
-\]
-
-**Status:** PROVED under stated hypotheses.
-
----
-
-## 2. Positive-threshold compactness
-
-Using Polymath Theorem 1.5, if \(\Lambda>0\) then all sufficiently high zeros are uniformly real and simple on \([\Lambda/2,\Lambda]\). Compactness and Rouche continuation imply
-
-\[
-\boxed{\Lambda>0\Longrightarrow H_\Lambda\text{ has a multiple real zero at finite height}.}
-\]
-
-Hence the old Round-12 requirement of a height-uniform C6 estimate is not primary for the Riemann family.
-
-Together with Rodgers--Tao,
-
-\[
-\boxed{RH\iff \Lambda=0\iff H_t,H_t'\text{ have no common real zero for all }t>0.}
-\]
-
-This is RH-equivalent and may be used only as a reduction.
-
----
-
-## 3. Universal collision residue
-
-At a multiplicity-m collision,
-
-\[
-\boxed{
-R_k(t)=\frac{m-1}{2(t-t_c)}+O((t-t_c)^{-1/2})
-}
-\]
-
-on the forward real-rooted side, equivalently
-
-\[
-\lim_{t\downarrow t_c}(t-t_c)R_k(t)=\frac{m-1}{2}.
-\]
-
-**Status:** PROVED local theorem; novelty unverified.
-
----
-
-## 4. Riemann kernel ratio
-
-Set
-
-\[
-K(r)=\Phi(\sqrt r),\quad K_t(r)=e^{tr}K(r),
-\]
-
-\[
-q(u)=-\frac{\Phi'(u)}{u\Phi(u)}.
-\]
-
-The established strict concavity of \(\log\Phi(\sqrt r)\) implies \(q'(u)>0\). Direct bounds from the defining theta series give the conservative estimate
-
-\[
-q(0)>33>1.
-\]
-
-Therefore for \(0\le t\le1/2\), \(K_t\) is strictly decreasing and strictly log-concave.
-
-With
-
-\[
-w_t(u)=u e^{tu^2}\Phi(u)=uK_t(u^2),
+F(t,z)=a(t,z)\prod_{i\in I}(z-x_i(t)),\qquad a\ne0,
 \]
 
 one has
 
 \[
-\boxed{w_t\text{ strictly log-concave on }(0,\infty).}
+\mathcal D_I=\Delta_I\prod_{i\in I}a(t,x_i),
+\qquad
+\Delta_I=\prod_{i<j\in I}(x_i-x_j)^2.
+\]
+
+Thus `D_I` is a gauge-completed local collision section. As a scalar it depends on the entire-function normalization; its vanishing divisor is invariant under multiplication by zero-free factors.
+
+---
+
+## 2. Fixed-root local trace versus global energy — PROVED / CORRECTED
+
+At a simple root,
+
+\[
+A_i=\frac{F_{xx}}{2F_x}(t,x_i),
+\qquad
+B_i=A_i^2-\frac{F_{xxx}}{3F_x}(t,x_i).
+\]
+
+For an order-one entire divisor,
+
+\[
+\boxed{B_i=\sum_{\rho\ne x_i}\frac1{(x_i-\rho)^2}}
+\]
+
+is absolutely convergent at fixed `i`.
+
+The first-order velocity field requires a principal-value / canonical-pairing interpretation in the infinite system. The actual divergence problem is the global positive pair energy
+
+\[
+\sum_i\sum_{j\ne i}\frac1{(x_i-x_j)^2},
+\]
+
+which is the quantity Rodgers–Tao mollify and renormalize.
+
+---
+
+## 3. Finite factor conventions — PROVED
+
+For a finite monic heat polynomial let
+
+\[
+E_{\rm unord}=\sum_{i<j}\frac1{(x_i-x_j)^2},
+\qquad
+E_{\rm ord}=\sum_{i\ne j}\frac1{(x_i-x_j)^2}=2E_{\rm unord}.
+\]
+
+Then
+
+\[
+\boxed{\partial_t\log\Delta=8E_{\rm unord}=4E_{\rm ord}.}
+\]
+
+With the ordered Rodgers–Tao Hamiltonian
+
+\[
+\mathcal H=\sum_{i\ne j}\log\frac1{|x_i-x_j|},
+\]
+
+\[
+\boxed{\mathcal H=-\log\Delta,\qquad \dot{\mathcal H}=-4E_{\rm ord}.}
+\]
+
+Thus finite discriminant and finite inverse-square energy are literally the same gradient-flow object.
+
+---
+
+## 4. Exact hard-window Vandermonde flux identity — PROVED
+
+For a finite window `I`, define the internal field
+
+\[
+A_i^I=\sum_{j\in I,\,j\ne i}\frac1{x_i-x_j},
+\]
+
+and the external field
+
+\[
+A_i^{\rm ext}=A_i-A_i^I.
+\]
+
+Since `dot x_i=2A_i`,
+
+\[
+\boxed{
+\frac d{dt}\log\Delta_I
+=4E_{\rm ord}(I)+\mathcal F_I,
+}
+\]
+
+where
+
+\[
+E_{\rm ord}(I)=\sum_{i\in I}\sum_{j\in I,\,j\ne i}\frac1{(x_i-x_j)^2},
+\]
+
+and
+
+\[
+\boxed{
+\mathcal F_I=4\sum_{i\in I}A_i^I A_i^{\rm ext}.
+}
+\]
+
+From the zero-chart factorization,
+
+\[
+\boxed{A_i^{\rm ext}=\frac{a_z}{a}(t,x_i).}
+\]
+
+Therefore `F_I` is an explicit coupling of the internal Vandermonde field to the analytic nonvanishing complement of the cluster. For a finite polynomial with `I` equal to all roots, the flux vanishes exactly.
+
+---
+
+## 5. Collision singularity versus flux — PROVED LOCALLY
+
+At an isolated collision, the internal fields are of size `O((t-t_c)^(-1/2))`, while the analytic external field has a regular expansion. Because
+
+\[
+\sum_{i\in I}A_i^I=0,
+\]
+
+the constant external term cancels, giving
+
+\[
+\boxed{\mathcal F_I=O(1)}
+\]
+
+near the collision.
+
+For a generic double collision,
+
+\[
+g(t)^2=8(t-t_c)+O((t-t_c)^{3/2}),
+\]
+
+hence
+
+\[
+E_{\rm ord}(I)=\frac{2}{g(t)^2}
+=\frac1{4(t-t_c)}+O((t-t_c)^{-1/2}),
+\]
+
+so
+
+\[
+\boxed{
+4E_{\rm ord}(I)=\frac1{t-t_c}+O((t-t_c)^{-1/2}),
+\qquad
+\mathcal F_I=O(1).
+}
+\]
+
+Thus the logarithmic collision divergence is an internal bulk-energy singularity and cannot be cancelled by a regular local boundary flux.
+
+---
+
+## 6. Rodgers–Tao layer — PARTIAL / NEXT TARGET
+
+The natural background is the non-uniform reference configuration `xi_j`, not a fixed lattice. Rodgers–Tao use pairwise convex renormalizations such as
+
+\[
+L(r)=\log\frac1{|r|}+|r|-1,
+\qquad
+V(r)=\frac1{|r|^2}-1+2(|r|-1),
+\]
+
+with
+
+\[
+r=\frac{x_i-x_j}{\xi_i-\xi_j},
+\]
+
+and smooth index cutoffs.
+
+We therefore do not ask first for a global scalar or for an exhaustion limit.
+
+The immediate theorem target is to construct a smoothly localized relative entropy and derive an **exact decomposition**
+
+\[
+\boxed{
+\partial_t\mathscr C_{\psi,t}
+=\mathscr B_{\psi,t}
++\mathscr F_{\partial\psi,t}
++\mathscr R_{\psi,t},
+}
+\]
+
+where:
+
+- `B_psi` is the bulk pair term;
+- `F_{partial psi}` is the genuine cutoff/boundary flux;
+- `R_psi` is the reference-density/background commutator or gauge term created by the non-uniform `xi_j` and counterterms.
+
+Then prove a rigorous comparison between `B_psi` and the nonnegative Rodgers–Tao renormalized `V`-energy.
+
+Only if `R_psi` is shown to be canonically absorbable may the identity be simplified to “energy + flux”.
+
+---
+
+## 7. What has actually been unified — CORRECTED
+
+Do not say that one global invariant unifies all four proposed shadows.
+
+The correct statement is:
+
+- finite discriminant and finite inverse-square energy are exactly the same gradient-flow object;
+- the phase current `J=-L1` is a local differential/Laguerre shadow and is not an independent path;
+- the local collision section `D_I` is a gauge completion of the zero-set Vandermonde;
+- the Brouwer degree detects the same collision locus but adds topological information not extracted from the scalar energy alone.
+
+Hence
+
+\[
+\boxed{\text{the objects form an exact local compatibility network around collision geometry, not yet one global invariant.}}
 \]
 
 ---
 
-## 5. Half-wave theorem
+## 8. Laguerre normalization — CORRECTED
 
-For \(h=\pi/x\), define
+For
 
 \[
-a_n(t,x)=\int_{nh}^{(n+1)h}w_t(u)|\sin(xu)|\,du,
+W=H+iH',
 \]
 
 \[
-b_n(t,x)=\int_{nh}^{(n+1)h}q(u)w_t(u)|\sin(xu)|\,du.
+J=\Im(\overline W W')=HH''-(H')^2=-L_1.
 \]
 
-Prekopa--Leindler applied to the convolution with \(\sin(xs)1_{(0,h)}\) gives
+Thus phase current is permanently removed as an independent route.
+
+Near a generic double collision
 
 \[
-\boxed{a_n^2\ge a_{n-1}a_{n+1}.}
+H(t,x)=a(t,x)\left((x-c(t))^2-\frac{g(t)^2}{4}\right),
 \]
 
-Thus \((a_n)\) is positive log-concave. Also monotonicity of q gives
+raw `L1` scales as `a^2 g^2`; the scale-normalized collision coordinate is
 
 \[
-\boxed{b_n/a_n\text{ strictly increasing in }n.}
+\boxed{\frac{L_1(x_\pm)}{H''(c)^2}\sim\frac{g^2}{4}.}
 \]
 
-Both are independent kernel facts.
+`L1>=0` on the real axis is only necessary in general. Complete Laguerre–Polya characterizations include the full generalized real Laguerre hierarchy and a complex Laguerre criterion.
 
 ---
 
-## 6. TP2/log-concavity barrier
+## 9. Collision degree — SECONDARY
 
-Round 15 gives an exact infinite abstract counterexample showing that
-
-1. positive log-concavity of \((a_n)\), and
-2. strict increase of \(b_n/a_n\),
-
-**do not imply** that the two alternating sums
+For
 
 \[
-\sum(-1)^na_n,\qquad \sum(-1)^nb_n
+\Gamma(t,x)=(H_t(x),H_t'(x)),
 \]
 
-cannot vanish simultaneously.
+a generic isolated double collision has
 
-Therefore TP2/log-concavity plus monotone likelihood-ratio reweighting is **provably insufficient as an abstract C6 mechanism**.
+\[
+\det D\Gamma=-(H'')^2<0,
+\]
 
-This prevents further attempts to derive RH from kernel log-concavity alone.
+hence local Brouwer index `-1`.
+
+This does not extend automatically to multiplicity at least three, where the Jacobian may vanish. A global degree argument must use a bounded domain and control all boundary faces. A nowhere-vanishing complex normalizer preserves local index but does not automatically control boundary winding.
+
+Program B is therefore:
+
+\[
+\boxed{\text{Renormalized Collision Degree with Full Boundary Flux Control}.}
+\]
 
 ---
 
-## 7. Current single target
+## 10. Arithmetic separator — TERTIARY
 
-### Finite oscillatory sign-regularity bridge
+A proper subset of Weil test functions may still be dense. Any restricted family must therefore have a genuine low-complexity constraint and a proved non-density / non-equivalence property.
 
-Seek the weakest fixed finite-order determinant/variation-diminishing property of
+The argument must split into:
 
-\[
-K_t(r)=e^{tr}\Phi(\sqrt r)
-\]
-
-that controls simultaneously
-
-\[
-\sin(x\sqrt r),\qquad q(\sqrt r)\sin(x\sqrt r)
-\]
-
-and forbids their \(K_t(r)dr\)-integrals from vanishing together.
-
-Mandatory requirements:
-
-- fixed finite complexity independent of x;
-- independently provable from the Riemann kernel;
-- not an all-orders sign-regularity/LP criterion;
-- not global L1 positivity;
-- must survive known low-order determinantal limitations in the literature;
-- must have a non-RH application or a natural kernel-class theorem.
-
-If the required determinant order necessarily grows with the number of sine oscillations, classify the route as **REFUTED/structurally circular** and abandon it.
+1. geometric separation of a hypothetical off-line point at the transform level;
+2. global domination showing the signal survives all other zeros and the arithmetic side.
 
 ---
 
-## 8. Status
+## 11. Round 13–15 status after pivot
 
-- local collision geometry: **PROVED**;
-- positive-threshold finite collision attainment: **PROVED**;
-- Hermite collision residue: **PROVED**;
-- q monotonicity and heat-weighted density log-concavity: **PROVED**;
-- half-wave mass log-concavity: **PROVED**;
-- half-wave likelihood-ratio ordering: **PROVED**;
-- cumulative nonnegative-balance lemma: **REFUTED**;
-- TP2/log-concavity alone as C6: **REFUTED**;
-- finite oscillatory sign-regularity bridge: **OPEN / CANDIDATE**;
-- independent C6 theorem: **OPEN**;
+The positive-threshold finite-collision reduction and universal Hermite collision residue remain useful diagnostics and are retained.
+
+The kernel monotonicity/log-concavity and half-wave results remain valid auxiliary theorems.
+
+The cumulative nonnegative-balance proposal is **REFUTED**.
+
+TP2/log-concavity plus monotone likelihood-ratio ordering is **REFUTED as a sufficient abstract C6 mechanism**.
+
+The finite oscillatory sign-regularity bridge is **FROZEN / AUXILIARY**, not the primary target.
+
+---
+
+## 12. Program ranking
+
+\[
+\boxed{A\gg B>C.}
+\]
+
+### A — PRIMARY
+Local Relative Vandermonde/Hamiltonian Renormalization + Explicit Flux.
+
+### B — SECONDARY
+Renormalized Brouwer Degree with Full Boundary Flux Control.
+
+### C — TERTIARY
+Low-complexity Arithmetic Separator.
+
+---
+
+## 13. Status
+
+- local collision divisor geometry: **PROVED**;
+- local fixed-root inverse-square trace: **PROVED**;
+- global finite scalar regularized discriminant: **NOT ASSUMED / OPEN**;
+- exact hard-window Vandermonde flux identity: **PROVED**;
+- bounded local flux across isolated collision: **PROVED locally**;
+- universal collision-energy logarithmic divergence: **PROVED**;
+- smooth relative entropy decomposition: **OPEN — NEXT TARGET**;
+- comparison with Rodgers–Tao positive renormalized energy: **OPEN — NEXT TARGET**;
+- exhaustion / thermodynamic renormalization: **OPEN**;
+- independent no-collision theorem: **OPEN**;
 - RH: **OPEN**;
-- novelty: **UNVERIFIED**.
+- novelty of the flux packaging: **NOVELTY UNVERIFIED**.
