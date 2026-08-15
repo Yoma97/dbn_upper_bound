@@ -2,26 +2,47 @@
 
 This directory is an experimental multi-agent research layer. It does **not** modify or replace the original de Bruijn–Newman code.
 
+## Current default
+
+Use:
+
+```bash
+python research_lab/orchestrator_v3.py
+```
+
+`orchestrator_v3.py` is the strict workflow. The older `orchestrator.py` and `orchestrator_v2.py` are retained only as development history.
+
+V3 adds:
+
+- role-specific GPT-5.6 Sol reasoning effort (`high/xhigh/max`);
+- structured Pydantic claim/audit outputs;
+- frozen atomic claims;
+- One-New-Lemma Rule and zero-gap theorem promotion;
+- falsification before proof reconstruction;
+- two independent proof reconstructors that never see the author's proof;
+- a canonical convention lock;
+- explicit separation of correctness, novelty and RH relevance;
+- structured numerical-verification requests;
+- a strict Arb capability gate that refuses silent fallback to ordinary floating point.
+
 ## Research objective
 
 The lab assumes **no private mathematical progress**. It starts from a dated map of the strongest externally supported RH frontiers, audits that map against live primary literature at the beginning of each run, and then tries to invent, prove, destroy, generalize, and certify genuinely new intermediate mathematics.
 
-The goal is not to keep improving numerical constants or to repeatedly restate criteria equivalent to RH. Preference is given to new bridge theorems that connect two existing partial theories and remove a documented obstruction.
+The goal is not to keep improving numerical constants or repeatedly restate criteria equivalent to RH. Preference is given to the **smallest single non-circular missing theorem** or a genuinely new reusable mathematical structure that removes one documented obstruction.
 
-## Baseline files
+## Baseline and governance files
 
-- `knowledge/frontier_map.md` — dated map of KNOWN / LIMITATION / MISSING-THEOREM targets.
+- `knowledge/frontier_map.md` — dated KNOWN / LIMITATION / MISSING-THEOREM map.
 - `knowledge/source_registry.yaml` — source tiers A/B/C/D and provenance rules.
-- `prompts/constitution.md` — epistemic, anti-circularity, and invention rules.
-
-The baseline currently covers:
-
-- Levinson–Conrey mollification and the >5/12 critical-line record;
-- unconditional pair correlation, horizontal multiplicity, PCC/Essential Simplicity;
-- Guth–Maynard zero-density and Dirichlet-polynomial large-value estimates;
-- de Bruijn–Newman heat flow and the Lambda bounds;
-- Jensen-polynomial / Laguerre–Polya hyperbolicity, including the provisional August-2026 joint wedge;
-- cross-frontier bridge targets, especially sparse-exception amplification.
+- `prompts/constitution.md` — epistemic, anti-circularity and invention rules.
+- `knowledge/mathematical_invention_charter.md` — rules for creating legitimate new mathematics.
+- `knowledge/research_hygiene_protocol.md` — atomic claims, dependency DAGs, independent reconstruction and dead-end rules.
+- `knowledge/convention_lock.md` — canonical xi/H_t/Fourier/Laguerre normalization.
+- `knowledge/arb_verification_protocol.md` — rigorous numerical evidence classes and allowed roles.
+- `model_policy.py` — role-specific reasoning policy.
+- `structured_outputs.py` — mandatory structured claim/audit schemas.
+- `arb_verification.py` — capability registry and rigorous numerical-job gate.
 
 ## Source trust policy
 
@@ -34,95 +55,64 @@ A recent upload date is not evidence of mathematical validity.
 
 ## Non-negotiable rules
 
-1. Numerical evidence is never a proof.
-2. Arb/interval arithmetic may REFUTE a claim, rigorously certify a finite subproblem, or provide evidence; it may never promote a claim to THEOREM by itself.
-3. A result cannot be promoted to THEOREM unless a complete proof is supplied and survives independent reconstruction, counterexample attack, dependency audit, and adversarial review.
-4. A result cannot be promoted to NEW_TOOL unless it is abstracted beyond the Riemann-specific setting and has rigorous mathematical transfer value.
-5. Hidden use of RH, PCC, Essential Simplicity, unrestricted theta=infinity mollification, a narrow-box hypothesis, or another endpoint-strength conjecture invalidates an alleged unconditional proof.
-6. `100% of zeros on the line asymptotically` is not RH; a sparse exceptional set may remain.
-7. Failed ideas are permanent research assets.
-8. Inventors work independently during the first round. Cross-pollination occurs only after proposals are frozen.
+1. Numerical evidence is never an infinite proof.
+2. A live implication chain may contain at most **one genuinely new unproved lemma**. Multi-gap chains are diagnostic only.
+3. Arb may refute a universal claim with one rigorous counterexample, certify a finite subproblem, or participate in a theorem only after an independently proved analytic reduction to finitely many cases.
+4. Missing Arb capability must be reported as `ARB_CAPABILITY_MISSING`; ordinary floating point may not silently substitute for certification.
+5. A theorem cannot be promoted unless it has no unresolved gap and survives two independent proof reconstructions, hostile counterexample attack, dependency/circularity audit, convention audit and fresh-context referee review.
+6. Correctness, novelty and RH relevance are separate labels.
+7. Hidden use of RH, PCC, Essential Simplicity, unrestricted theta=infinity mollification, narrow-box assumptions or endpoint-equivalent criteria invalidates an alleged unconditional proof.
+8. `100% of zeros on the critical line asymptotically` is not RH; a sparse exceptional set may remain.
+9. Failed ideas are permanent research assets. A repaired claim receives a new identity and must state the exact mathematical delta.
+10. Inventors work independently before proposals are frozen.
 
-## Pipeline
-
-```text
-DATED FRONTIER MAP
-       |
-       v
-LIVE FRONTIER CURATOR + WEB SEARCH
-  - primary/official sources first
-  - output: verified delta only
-       |
-       v
-INDEPENDENT INVENTION
-  - Obstruction Analyst
-  - Object Inventor
-  - Identity / Invariant Hunter
-  - Bridge Builder
-  - Definition Inventor
-       |
-       v
-CANDIDATE SYNTHESIS
-       |
-       v
-CERTIFICATION
-  - Proof Architect
-  - Counterexample Destroyer
-  - Equivalence / Circularity Auditor
-  - Fresh-Context Referee
-       |
-       v
-GENERALIZATION
-  - Abstraction Agent
-  - Transfer / Application Agent
-  - Novelty Auditor (live literature search enabled)
-       |
-       v
-CANDIDATE -> PROPOSITION -> THEOREM -> NEW_TOOL
-```
-
-## Current highest-priority invention targets
-
-1. **Sparse-exception amplification / rigidity:** make a rare off-line zero leave a quantitatively unavoidable signature in a statistic that can be controlled.
-2. **Horizontal multiplicity:** derive an unconditional bound of the Goldston–Suriajaya form with `C<2`, ideally approaching `C=1`, or invent a better horizontally sensitive statistic.
-3. **Zero-density -> pair-correlation bridge:** convert current horizontal tail information into a useful near-pair/horizontal bound without assuming all zeros lie in a `1/log T` box.
-4. **de Bruijn–Newman structural endpoint:** invent a non-tautological evolution/positivity mechanism that removes dependence on finite-height RH verification.
-5. **Mollifier/variational bridge:** obtain genuinely new arithmetic control rather than merely assuming the theta=infinity endpoint.
-6. **Jensen/Laguerre propagation:** reach the low-shift/high-degree frontier via a new propagation theorem, not by restating all Jensen hyperbolicities.
-
-## Status ladder
-
-- `IDEA`: informal mechanism or object.
-- `CANDIDATE`: precise statement with hypotheses and claimed consequence.
-- `SUPPORTED`: non-proof evidence exists.
-- `REFUTED`: counterexample or logical failure found.
-- `PROPOSITION`: proof draft exists but has not passed all gates.
-- `THEOREM`: complete proof has passed proof reconstruction, circularity audit, counterexample attack, and adversarial review.
-- `NEW_TOOL`: theorem/structure is abstracted, nontrivial beyond RH, and demonstrates rigorous transfer value.
-
-## Directory layout
+## Strict V3 pipeline
 
 ```text
-research_lab/
-  README.md
-  requirements.txt
-  config.yaml
-  schemas.py
-  roles.py
-  orchestrator.py
-  knowledge/
-    frontier_map.md
-    source_registry.yaml
-  prompts/
-    constitution.md
-  memory/
-    frontier_audits.jsonl
-    ideas.jsonl
-    candidates.jsonl
-    theorems.jsonl
-    refuted.jsonl
-    dead_ends.jsonl
-    runs.jsonl
+DATED FRONTIER + LIVE PRIMARY-SOURCE AUDIT
+                 |
+                 v
+BLIND INDEPENDENT INVENTION
+  high/xhigh reasoning
+  <= 3 atomic claims per role
+                 |
+                 v
+STRICT SYNTHESIS
+  one-new-lemma / multi-gap rejection
+                 |
+                 v
+FROZEN CLAIM
+                 |
+                 +--------------------------+
+                 |                          |
+                 v                          v
+ADVERSARIAL AUDITS                    ARB JOB GATE
+  Destroyer                           rigorous capabilities only
+  Equivalence auditor                no float fallback
+  Legitimacy auditor
+  Exclusion-completeness auditor
+  Fresh referee
+  max reasoning
+                 |
+                 v
+TWO BLIND PROOF RECONSTRUCTIONS
+  author proof hidden
+  max reasoning
+                 |
+                 v
+ONLY THEN: promotion/generalization/novelty audit
 ```
 
-The default orchestrator mission is deliberately not `Prove RH`. It asks for the weakest genuinely new intermediate theorem that improves a documented frontier without hiding the desired conclusion in its hypotheses.
+## Arb status
+
+The currently exposed Arb_Riemann_Lab surface is limited to:
+
+- rigorous `sqrt` enclosure;
+- rigorous `zeta(s)` enclosure;
+- rigorous indexed zeta-zero enclosure.
+
+The program is prepared for, but does **not pretend to already have**, future endpoints for `xi`, derivatives, `H_t`, Laguerre expressions, interval integration/extrema, interval matrix inertia and interval-Newton isolation. The required contract is documented in `knowledge/arb_verification_protocol.md`.
+
+## Status discipline
+
+A result may be mathematically correct while novelty remains unverified. Likewise, an RH-equivalent reformulation may be correct but still be classified only as `REFORMULATION_ONLY` or `DIAGNOSTIC_TOOL`. New mathematics is promoted only after rigorous proof, independent reconstruction, adversarial survival, abstraction and non-RH transfer.
