@@ -38,6 +38,17 @@ class SourceDependency(BaseModel):
     conjectural: bool = False
 
 
+class NumericalVerificationRequest(BaseModel):
+    role: Literal["REFUTE", "DISCOVER", "FINITE_CERTIFY"]
+    capability: str
+    mathematical_quantity: str
+    inputs: dict = Field(default_factory=dict)
+    certified_domain: str = ""
+    analytic_reduction: str = ""
+    logically_necessary: bool = False
+    reason_requested: str
+
+
 class ClaimCard(BaseModel):
     title: str
     statement: str
@@ -55,6 +66,7 @@ class ClaimCard(BaseModel):
     surviving_false_configurations: List[str] = Field(default_factory=list)
     falsification_tests: List[str]
     proof_plan: List[str]
+    numerical_requests: List[NumericalVerificationRequest] = Field(default_factory=list)
     non_rh_application_target: Optional[str] = None
     why_not_rh_in_disguise: str
     truth_label: TruthLabel = "CANDIDATE"
