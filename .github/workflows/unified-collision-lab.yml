@@ -1,0 +1,63 @@
+name: Unified Collision Geometry Lab
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Optional focused target override
+        required: false
+        default: ""
+
+jobs:
+  collision-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout focused branch
+        uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install research lab dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r research_lab/requirements.txt
+
+      - name: Verify OpenAI API secret exists
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "OPENAI_API_KEY repository secret is not configured."
+            exit 1
+          fi
+
+      - name: Run focused collision lab
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_DEFAULT_MODEL: gpt-5.6-sol
+          TARGET: ${{ github.event.inputs.target }}
+        run: |
+          if [ -n "$TARGET" ]; then
+            python research_lab/collision_lab.py --target "$TARGET" | tee collision_lab_report.json
+          else
+            python research_lab/collision_lab.py | tee collision_lab_report.json
+          fi
+
+      - name: Upload research report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: unified-collision-lab-report
+          path: |
+            collision_lab_report.json
+            research_lab/memory/collision_*.jsonl
+          if-no-files-found: warn
