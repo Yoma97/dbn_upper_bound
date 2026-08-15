@@ -17,6 +17,7 @@ MEMORY = ROOT / "memory"
 CONSTITUTION_PATH = ROOT / "prompts" / "constitution.md"
 FRONTIER_PATH = ROOT / "knowledge" / "frontier_map.md"
 CONSTRAINT_FRONTIER_PATH = ROOT / "knowledge" / "constraint_frontier.md"
+INVENTION_CHARTER_PATH = ROOT / "knowledge" / "mathematical_invention_charter.md"
 SOURCE_REGISTRY_PATH = ROOT / "knowledge" / "source_registry.yaml"
 DEFAULT_MODEL = os.getenv("OPENAI_DEFAULT_MODEL", "gpt-5.6-sol")
 
@@ -24,16 +25,19 @@ INVENTION_KEYS = [
     "obstruction_analyst",
     "constraint_hunter",
     "violation_amplifier",
+    "structural_mutator",
     "object_inventor",
     "identity_invariant_hunter",
     "bridge_builder",
     "definition_inventor",
+    "theory_builder",
 ]
 
 CERTIFICATION_KEYS = [
     "proof_architect",
     "destroyer",
     "equivalence_auditor",
+    "mathematical_legitimacy_auditor",
     "exclusion_completeness_auditor",
     "independent_referee",
 ]
@@ -48,26 +52,34 @@ WEB_ENABLED_KEYS = {"frontier_curator", "novelty_auditor"}
 
 DEFAULT_TARGET = """
 Start from the dated external frontier map, not from any presumed project progress.
-Seek the weakest genuinely new and plausibly provable intermediate theorem that
-advances the Riemann Hypothesis beyond the strongest currently established
-frontier. Give especially high priority to EXCLUSION-FIRST mechanisms:
+The laboratory has TWO simultaneous goals:
 
-0. find an independently provable no-go law C that the genuine zeta/xi structure
-   must satisfy, together with a complete theorem that every RH-false admissible
-   zero configuration violates C;
-1. sparse-exception amplification/rigidity: one off-line zero must create a
-   detectable sign, growth, spectral, correlation, moment, heat-flow, or
-   prime-side defect that cannot be cancelled or hidden;
-2. unconditional horizontal-multiplicity or horizontally weighted pair bounds;
-3. a bridge from current zero-density estimates to pair-correlation horizontal information;
-4. a structural de Bruijn-Newman mechanism independent of finite-height verification;
-5. a non-tautological long-mollifier/variational mechanism;
-6. a new hyperbolicity/Laguerre propagation theorem that reaches low-shift/high-degree territory.
+A. EXCLUSION-FIRST: find an independently provable law C that the genuine
+   zeta/xi structure must satisfy and prove that every RH-false admissible
+   configuration violates C.
+
+B. CREATION-FIRST: invent genuinely new mathematical structures, operators,
+   transforms, pairings, energies, positivity notions, propagation principles,
+   or abstract theories that obey standard mathematical principles and make a
+   missing RH-relevant theorem provable. New mathematics should have life beyond
+   the Riemann problem whenever possible.
+
+Give highest priority to:
+
+0. complete no-go laws / positive separators with independently provable soundness;
+1. sparse-exception amplification/rigidity;
+2. new mathematical structures that reveal hidden positivity, self-adjointness,
+   monotonicity, exact identities, or first-crossing impossibility;
+3. unconditional horizontal-multiplicity or horizontally weighted pair bounds;
+4. bridges from current zero-density estimates to horizontal pair information;
+5. structural de Bruijn-Newman mechanisms independent of finite-height verification;
+6. non-tautological long-mollifier/variational mechanisms;
+7. new hyperbolicity/Laguerre propagation mechanisms reaching low-shift/high-degree regimes.
 
 Do not merely improve a numerical constant. Do not restate an RH-equivalent
-criterion as the proposed advance unless you also provide a genuinely independent
-route to prove the criterion. A high-value result should have independent
-mathematical content and, ideally, applications beyond the Riemann xi-function.
+criterion unless there is a genuinely independent proof mechanism for it. Do not
+reward symbolic novelty that is ill-defined, unnatural, overfit to computed zeros,
+or incapable of supporting a nontrivial mathematical theorem.
 """.strip()
 
 
@@ -82,6 +94,7 @@ def load_constitution() -> str:
 def build_research_context(target: str, live_delta: str = "") -> str:
     frontier = load_text(FRONTIER_PATH)
     constraint_frontier = load_text(CONSTRAINT_FRONTIER_PATH)
+    invention_charter = load_text(INVENTION_CHARTER_PATH)
     registry = load_text(SOURCE_REGISTRY_PATH)
     delta_section = (
         f"\n\nLIVE FRONTIER AUDIT FOR THIS RUN:\n{live_delta}\n"
@@ -92,6 +105,7 @@ def build_research_context(target: str, live_delta: str = "") -> str:
         f"USER/ROUND TARGET:\n{target}\n\n"
         f"DATED EXTERNAL FRONTIER MAP:\n{frontier}\n\n"
         f"CONSTRAINT-FIRST / NO-GO FRONTIER:\n{constraint_frontier}\n\n"
+        f"MATHEMATICAL INVENTION CHARTER:\n{invention_charter}\n\n"
         f"SOURCE PROVENANCE REGISTRY:\n{registry}"
         f"{delta_section}"
     )
@@ -99,7 +113,16 @@ def build_research_context(target: str, live_delta: str = "") -> str:
 
 def ensure_memory() -> None:
     MEMORY.mkdir(parents=True, exist_ok=True)
-    for name in ["frontier_audits", "ideas", "candidates", "theorems", "refuted", "dead_ends", "runs"]:
+    for name in [
+        "frontier_audits",
+        "ideas",
+        "theory_cards",
+        "candidates",
+        "theorems",
+        "refuted",
+        "dead_ends",
+        "runs",
+    ]:
         path = MEMORY / f"{name}.jsonl"
         if not path.exists():
             path.touch()
@@ -113,9 +136,7 @@ def append_jsonl(name: str, payload: Dict) -> None:
 
 def make_agent(key: str, research_context: str, constitution: str) -> Agent:
     spec = AGENTS[key]
-    tools = []
-    if key in WEB_ENABLED_KEYS:
-        tools = [WebSearchTool(search_context_size="high")]
+    tools = [WebSearchTool(search_context_size="high")] if key in WEB_ENABLED_KEYS else []
     return Agent(
         name=spec.name,
         instructions=render_agent_prompt(key, constitution, research_context),
@@ -126,11 +147,7 @@ def make_agent(key: str, research_context: str, constitution: str) -> Agent:
 
 async def run_one(key: str, task: str, research_context: str, constitution: str) -> Dict:
     agent = make_agent(key, research_context, constitution)
-    result = await Runner.run(
-        agent,
-        task,
-        run_config=RunConfig(model=DEFAULT_MODEL),
-    )
+    result = await Runner.run(agent, task, run_config=RunConfig(model=DEFAULT_MODEL))
     return {
         "agent_key": key,
         "agent_name": AGENTS[key].name,
@@ -142,22 +159,21 @@ async def run_one(key: str, task: str, research_context: str, constitution: str)
 async def live_frontier_audit(target: str, constitution: str) -> Dict:
     baseline_context = build_research_context(target)
     task = """
-Audit the dated frontier against the live literature before any invention begins.
-Search primarily official sources, journal pages, arXiv records/full text, and
-author-maintained research sources. Focus on results that could materially change
-a KNOWN claim, a LIMITATION, a MISSING-THEOREM target, or an exclusion/positivity
-mechanism relevant to the constraint-first program.
+Audit the dated frontier against the live literature before invention begins.
+Search primarily official sources, journal pages, arXiv full records/text, and
+author-maintained research sources. Report only material deltas affecting a
+KNOWN claim, limitation, missing theorem, positivity/no-go mechanism, or relevant
+new mathematical structure.
 
 For every possible update:
 1. give title/authors/date/source;
-2. state the exact theorem and hypotheses, not a headline paraphrase;
-3. classify source tier A/B/C/D using the registry rules;
-4. say whether it CONFIRMS, SUPERSEDES, NARROWS, or DOES NOT CHANGE the baseline;
-5. distinguish a proof, conditional theorem, computational certificate, and claimed proof;
-6. reject extraordinary RH claims that lack community/official validation as theorem premises.
+2. state the exact theorem and hypotheses;
+3. classify source tier A/B/C/D using the registry;
+4. say CONFIRMS, SUPERSEDES, NARROWS, or DOES NOT CHANGE;
+5. distinguish proof, conditional theorem, computation, and claimed proof;
+6. never promote extraordinary RH claims without independent validation.
 
-Return a concise delta. If no verified material change is found, say so explicitly.
-Do not invent new mathematics in this stage.
+Do not invent mathematics in this stage.
 """.strip()
     result = await run_one("frontier_curator", task, baseline_context, constitution)
     append_jsonl("frontier_audits", result)
@@ -165,72 +181,93 @@ Do not invent new mathematics in this stage.
 
 
 async def independent_invention_round(research_context: str, constitution: str) -> List[Dict]:
-    task = """
+    common = """
 Work independently. Do not assume access to other agents' proposals.
 
-First select one or two exact frontier obstructions from the supplied dated map
-and live audit. Then produce up to four genuinely distinct candidate mechanisms.
-Constraint-first proposals must separate SOUNDNESS (why the true zeta/xi object
-obeys the law independently of RH) from EXCLUSION COMPLETENESS (why every
-RH-false admissible configuration violates it). Violation-amplification proposals
-must begin from the weakest false scenario, such as one off-line zero plus forced
-symmetry partners, and prove how it becomes detectable despite cancellation and
-sparsity.
+Select one or two exact frontier obstructions. Produce up to four distinct
+candidate mechanisms. Work in BOTH research modes where appropriate:
 
-Across your proposals, favor cross-frontier bridges and exact identities,
-invariants, propagation laws, rigidity theorems, positivity/definiteness laws,
-moment constraints, trace/operator inequalities, or new structural statistics
-rather than refined estimates.
+EXCLUSION MODE:
+- separate SOUNDNESS from EXCLUSION COMPLETENESS;
+- begin violation amplification from the weakest RH-false configuration;
+- control cancellation, multiplicity, sparse exceptions, small displacement,
+  high height, and all relevant uniformity issues.
 
-For every proposal:
-- quote the exact strongest known input from the frontier map/live audit;
-- state the current limitation;
-- state a precise new intermediate theorem;
-- give the implication chain showing what it would improve;
-- explain why it is not merely RH/PCC/ES/theta=infinity/LP/Li/Weil positivity in disguise;
-- if it is an endpoint-equivalent criterion, provide the independent lower-level mechanism intended to prove it;
-- list all false configurations the proposal excludes and any that may survive;
-- give the fastest way to falsify it;
-- identify which source tiers it depends on.
+CREATION MODE:
+- you are explicitly encouraged to invent genuinely new mathematics;
+- do not limit yourself to recombining named existing techniques;
+- use disciplined structural operations from the Mathematical Invention Charter:
+  lifting, dualization, deformation, polarization, localization/globalization,
+  renormalization, completion, factorization, interpolation, or obstruction
+  classification;
+- a genuinely new object must come with a THEORY CARD: formal definition,
+  domain/codomain, well-definedness obligations, symmetries/transformation laws,
+  examples/non-examples, first exact identity, first nontrivial lemma target,
+  relation to known structures, RH mechanism, and a non-RH application target.
 
-Freeze each candidate. Do not call any proposal a theorem.
+Across proposals favor exact identities, new pairings/operators/kernels/measures,
+positive representations, invariants, propagation laws, rigidity theorems,
+first-crossing obstructions, or new structural statistics over constant tuning.
+
+For every proposal state:
+- strongest known input and source tier;
+- exact current obstruction;
+- precise new statement/object;
+- why it is not RH/PCC/ES/theta-infinity/LP/Li/Weil in disguise;
+- exact implication chain;
+- fastest falsification route;
+- surviving false configurations or mathematical edge cases;
+- what would make the invention useful outside RH.
+
+Freeze each proposal. Never self-promote to THEOREM.
 """.strip()
     results = await asyncio.gather(
-        *(run_one(key, task, research_context, constitution) for key in INVENTION_KEYS)
+        *(run_one(key, common, research_context, constitution) for key in INVENTION_KEYS)
     )
     for item in results:
         append_jsonl("ideas", item)
+        if item["agent_key"] in {"structural_mutator", "object_inventor", "definition_inventor", "theory_builder"}:
+            append_jsonl("theory_cards", item)
     return results
 
 
-async def synthesize_candidates(research_context: str, constitution: str, inventions: List[Dict]) -> Dict:
-    transcript = "\n\n".join(
-        f"### {x['agent_name']}\n{x['output']}" for x in inventions
-    )
+async def synthesize_candidates(
+    research_context: str,
+    constitution: str,
+    inventions: List[Dict],
+) -> Dict:
+    transcript = "\n\n".join(f"### {x['agent_name']}\n{x['output']}" for x in inventions)
     task = f"""
 You are the synthesis stage. Compare the independently frozen proposals below.
-Do NOT reward agreement, grandiosity, or verbosity. Select at most five
-candidates using this order of preference:
+Do not reward agreement, grandiosity, or verbosity. Select at most SIX candidates.
 
-1. supplies an independently provable constraint/no-go law with a credible path to COMPLETE exclusion of all RH-false configurations;
-2. amplifies a sparse/local off-line defect into an unavoidable observable contradiction;
-3. closes a precisely documented frontier obstruction;
-4. has hypotheses strictly weaker/different from an RH-equivalent endpoint;
-5. creates a rigorous bridge between established partial theories;
-6. is falsifiable and plausibly provable with current inputs plus a genuinely new lemma;
-7. has potential independent mathematical value beyond RH.
+Rank primarily by:
+1. complete no-go law with independently provable soundness;
+2. sparse/local violation amplified into an unavoidable contradiction;
+3. genuinely new mathematical structure with a credible first theorem;
+4. exact closure of a documented frontier obstruction;
+5. hypotheses genuinely weaker/different from RH-equivalent endpoints;
+6. rigorous bridge between established partial theories;
+7. falsifiability and proof accessibility;
+8. mathematical life beyond RH.
 
-For a constraint candidate, freeze separate obligations for SOUNDNESS and
-EXCLUSION COMPLETENESS. For an amplifier, freeze the minimal-false configuration,
-the amplification lemma, cancellation control, and the established observable
-that should contradict it.
+PORTFOLIO RULE: if at least one structurally new candidate passes basic
+well-definedness/noncircularity screening, preserve at least one such candidate
+in the final portfolio even if a more conservative candidate looks closer to an
+immediate RH consequence. The laboratory is optimizing for both RH progress and
+new reusable mathematics.
 
-For each selected candidate output a frozen statement and an explicit dependency
-graph. Reject proposals that merely rename RH, assume PCC/ES, assume every zero
-lies in a 1/log(T) box, assume unrestricted theta=infinity, ask directly for all
-Jensen hyperbolicities, merely restate Li/Weil positivity without an independent
-proof mechanism, improve a constant without a logical threshold, or rely on
-numerical evidence. Merge proposals only if their mechanisms are genuinely the same.
+For every structurally new candidate freeze its THEORY CARD and list separate
+proof obligations for well-definedness, first structural identity, first
+nontrivial theorem, RH relevance, and independent transfer.
+
+For no-go candidates freeze SOUNDNESS and EXCLUSION COMPLETENESS separately.
+Reject symbolic novelty that is ill-defined, arbitrary-coordinate dependent,
+overfit to finite data, numerically justified, or merely a renamed known
+criterion. Reject direct assumptions of PCC/ES, unrestricted theta=infinity,
+all-zero narrow boxes, all Jensen hyperbolicities, or bare Li/Weil positivity.
+
+Output explicit dependency graphs.
 
 INDEPENDENT PROPOSALS:
 {transcript}
@@ -240,19 +277,60 @@ INDEPENDENT PROPOSALS:
     return result
 
 
-async def certification_round(research_context: str, constitution: str, candidate_bundle: Dict) -> List[Dict]:
+async def certification_round(
+    research_context: str,
+    constitution: str,
+    candidate_bundle: Dict,
+) -> List[Dict]:
     frozen = candidate_bundle["output"]
     tasks = {
-        "proof_architect": "Attempt a complete dependency-explicit proof of each frozen candidate from allowed frontier inputs. For no-go candidates prove SOUNDNESS and EXCLUSION COMPLETENESS separately. Mark every missing implication as GAP. Do not silently upgrade source tiers.",
-        "destroyer": "Attack each frozen candidate with abstract countermodels, perturbations, limiting regimes, sparse exceptional zero configurations, multiplicity issues, cancellation mechanisms, hidden nonuniformity, and rigorous numerical counterexample searches where useful. Refute whenever possible.",
-        "equivalence_auditor": "Audit each frozen candidate for hidden RH/PCC/ES/theta=infinity dependence, equivalence to Li/Weil/Laguerre or another endpoint criterion without an independent proof route, circular reasoning, or a hypothesis as hard as the target. Trace every dependency to the source registry.",
-        "exclusion_completeness_auditor": "Audit every proposed constraint/no-go theorem for COMPLETE exclusion. Construct the strongest surviving RH-false configuration compatible with the claimed law. Check functional-equation/conjugation partners, multiplicity, cancellation among several off-line zeros, arbitrarily sparse exceptions, zeros arbitrarily close to the line, and high-height nonuniformity. If any false configuration survives, mark the exclusion incomplete and state it explicitly.",
-        "independent_referee": "Act as a fresh hostile expert referee. You are given only the frozen candidate bundle, the dated frontier, live audit, and permitted sources. Determine which claims, if any, are fully proved. A constraint route passes only if both soundness and complete exclusion are proved. Do not infer missing arguments from author intent.",
+        "proof_architect": (
+            "Attempt dependency-explicit proofs from allowed frontier inputs. For "
+            "new structures first prove well-definedness and at least one structural "
+            "law before using the object for RH. For no-go routes prove SOUNDNESS and "
+            "EXCLUSION COMPLETENESS separately. Mark every missing implication GAP."
+        ),
+        "destroyer": (
+            "Attack every candidate with abstract countermodels, perturbations, edge "
+            "cases, sparse exceptions, multiplicity, cancellation, scaling, singular "
+            "limits, and rigorous numerical falsification where useful. Numerics may "
+            "refute but never certify an infinite theorem."
+        ),
+        "equivalence_auditor": (
+            "Audit for hidden RH/PCC/ES/theta-infinity dependence, disguised Li/Weil/"
+            "Laguerre endpoints, circular definitions, and hypotheses as hard as the "
+            "target. Trace dependencies to the registry."
+        ),
+        "mathematical_legitimacy_auditor": (
+            "Audit every invented object/theory using the Mathematical Invention "
+            "Charter: well-definedness, convergence, domains, choice-independence, "
+            "symmetry, naturality, scaling, limits, existence, nontriviality, known-case "
+            "recovery, operator/measure legitimacy, and RH-specific overfitting. Return "
+            "REJECT, REPAIR, or LEGITIMATE-CANDIDATE with exact reasons."
+        ),
+        "exclusion_completeness_auditor": (
+            "For every constraint/no-go candidate construct the strongest RH-false "
+            "configuration compatible with it. Check all symmetry partners, "
+            "multiplicity, cancellation, arbitrarily sparse exceptions, zeros "
+            "arbitrarily close to the line, and high-height nonuniformity. One survivor "
+            "means exclusion is incomplete."
+        ),
+        "independent_referee": (
+            "Fresh hostile expert review using only frozen definitions, statements, "
+            "dependencies, frontier and permitted sources. Do not infer missing steps. "
+            "A new mathematical structure is accepted only after its definitions and "
+            "central claimed theorem are logically sound; RH relevance is a separate "
+            "question."
+        ),
     }
 
     async def certify(key: str) -> Dict:
-        prompt = f"{tasks[key]}\n\nFROZEN CANDIDATE BUNDLE:\n{frozen}"
-        return await run_one(key, prompt, research_context, constitution)
+        return await run_one(
+            key,
+            f"{tasks[key]}\n\nFROZEN CANDIDATE BUNDLE:\n{frozen}",
+            research_context,
+            constitution,
+        )
 
     results = await asyncio.gather(*(certify(k) for k in CERTIFICATION_KEYS))
     for item in results:
@@ -260,22 +338,39 @@ async def certification_round(research_context: str, constitution: str, candidat
     return results
 
 
-async def generalization_round(research_context: str, constitution: str, candidate_bundle: Dict, certification: List[Dict]) -> List[Dict]:
+async def generalization_round(
+    research_context: str,
+    constitution: str,
+    candidate_bundle: Dict,
+    certification: List[Dict],
+) -> List[Dict]:
     cert_text = "\n\n".join(f"### {x['agent_name']}\n{x['output']}" for x in certification)
     frozen = candidate_bundle["output"]
     task_base = f"""
-Only analyze candidates that genuinely survive the certification evidence.
-Do not treat a proof draft with a GAP as a theorem. Distinguish a proved lemma
-from a conjectural bridge and from a merely numerically supported statement.
-For a no-go law, require proved soundness plus proved exclusion completeness.
+Only analyze candidates that genuinely survive certification. A proof draft with
+a GAP is not a theorem. A newly invented object must pass mathematical legitimacy
+before it is generalized. A no-go law requires proved soundness plus exclusion
+completeness.
 
 FROZEN CANDIDATES:\n{frozen}\n\nCERTIFICATION REPORTS:\n{cert_text}
 """.strip()
 
     tasks = {
-        "abstraction_agent": task_base + "\n\nFind the weakest natural abstract setting in which any surviving result remains rigorously true. Seek a general no-go/positivity/rigidity theorem that applies beyond xi/RH.",
-        "transfer_agent": task_base + "\n\nSeek rigorous non-Riemann applications or independent consequences. An example without a proved consequence does not count as transfer.",
-        "novelty_auditor": task_base + "\n\nUse live web search as needed to try aggressively to show that any surviving object/theorem is already known, equivalent to a known theorem, or a disguised special case. In particular compare with Weil positivity, Li/Bombieri-Lagarias criteria, de Branges/Suzuki moment and operator formulations, and function-field positivity mechanisms. Prefer primary sources. Report search scope and uncertainty.",
+        "abstraction_agent": task_base + (
+            "\n\nFind the weakest natural abstract setting in which each surviving result "
+            "remains true. Develop reusable theorem statements beyond xi/RH."
+        ),
+        "transfer_agent": task_base + (
+            "\n\nSeek at least one rigorous non-RH consequence/application for each "
+            "surviving new structure. An example without a theorem does not count."
+        ),
+        "novelty_auditor": task_base + (
+            "\n\nUse live search to try aggressively to identify the candidate as known, "
+            "equivalent, or a disguised special case. Compare with relevant entire-"
+            "function, operator, moment, positivity, de Branges, Weil/Li, Laguerre, "
+            "spectral, heat-flow, and analytic-number-theory literature. Report scope "
+            "and uncertainty honestly."
+        ),
     }
 
     results = await asyncio.gather(
@@ -296,7 +391,9 @@ async def run_lab(target: str) -> None:
     inventions = await independent_invention_round(research_context, constitution)
     bundle = await synthesize_candidates(research_context, constitution, inventions)
     certification = await certification_round(research_context, constitution, bundle)
-    generalization = await generalization_round(research_context, constitution, bundle, certification)
+    generalization = await generalization_round(
+        research_context, constitution, bundle, certification
+    )
 
     report = {
         "target": target,
@@ -307,7 +404,11 @@ async def run_lab(target: str) -> None:
         "candidate_bundle": bundle,
         "certification": certification,
         "generalization": generalization,
-        "warning": "No output is automatically a theorem. Human/formal promotion gates remain mandatory.",
+        "warning": (
+            "No output is automatically a theorem. New mathematics and RH claims "
+            "must pass independent proof, legitimacy, circularity, adversarial, "
+            "generalization, and novelty gates."
+        ),
     }
     append_jsonl("runs", {"final_report": report})
     print(json.dumps(report, ensure_ascii=False, indent=2))
@@ -315,7 +416,11 @@ async def run_lab(target: str) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Run the Riemann Mathematical Invention Lab")
-    parser.add_argument("--target", default=DEFAULT_TARGET, help="Optional precise obstruction; default uses the full dated frontier portfolio")
+    parser.add_argument(
+        "--target",
+        default=DEFAULT_TARGET,
+        help="Optional precise obstruction; default uses the full frontier portfolio",
+    )
     args = parser.parse_args()
     asyncio.run(run_lab(args.target))
 
