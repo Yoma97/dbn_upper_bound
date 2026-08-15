@@ -37,29 +37,41 @@ AGENTS: Dict[str, AgentSpec] = {
         "Assume a minimal off-critical zero or sparse exceptional configuration and derive an unavoidable amplified signature in a rigorously accessible observable: a negative quadratic direction, Li/Weil-type oscillation, moment determinant defect, horizontal multiplicity excess, pair statistic, heat-flow instability, mollified defect, or prime-side discrepancy. Seek mechanisms where one local violation cannot remain asymptotically invisible.",
         "Do not assume the desired amplification. Prove the map from a local off-line defect to the global observable, including cancellation, multiplicity, and uniformity issues.",
     ),
+    "structural_mutator": AgentSpec(
+        "Structural Mutation Inventor",
+        "invention",
+        "Generate genuinely new mathematical structures by disciplined transformations of established objects: lift scalar quantities to kernels/operators/forms, dualize zeros and primes, deform in a natural parameter, polarize inequalities, factor positive structures, renormalize limiting objects, interpolate regimes, or complete a statistic into a space where positivity/self-adjointness/compactness becomes accessible. Produce theory cards rather than isolated formulas.",
+        "Do not generate arbitrary symbolic novelty. Every mutation must preserve well-definedness, respect or explicitly track natural symmetries, and state why it could reveal a previously inaccessible theorem.",
+    ),
     "object_inventor": AgentSpec(
         "Object Inventor",
         "invention",
-        "Invent natural new functionals, determinants, energies, zero-configuration quantities, weighted pair statistics, or operators whose structure could bypass a documented obstruction.",
-        "Do not treat numerical regularity as theoremhood.",
+        "Invent natural new functionals, determinants, energies, zero-configuration quantities, weighted pair statistics, kernels, measures, pairings, or operators whose structure could bypass a documented obstruction.",
+        "Do not treat numerical regularity as theoremhood, and do not define the target conclusion into the object.",
     ),
     "identity_invariant_hunter": AgentSpec(
         "Identity and Invariant Hunter",
         "invention",
-        "Search for exact identities, monotone quantities, conservation laws, convexity, maximum principles, sign laws, or propagation mechanisms relevant to the documented frontiers.",
+        "Search for exact identities, monotone quantities, conservation laws, convexity, maximum principles, sign laws, differential hierarchies, or propagation mechanisms relevant to the documented frontiers.",
         "Prefer exact identities over uncontrolled asymptotics and do not disguise an endpoint criterion as an invariant.",
     ),
     "bridge_builder": AgentSpec(
         "Bridge Builder",
         "invention",
-        "Construct rigorous theorem-shaped bridges among heat-flow zero dynamics, Laguerre-Pólya/Jensen hyperbolicity, pair correlation, horizontal multiplicity, zero-density estimates, mollification, positivity criteria, and analytic number theory.",
+        "Construct rigorous theorem-shaped bridges among heat-flow zero dynamics, Laguerre-Pólya/Jensen hyperbolicity, pair correlation, horizontal multiplicity, zero-density estimates, mollification, positivity criteria, operator/moment structures, and analytic number theory.",
         "A metaphor, analogy, or numerical correlation is not a bridge; state a precise implication with checkable hypotheses.",
     ),
     "definition_inventor": AgentSpec(
         "Definition Inventor",
         "invention",
-        "Invent a new property/class/statistic that is weaker or structurally different from RH yet strong enough to advance a documented missing step, and develop examples, counterexamples, and closure properties.",
+        "Invent a new property/class/statistic that is weaker or structurally different from RH yet strong enough to advance a documented missing step, and develop examples, counterexamples, transformation laws, and closure properties.",
         "Never encode real-rootedness/RH/PCC/ES directly into the definition.",
+    ),
+    "theory_builder": AgentSpec(
+        "New Theory Builder",
+        "invention",
+        "Take promising new objects or principles and build a small coherent mathematical theory around them: formal definitions, well-definedness obligations, examples/non-examples, exact identities, first lemmas, equality/extremal cases, stability, closure, dual formulations, and at least one non-RH application target. Determine whether the structure has mathematical life independent of the original RH obstruction.",
+        "Do not call a collection of conjectures a theory. At least one structural statement must be plausibly provable from the definitions without assuming the desired RH consequence.",
     ),
     "proof_architect": AgentSpec(
         "Proof Architect",
@@ -79,6 +91,12 @@ AGENTS: Dict[str, AgentSpec] = {
         "Detect hidden RH/PCC/ES/theta-infinity assumptions, equivalent criteria, circular dependence, and hypotheses that are as hard as the target.",
         "Do not count a new equivalent formulation as a proof tool without an independent route to establish it.",
     ),
+    "mathematical_legitimacy_auditor": AgentSpec(
+        "Mathematical Legitimacy and Naturality Auditor",
+        "certification",
+        "Audit every newly invented definition/object/theory for well-definedness, convergence, domains, choice-independence, symmetry compatibility, naturality, scaling/homogeneity, limiting behavior, existence, nontriviality, recovery of basic known cases, and resistance to RH-specific overfitting. Check operator domains/closures, positivity of measures/forms, and infinite sum/product manipulations whenever relevant.",
+        "Do not accept an object merely because a formal computation works. If a definition depends on arbitrary choices, has undefined edge cases, violates required symmetries without explanation, or only works after seeing the target zero set, reject or return it for repair.",
+    ),
     "exclusion_completeness_auditor": AgentSpec(
         "Exclusion Completeness Auditor",
         "certification",
@@ -88,7 +106,7 @@ AGENTS: Dict[str, AgentSpec] = {
     "independent_referee": AgentSpec(
         "Fresh-Context Referee",
         "certification",
-        "Review only the frozen statement, dependencies, frontier baseline, and proof as a hostile expert referee. Accept only fully justified mathematics.",
+        "Review only the frozen statement, definitions, dependencies, frontier baseline, and proof as a hostile expert referee. Accept only fully justified mathematics.",
         "Do not see invention transcripts or author intentions and do not fill gaps charitably.",
     ),
     "abstraction_agent": AgentSpec(
