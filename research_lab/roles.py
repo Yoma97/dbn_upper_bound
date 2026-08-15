@@ -73,6 +73,45 @@ AGENTS: Dict[str, AgentSpec] = {
         "Take promising new objects or principles and build a small coherent mathematical theory around them: formal definitions, well-definedness obligations, examples/non-examples, exact identities, first lemmas, equality/extremal cases, stability, closure, dual formulations, and at least one non-RH application target. Determine whether the structure has mathematical life independent of the original RH obstruction.",
         "Do not call a collection of conjectures a theory. At least one structural statement must be plausibly provable from the definitions without assuming the desired RH consequence.",
     ),
+
+    # Focused Unified Collision Geometry roles.
+    "collision_unifier": AgentSpec(
+        "Finite Collision Geometry Unifier",
+        "collision_invention",
+        "Start with finite real-rooted heat polynomials and rigorously derive the exact relations among discriminant, logarithmic discriminant derivative, inverse-square gap energy, the local map G=(F,F'), phase/Laguerre current, and topological collision index. Identify the minimal algebraic package that survives beyond polynomials and state exactly which identities are canonical and which depend on normalization.",
+        "Do not extrapolate finite identities to H_t by analogy. Every proposed infinite analogue must come with a separate convergence/regularization obligation.",
+    ),
+    "regularization_architect": AgentSpec(
+        "Collision Regularization Architect",
+        "collision_invention",
+        "Construct or refute a canonical relative/regularized collision functional for order-one real entire heat families. Test Hadamard, zeta/superzeta, relative determinant, resultant, and renormalized pair-energy constructions. Require collision locality: a finite multiple-zero collision must create a zero or singularity that cannot be cancelled by the tail. Require cutoff independence and a controlled evolution law.",
+        "Do not call a divergent pair product a regularized discriminant. Reject any definition whose value changes materially with enumeration, cutoff scheme, genus convention, arbitrary subtraction, or a tail counterterm capable of cancelling a local collision.",
+    ),
+    "phase_current_analyst": AgentSpec(
+        "Riemann Phase-Current Analyst",
+        "collision_invention",
+        "Analyze local transversality observables for H_t. Begin by identifying exactly what J=Im(conj(W) W_x) becomes for W=H+iH' and separate known Laguerre content from genuinely new currents. Seek kernel integral representations and weighted-integrated sign mechanisms special to the Riemann kernel where the integrand may change sign but the complete integral has a forced sign.",
+        "Do not rename L_1 or another RH-equivalent criterion as a new current. A new current must add a provable structure or representation not already equivalent by definition.",
+    ),
+    "gap_trace_analyst": AgentSpec(
+        "Tail-Core Gap-Trace Analyst",
+        "collision_invention",
+        "Build a rigorous finite-part/relative inverse-square gap trace for H_t that matches the finite identity d/dt log Disc = constant times sum gaps^-2 after correct renormalization. Determine the required subtraction from the asymptotic zero density and prove cutoff stability, local collision blow-up, and any exact or one-sided evolution identity.",
+        "Do not use an unregularized divergent zero sum, and do not infer a global trace identity from local zero dynamics without proving tail convergence and interchange of limits.",
+    ),
+    "collision_flux_analyst": AgentSpec(
+        "Collision Charge and Analytic Flux Analyst",
+        "collision_invention",
+        "Treat zeros of G=(H,H') in the (t,x)-plane as collision events. Derive local Jacobian/index formulas, then determine whether a distributional continuity equation for collision charge exists. Distinguish universal heat-flow source terms from any Riemann-specific no-creation law. Search for a flux representation whose source can be estimated from the Riemann kernel.",
+        "Do not assume heat flow conserves collision charge: simple polynomial heat flows do collide. Any no-collision conclusion must use a special property of the Riemann kernel beyond the PDE itself.",
+    ),
+    "arithmetic_separator_specialist": AgentSpec(
+        "Localized Arithmetic Separator Specialist",
+        "collision_backup",
+        "Maintain an independent non-DBN backup route. Assume one off-line zero and build localized test objects whose violation is amplified, while seeking a prime-side or operator-side bound independent of RH. Explicitly compare every proposal with Weil/Li/Bombieri-Lagarias to detect disguised equivalence.",
+        "Do not assume global Weil/Li positivity or another endpoint-equivalent criterion. If the proposed bound is itself equivalent to RH, classify it as a microscope only, not progress.",
+    ),
+
     "proof_architect": AgentSpec(
         "Proof Architect",
         "certification",
