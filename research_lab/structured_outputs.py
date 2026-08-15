@@ -7,7 +7,9 @@ from pydantic import BaseModel, Field
 TruthLabel = Literal[
     "IDEA",
     "CANDIDATE",
-    "PROVED",
+    "INTERNALLY_PROVED",
+    "INDEPENDENTLY_RECONSTRUCTED",
+    "REFEREE_VERIFIED",
     "KNOWN",
     "REFUTED",
 ]
