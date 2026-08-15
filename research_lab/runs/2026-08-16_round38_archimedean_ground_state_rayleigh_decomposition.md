@@ -20,8 +20,8 @@ Rounds 35--36 reduced a multiplicity-`m` heat collision at `x=2 gamma` to the ne
 A direct estimate through `xi'/xi` is badly behaved near zeros. Polymath provides a nowhere-vanishing Stirling normalizer `M_0(s)` with logarithmic derivative
 
 \[
-\alpha(s):=\frac{M_0'(s)}{M_0(s)
-}=\frac1{2s}+\frac1{s-1}+\frac12\Log\frac{s}{2\pi}.
+\alpha(s):=\frac{M_0'(s)}{M_0(s)}
+=\frac1{2s}+\frac1{s-1}+\frac12\Log\frac{s}{2\pi}.
 \]
 
 This round factors out the **modulus** of `M_0` and obtains an exact weighted Schrödinger/ground-state decomposition.
@@ -74,7 +74,8 @@ V_t(a)
 Also
 
 \[
-\int G_t|\xi|^2=\int w_t|Y|^2.
+\int G_t|\xi|^2=
+\int w_t|Y|^2.
 \]
 
 Therefore
@@ -258,7 +259,7 @@ V_t(a)=-u'(a)+\frac{2a}{t}u(a)-u(a)^2.
 }
 \]
 
-Boundary terms vanish by the Gaussian factor and standard order-one growth of xi/M0 on horizontal lines.
+Boundary terms vanish by the Gaussian factor and standard order-one growth of `xi/M_0` on horizontal lines.
 
 ---
 
