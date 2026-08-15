@@ -1,8 +1,8 @@
 # Current Collision Program State
 
-**Updated:** 2026-08-15 after Round 13.
+**Updated:** 2026-08-15 after Round 14.
 
-## 1. Local collision geometry retained from Round 12
+## Core local geometry
 
 For a finite simple real-zero cluster of a real entire backward-heat family,
 
@@ -16,7 +16,7 @@ the local collision section
 \mathcal D_I(t)=(-1)^{m(m-1)/2}\prod_{k\in I}F_x(t,x_k(t))
 \]
 
-has local factorization
+has the local factorization
 
 \[
 \mathcal D_I=\Delta_I A_{\rm tail},\qquad A_{\rm tail}\ne0,
@@ -29,7 +29,7 @@ and exact evolution
 =\sum_{k\in I}(A_k^2+3B_k),
 \]
 
-where
+with
 
 \[
 A_k=\frac{F_{xx}}{2F_x}(x_k),
@@ -37,100 +37,84 @@ A_k=\frac{F_{xx}}{2F_x}(x_k),
 B_k=A_k^2-\frac{F_{xxx}}{3F_x}(x_k).
 \]
 
-At a simple real zero of an order-one real-rooted entire function,
+At a simple real zero in the real-rooted order-one setting,
 
 \[
-B_k=\sum_{j\ne k}(x_k-x_j)^{-2}.
+B_k=\sum_{j\ne k}(x_k-x_j)^{-2},
 \]
 
-The exact Laguerre reduction is
+and
 
 \[
-B_k=\frac{L_2(x_k)}{L_1(x_k)},
-\qquad
-A_k=\frac{\partial_xL_1(x_k)}{2L_1(x_k)},
-\]
-
-hence
-
-\[
-R_k(t):=\frac d{dt}\log|F_x(t,x_k(t))|
+R_k:=\frac d{dt}\log|F_x(t,x_k(t))|
 =\frac14(\partial_x\log L_1)^2+3\frac{L_2}{L_1}.
 \]
 
-These remain **PROVED under the stated local hypotheses**.
+**Status:** PROVED under the stated hypotheses.
 
 ---
 
-## 2. Round-13 correction: uniform height is not the primary C6 obstruction
+## Positive-threshold compactness correction
 
-The previous state file asserted that a hypothetical positive de Bruijn--Newman constant might be realized only through collision/near-collision events escaping to infinite height, so a height-uniform C6 bound was declared mandatory.
+Polymath Theorem 1.5 rules out loss of real-rootedness escaping solely to infinite height when a hypothetical threshold is positive.
 
-For the Riemann heat family this assertion is now **REFUTED when \(\Lambda>0\)**.
-
-Polymath Theorem 1.5 gives absolute \(C,c>0\) such that, for every \(0<t\le1/2\), all zeros with
-
-\[
-|\Re z|\ge e^{C/t}
-\]
-
-are real and lie one-per-asymptotic-disk, hence are simple. If \(\Lambda>0\), this is uniform on
+If \(\Lambda>0\), high zeros are uniformly real and simple on
 
 \[
 t\in[\Lambda/2,\Lambda]
 \]
 
-outside
+outside a safe finite cutoff
 
 \[
 X_\Lambda=\exp(2C/\Lambda).
 \]
 
-Compactness plus Rouche/implicit-function continuation then proves:
+Compactness and Rouche continuation then imply
 
 \[
 \boxed{\Lambda>0\Longrightarrow H_\Lambda\text{ has a multiple real zero at finite height}.}
 \]
 
-Thus positive-threshold loss of real-rootedness cannot escape to infinity in the Riemann family.
+Thus the previous Round-12 assertion that C6 must begin with a height-uniform \(R_k\) bound is **REFUTED for the Riemann family at a positive threshold**.
 
-Combining this with Rodgers--Tao \(\Lambda\ge0\) and the standard implication `multiple real zero at t0 => t0 <= Lambda` gives the exact reduction
+Together with Rodgers--Tao \(\Lambda\ge0\),
 
 \[
 \boxed{
 RH\iff \Lambda=0
-\iff H_t,H_t'\text{ have no common real zero for every }t>0.
+\iff H_t,H_t'\text{ have no common real zero for all }t>0.
 }
 \]
 
-This is **RH-EQUIVALENT**, so it is a reduction, not a proof.
+This is an **RH-EQUIVALENT reduction**, not a proof input.
 
 ---
 
-## 3. Universal collision residue
+## Universal collision residue
 
-At a zero of exact multiplicity \(m\ge2\) at \((t_c,x_c)\), on the forward real-rooted side \(\tau=t-t_c\downarrow0\),
+At a zero of exact multiplicity \(m\ge2\) at \((t_c,x_c)\), on the forward real-rooted side,
 
 \[
 F_{t_c+\tau}(x_c+\sqrt\tau X)
 =a\tau^{m/2}Q_m(X)+O(\tau^{(m+1)/2}),
 \]
 
-with
+where
 
 \[
-Q_m(X)=e^{-D_X^2}X^m=H_m(X/2).
+Q_m=e^{-D^2}X^m=H_m(X/2).
 \]
 
-For every local root branch,
+For each local branch,
 
 \[
 \boxed{
-R_k(t)=\frac{m-1}{2(t-t_c)}+O((t-t_c)^{-1/2})
+R_k(t)=\frac{m-1}{2(t-t_c)}+O((t-t_c)^{-1/2}),
 }
 \]
 
-and therefore
+so
 
 \[
 \boxed{
@@ -138,34 +122,21 @@ and therefore
 }
 \]
 
-Equivalently, for a root \(\xi_k\) of \(Q_m\),
-
-\[
-\left(\sum_{j\ne k}\frac1{\xi_k-\xi_j}\right)^2
-+3\sum_{j\ne k}\frac1{(\xi_k-\xi_j)^2}
-=\frac{m-1}{2}.
-\]
-
 **Status:** PROVED local theorem; novelty unverified.
 
 ---
 
-## 4. Preferred Riemann-kernel interface
+## Monotone Riemann kernel-ratio interface
 
 Let
 
 \[
-\psi_t(u)=e^{tu^2}\Phi(u),\qquad
-w_t(u)=u\psi_t(u),
-\]
-
-and define
-
-\[
+\psi_t(u)=e^{tu^2}\Phi(u),\quad
+w_t(u)=u\psi_t(u),\quad
 q(u)=-\frac{\Phi'(u)}{u\Phi(u)}.
 \]
 
-Csordas' established strict concavity of
+The established strict concavity of
 
 \[
 r\mapsto\log\Phi(\sqrt r)
@@ -177,8 +148,6 @@ implies
 \boxed{q'(u)>0\quad(u>0).}
 \]
 
-The ratio \(q\) is independent of heat time.
-
 Define
 
 \[
@@ -189,20 +158,15 @@ S_0(t,x)=\int_0^\infty w_t(u)\sin(xu)\,du=-H_t'(x),
 S_1(t,x)=\int_0^\infty q(u)w_t(u)\sin(xu)\,du.
 \]
 
-Integration by parts gives
+Then
 
 \[
-\boxed{S_1(t,x)=xH_t(x)-2tH_t'(x).}
+\boxed{S_1=xH_t-2tH_t'.}
 \]
 
-Hence
+Thus a collision is a common zero of two sine transforms whose positive kernels have a strictly increasing, time-independent ratio q.
 
-\[
-H_t(x)=H_t'(x)=0
-\iff S_0(t,x)=S_1(t,x)=0.
-\]
-
-At such a collision, with
+At a critical point \(H_t'(x)=0\), with
 
 \[
 M_{t,x}(v)=\int_0^v w_t(u)\sin(xu)\,du,
@@ -211,70 +175,112 @@ M_{t,x}(v)=\int_0^v w_t(u)\sin(xu)\,du,
 one has
 
 \[
-0=-\int_0^\infty q'(u)M_{t,x}(u)\,du.
+\boxed{
+xH_t(x)=-\int_0^\infty q'(u)M_{t,x}(u)\,du.}
 \]
-
-Since \(q'>0\) and \(M_{t,x}(v)>0\) for sufficiently small \(v>0\), every collision forces a **cumulative sine overshoot**:
-
-\[
-\boxed{\exists v>0:\ M_{t,x}(v)<0.}
-\]
-
-This is **PROVED as a necessary collision signature**.
 
 ---
 
-## 5. Single next target
+## Round-14 falsification
 
-### CANDIDATE: cumulative sine-balance lemma
-
-Attempt to prove, or rapidly refute, for the specific Riemann kernel:
-
-if
+The proposed lemma
 
 \[
-S_0(t,x)=0,
+H_t'(x)=0\Longrightarrow M_{t,x}(v)\ge0\ \forall v
 \]
 
-then
+is **REFUTED rigorously**.
+
+At \(t=1/2\), \(H_{1/2}\) has infinitely many simple real zeros. Between consecutive zeros its sign alternates, so there are positive critical extrema. At such a critical point,
 
 \[
-M_{t,x}(v)\ge0\quad\forall v\ge0,
+xH_{1/2}(x)>0
 \]
 
-for \(0<t\le1/2\).
-
-A proof would contradict the mandatory overshoot at a collision and therefore exclude positive-time collisions. However strict log-concavity alone is not enough by analogy; the lemma must be derived from additional special structure of \(\Phi\), or rejected by a counterexample/numerical test.
-
-In the variable \(r=u^2\),
+and hence
 
 \[
-S_0(t,x)=\frac12\int_0^\infty K_t(r)\sin(x\sqrt r)\,dr,
+\int q'M<0,
+\]
+
+forcing \(M<0\) somewhere. Thus cumulative overshoot is ordinary behavior, not a collision detector.
+
+---
+
+## Current single target: half-wave shape theorem
+
+For fixed \(x>0\), set
+
+\[
+I_n=[n\pi/x,(n+1)\pi/x]
+\]
+
+and define
+
+\[
+a_n(t,x)=\int_{I_n}w_t(u)|\sin(xu)|\,du,
+\]
+
+\[
+b_n(t,x)=\int_{I_n}q(u)w_t(u)|\sin(xu)|\,du.
+\]
+
+Then
+
+\[
+S_0=\sum_{n\ge0}(-1)^n a_n,
 \qquad
-K_t(r)=e^{tr}\Phi(\sqrt r),
+S_1=\sum_{n\ge0}(-1)^n b_n.
 \]
 
-and
+Because q is strictly increasing and the half-wave intervals are ordered,
 
 \[
-\log K_t(r)=tr+\log\Phi(\sqrt r)
+\boxed{\frac{b_{n+1}}{a_{n+1}}>\frac{b_n}{a_n}}
 \]
 
-is strictly concave for every real \(t\). This is the allowed structural input for the next attack.
+for all nonzero masses.
+
+This monotone-likelihood-ratio fact is **PROVED**, but by itself does not prevent both alternating sums from vanishing.
+
+### Single next research question
+
+Find or refute a **strict discrete shape/sign-regularity theorem** for the half-wave mass sequence \(a_n(t,x)\), derived from the special Riemann density
+
+\[
+w_t(u)=u e^{tu^2}\Phi(u),
+\]
+
+that, together with the increasing ratios \(b_n/a_n\), prevents
+
+\[
+\sum(-1)^n a_n=\sum(-1)^n b_n=0.
+\]
+
+The theorem must not assume real-rootedness, interlacing, the sign of H between zeros, global L1 positivity, or an all-n positive-definite-kernel criterion.
+
+Preferred structural input:
+
+\[
+K_t(r)=e^{tr}\Phi(\sqrt r),
+\qquad
+\log K_t(r)=tr+\log\Phi(\sqrt r),
+\]
+
+which is strictly concave for every real t.
 
 ---
 
-## 6. Gate/status table
+## Status table
 
 - Local collision divisor geometry: **PROVED**.
-- Rootwise inverse-square trace: **PROVED in the real-rooted order-one regime**.
-- Laguerre reduction: **PROVED**.
-- Positive-threshold escape-to-infinity scenario: **REFUTED for the Riemann family**.
-- Finite multiple-zero attainment if \(\Lambda>0\): **PROVED**.
+- Laguerre/gap reduction: **PROVED**.
+- Positive-threshold finite collision attainment: **PROVED**.
 - Universal Hermite collision residue: **PROVED**.
-- Monotone kernel-ratio collision pair: **PROVED**.
-- Cumulative sine overshoot necessity: **PROVED**.
-- Cumulative sine-balance no-go lemma: **CANDIDATE / UNPROVED**.
+- Monotone q kernel ratio: **PROVED**.
+- Simple cumulative nonnegative-balance lemma: **REFUTED**.
+- Half-wave ratio monotonicity: **PROVED**.
+- Sufficient half-wave shape theorem: **OPEN**.
 - Independent C6 no-collision theorem: **OPEN**.
 - RH: **OPEN**.
-- Novelty of the Round-13 package: **NOVELTY UNVERIFIED**.
+- Novelty: **UNVERIFIED**.
