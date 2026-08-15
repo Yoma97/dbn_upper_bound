@@ -14,10 +14,32 @@ mission:
     materially reduces such an obstruction. RH itself is not to be claimed
     solved unless every dependency edge is independently certified.
 
+runtime:
+  default_orchestrator: "orchestrator_v3.py"
+  default_model: "gpt-5.6-sol"
+  responses_api_required_for_max_reasoning: true
+
+reasoning_policy:
+  frontier_curator: high
+  invention_default: high
+  obstruction_analyst: xhigh
+  constraint_hunter: xhigh
+  violation_amplifier: xhigh
+  identity_invariant_hunter: xhigh
+  bridge_builder: xhigh
+  theory_builder: xhigh
+  synthesis: xhigh
+  destroyer: max
+  equivalence_auditor: max
+  mathematical_legitimacy_auditor: max
+  exclusion_completeness_auditor: max
+  independent_referee: max
+  proof_reconstructors: max
+
 execution:
   independent_invention_rounds: 5
-  candidates_per_inventor: 4
-  max_promoted_candidates_per_round: 5
+  candidates_per_inventor: 3
+  max_promoted_candidates_per_round: 4
   blind_first_round: true
   require_fresh_context_referee: true
   require_independent_proof_reconstruction: true
@@ -27,6 +49,7 @@ execution:
   one_new_lemma_rule: true
   reject_multi_gap_chains: true
   dead_end_requires_material_delta_to_reopen: true
+  falsification_before_proof_reconstruction: true
 
 claim_hygiene:
   atomic_claims_only: true
@@ -41,6 +64,7 @@ claim_hygiene:
   require_assumption_ledger: true
   require_fast_falsification_test: true
   require_edge_case_matrix: true
+  require_structured_numerical_requests: true
 
 statuses:
   truth:
@@ -119,6 +143,25 @@ edge_case_matrix:
     - cancellation_between_symmetry_partners
     - scaling_and_normalization_changes
 
+arb:
+  protocol_file: "knowledge/arb_verification_protocol.md"
+  hard_fail_on_missing_rigorous_capability: true
+  connected_capabilities:
+    - sqrt
+    - riemann_zeta
+    - zeta_zero
+  desired_server_extensions:
+    - xi
+    - xi_derivative
+    - H_t
+    - H_t_derivative
+    - laguerre
+    - interval_integral
+    - interval_extremum
+    - matrix_inertia
+    - interval_newton
+  finite_computation_can_prove_global_claim_only_after_analytic_reduction: true
+
 numerics:
   role:
     - refute_false_conjectures
@@ -129,6 +172,7 @@ numerics:
     - infer_global_truth_from_large_finite_sampling
     - promote_any_claim_to_proved_from_floating_point_only
     - replace_uniform_estimates_with_grid_checks
+    - substitute_floating_point_for_missing_arb_capability
 
 research_preferences:
   reward:
@@ -148,5 +192,6 @@ research_preferences:
     multiple_independent_unproved_lemmas: 40
     ambiguous_quantifiers_or_uniformity: 40
     convention_or_normalization_drift: 40
+    missing_rigorous_numerical_capability_hidden_by_floats: 100
     constant_improvement_without_threshold_crossing: 15
     long_argument_without_new_mechanism: 10
