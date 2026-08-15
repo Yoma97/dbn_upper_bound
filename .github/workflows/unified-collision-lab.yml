@@ -1,15 +1,14 @@
-name: Unified Collision Geometry Lab — FREE ONLY
+name: Unified Collision Geometry Lab — STATIC ONLY
 
 on:
   workflow_dispatch:
 
 jobs:
-  collision-research:
+  validate-research-lab:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 10
     permissions:
       contents: read
-      models: read
 
     steps:
       - name: Checkout focused research branch
@@ -22,36 +21,18 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Static validation — no model calls
+      - name: Static validation only — no AI/API calls
         run: |
-          python -m py_compile research_lab/collision_lab_free.py research_lab/roles.py
+          python -m py_compile research_lab/collision_lab.py research_lab/roles.py
           python - <<'PY'
           from pathlib import Path
           required = [
-              Path('research_lab/collision_lab_free.py'),
               Path('research_lab/knowledge/unified_collision_geometry_program.md'),
-              Path('research_lab/knowledge/frontier_map.md'),
+              Path('research_lab/knowledge/current_collision_program_state.md'),
+              Path('research_lab/runs/2026-08-15_round12_local_collision_divisor.md'),
           ]
           missing = [str(p) for p in required if not p.exists()]
           if missing:
-              raise SystemExit(f'Missing required files: {missing}')
-          print('Free-only static validation passed.')
+              raise SystemExit(f'Missing required research files: {missing}')
+          print('Research lab static integrity check passed. No external model was called.')
           PY
-
-      - name: Run free-only collision lab
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_MODELS_MODEL: openai/gpt-4.1-mini
-        run: |
-          python research_lab/collision_lab_free.py | tee collision_lab_console.json
-
-      - name: Upload research report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: unified-collision-lab-free-report
-          path: |
-            collision_lab_report.json
-            collision_lab_console.json
-            research_lab/memory/collision_free_*.jsonl
-          if-no-files-found: warn
