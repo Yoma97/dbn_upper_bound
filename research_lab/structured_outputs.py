@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from typing import List, Literal, Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 TruthLabel = Literal[
@@ -76,6 +76,36 @@ class ClaimCard(BaseModel):
     relevance_label: RelevanceLabel = "DIAGNOSTIC_TOOL"
     parent_claim_id: Optional[str] = None
     repair_delta_from_parent: Optional[str] = None
+
+    @model_validator(mode="after")
+    def strict_epistemic_normalization(self):
+        proved_states = {
+            "INTERNALLY_PROVED",
+            "INDEPENDENTLY_RECONSTRUCTED",
+            "REFEREE_VERIFIED",
+        }
+
+        # A gapped statement is never allowed to retain a proved status.
+        if self.unresolved_gaps and self.truth_label in proved_states:
+            self.truth_label = "CANDIDATE"
+
+        # A conjectural external dependency is itself a gap.
+        if any(dep.conjectural for dep in self.strongest_known_input):
+            marker = "Conjectural imported dependency present"
+            if marker not in self.unresolved_gaps:
+                self.unresolved_gaps.append(marker)
+            if self.truth_label in proved_states:
+                self.truth_label = "CANDIDATE"
+
+        # Correctness never certifies novelty.
+        if self.truth_label in proved_states and self.novelty_label == "NOT_ASSESSED":
+            self.novelty_label = "NOVELTY_UNVERIFIED"
+
+        # One-New-Lemma discipline: multiple live gaps cannot be the frontier target.
+        if len(self.unresolved_gaps) > 1 and self.relevance_label == "FRONTIER_ADVANCE":
+            self.relevance_label = "DIAGNOSTIC_TOOL"
+
+        return self
 
 
 class ResearchReport(BaseModel):
