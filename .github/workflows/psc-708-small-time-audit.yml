@@ -1,0 +1,43 @@
+name: PSC lambda 7.08 small-time audit
+
+on:
+  push:
+    branches: [research-lab-agents]
+    paths:
+      - '.github/workflows/psc-708-small-time-audit.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        prec: [512, 768]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Compile small-time verifier
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} \
+            research_lab/certificates/low_shoulder/small_time_lambda708_audit.c \
+            -lmpfr -lgmp -o small708
+      - name: Run directed audit
+        run: ./small708 | tee small_time_lambda708_audit_${{ matrix.prec }}.txt
+      - name: Record source hash
+        if: always()
+        run: sha256sum research_lab/certificates/low_shoulder/small_time_lambda708_audit.c > small_time_lambda708_source_sha256_${{ matrix.prec }}.txt
+      - name: Upload audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: small-time-lambda708-${{ matrix.prec }}
+          path: |
+            small_time_lambda708_audit_${{ matrix.prec }}.txt
+            small_time_lambda708_source_sha256_${{ matrix.prec }}.txt
