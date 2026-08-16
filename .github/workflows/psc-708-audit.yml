@@ -1,4 +1,4 @@
-name: PSC lower-threshold certified audit
+name: PSC lambda 7.076 certified audit
 
 on:
   pull_request:
@@ -6,26 +6,35 @@ on:
   workflow_dispatch:
 
 jobs:
-  rectangle:
+  audit:
     strategy:
       fail-fast: false
       matrix:
         include:
-          - label: full708-512
-            prec: 512
-            lam0: '7.08'
-            lam1: '10.52'
-            depth: 10
-          - label: full708-768
+          - label: candidate7076-768
             prec: 768
-            lam0: '7.08'
-            lam1: '10.52'
-            depth: 10
-          - label: candidate7076-512
-            prec: 512
+            t0: '0.01'
+            t1: '0.5'
             lam0: '7.076'
             lam1: '7.08'
             depth: 13
+            k: 128
+          - label: patch7076-512
+            prec: 512
+            t0: '0.49994'
+            t1: '0.5'
+            lam0: '7.076'
+            lam1: '7.07611'
+            depth: 10
+            k: 512
+          - label: patch7076-768
+            prec: 768
+            t0: '0.49994'
+            t1: '0.5'
+            lam0: '7.076'
+            lam1: '7.07611'
+            depth: 10
+            k: 512
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -44,15 +53,15 @@ jobs:
       - name: Run adaptive certified cover
         run: |
           python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
-            ./psc_box 0.01 0.5 ${{ matrix.lam0 }} ${{ matrix.lam1 }} \
-            ${{ matrix.depth }} 128 ${{ matrix.label }} 8
+            ./psc_box ${{ matrix.t0 }} ${{ matrix.t1 }} ${{ matrix.lam0 }} ${{ matrix.lam1 }} \
+            ${{ matrix.depth }} ${{ matrix.k }} ${{ matrix.label }} 8
       - name: Record source hashes
         if: always()
         run: |
           sha256sum research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c \
                     research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
             > ${{ matrix.label }}_source_sha256.txt
-      - name: Upload rectangle artifacts
+      - name: Upload audit artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
