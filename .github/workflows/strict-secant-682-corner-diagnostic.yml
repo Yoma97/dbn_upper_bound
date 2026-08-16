@@ -1,0 +1,43 @@
+name: Strict secant APVC lambda 6.82 corner diagnostic
+
+on:
+  push:
+    branches: [research-lab-agents]
+    paths:
+      - '.github/workflows/strict-secant-682-corner-diagnostic.yml'
+  workflow_dispatch:
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Generate Round-75 secant source
+        run: |
+          python research_lab/certificates/low_shoulder/make_hybrid_apvc_verifier.py
+          python research_lab/certificates/low_shoulder/soften_hybrid_apvc.py
+          python research_lab/certificates/low_shoulder/lower_apvc_activation_035.py
+          python research_lab/certificates/low_shoulder/use_secant_apvc.py
+      - name: Compile 512-bit verifier
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=512 research_lab/certificates/low_shoulder/hybrid_psc_apvc_box_mpfr.c -lmpfr -lgmp -o secant_box
+      - name: Run narrow frontier diagnostic
+        run: |
+          python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            ./secant_box 0.495 0.50 6.82 6.83 12 900 secant682-corner-512 8
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: secant682-corner-512
+          path: |
+            secant682-corner-512_summary.json
+            secant682-corner-512_unresolved.csv
+            secant682-corner-512_certified.csv
