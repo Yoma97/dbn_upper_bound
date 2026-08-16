@@ -1,0 +1,80 @@
+name: Lambda 6.19 hostile dependency audit
+
+on:
+  pull_request:
+    branches: [research-lab-agents]
+  workflow_dispatch:
+
+jobs:
+  grid:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: lambda619to708-512
+            prec: 512
+            ilo: 0
+            ihi: 32
+          - label: lambda619to708-768-a
+            prec: 768
+            ilo: 0
+            ihi: 8
+          - label: lambda619to708-768-b
+            prec: 768
+            ilo: 8
+            ihi: 16
+          - label: lambda619to708-768-c
+            prec: 768
+            ilo: 16
+            ihi: 24
+          - label: lambda619to708-768-d
+            prec: 768
+            ilo: 24
+            ihi: 32
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: lambda619-hostile-audit
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Extend the committed K2048 grid from 7.04 to canonical 7.08
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          src = Path('research_lab/certificates/low_shoulder/convex_tail_psc_lambda619_mpfr.c')
+          s = src.read_text()
+          old_loop = 'for(int j=0;j<85;j++)'
+          old_count = '(IHI-ILO)*85'
+          if old_loop not in s:
+              raise SystemExit('expected 85-box lambda loop not found')
+          if old_count not in s:
+              raise SystemExit('expected 85-box printed count not found')
+          s = s.replace(old_loop, 'for(int j=0;j<89;j++)')
+          s = s.replace(old_count, '(IHI-ILO)*89')
+          s = s.replace('lambda [6.19,7.04]', 'lambda [6.19,7.08]')
+          Path('convex_tail_psc_lambda619_to708_mpfr.c').write_text(s)
+          PY
+      - name: Compile extended directed verifier
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} -DILO=${{ matrix.ilo }} -DIHI=${{ matrix.ihi }} \
+            convex_tail_psc_lambda619_to708_mpfr.c -lmpfr -lgmp -o psc619
+      - name: Run extended grid
+        run: |
+          ./psc619 | tee ${{ matrix.label }}.txt
+      - name: Record exact source hashes
+        run: |
+          sha256sum research_lab/certificates/low_shoulder/convex_tail_psc_lambda619_mpfr.c \
+                    convex_tail_psc_lambda619_to708_mpfr.c \
+            > ${{ matrix.label }}_source_sha256.txt
+      - name: Upload audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.label }}
+          path: |
+            ${{ matrix.label }}.txt
+            ${{ matrix.label }}_source_sha256.txt
+            convex_tail_psc_lambda619_to708_mpfr.c
