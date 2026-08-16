@@ -1,0 +1,48 @@
+name: Strict APVC lambda 6.85 bridge 0.39-0.40
+
+on:
+  push:
+    branches: [research-lab-agents]
+    paths:
+      - '.github/workflows/strict-apvc-685-bridge039040.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        prec: [512, 768]
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Generate strict hybrid source
+        run: |
+          python research_lab/certificates/low_shoulder/make_hybrid_apvc_verifier.py
+          python research_lab/certificates/low_shoulder/soften_hybrid_apvc.py
+          python research_lab/certificates/low_shoulder/lower_apvc_activation.py
+      - name: Compile hybrid verifier
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} \
+            research_lab/certificates/low_shoulder/hybrid_psc_apvc_box_mpfr.c \
+            -lmpfr -lgmp -o hybrid_box
+      - name: Run narrow bridge cover
+        run: |
+          python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            ./hybrid_box 0.39 0.40 6.85 6.90 10 768 strict685-bridge-${{ matrix.prec }} 8
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strict685-bridge-${{ matrix.prec }}
+          path: |
+            strict685-bridge-${{ matrix.prec }}_summary.json
+            strict685-bridge-${{ matrix.prec }}_unresolved.csv
+            strict685-bridge-${{ matrix.prec }}_certified.csv
