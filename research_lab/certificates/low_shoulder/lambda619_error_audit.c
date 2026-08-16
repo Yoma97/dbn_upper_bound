@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <stdint.h>
+typedef long int mpfr_prec_t; typedef long int mpfr_exp_t; typedef unsigned long int mp_limb_t;
+typedef struct { mpfr_prec_t _mpfr_prec; int _mpfr_sign; mpfr_exp_t _mpfr_exp; mp_limb_t *_mpfr_d; } __mpfr_struct;
+typedef __mpfr_struct *mpfr_ptr; typedef const __mpfr_struct *mpfr_srcptr; typedef __mpfr_struct mpfr_t[1];
+typedef enum { MPFR_RNDN=0,MPFR_RNDZ=1,MPFR_RNDU=2,MPFR_RNDD=3,MPFR_RNDA=4 } mpfr_rnd_t;
+extern void mpfr_init2(mpfr_ptr,mpfr_prec_t); extern void mpfr_clear(mpfr_ptr); extern int mpfr_set_str(mpfr_ptr,const char*,int,mpfr_rnd_t); extern int mpfr_set_ui(mpfr_ptr,unsigned long,mpfr_rnd_t); extern int mpfr_add(mpfr_ptr,mpfr_srcptr,mpfr_srcptr,mpfr_rnd_t); extern int mpfr_add_ui(mpfr_ptr,mpfr_srcptr,unsigned long,mpfr_rnd_t); extern int mpfr_sub(mpfr_ptr,mpfr_srcptr,mpfr_srcptr,mpfr_rnd_t); extern int mpfr_mul(mpfr_ptr,mpfr_srcptr,mpfr_srcptr,mpfr_rnd_t); extern int mpfr_div(mpfr_ptr,mpfr_srcptr,mpfr_srcptr,mpfr_rnd_t); extern int mpfr_sqr(mpfr_ptr,mpfr_srcptr,mpfr_rnd_t); extern int mpfr_sqrt(mpfr_ptr,mpfr_srcptr,mpfr_rnd_t); extern int mpfr_log(mpfr_ptr,mpfr_srcptr,mpfr_rnd_t); extern int mpfr_exp(mpfr_ptr,mpfr_srcptr,mpfr_rnd_t); extern int mpfr_expm1(mpfr_ptr,mpfr_srcptr,mpfr_rnd_t); extern int mpfr_const_pi(mpfr_ptr,mpfr_rnd_t); extern int mpfr_cmp(mpfr_srcptr,mpfr_srcptr); extern double mpfr_get_d(mpfr_srcptr,mpfr_rnd_t);
+#ifndef PREC
+#define PREC 512
+#endif
+static void I(mpfr_t x){mpfr_init2(x,PREC);} static void S(mpfr_t x,const char*s,mpfr_rnd_t r){mpfr_set_str(x,s,10,r);} static void U(mpfr_t x,unsigned long n){mpfr_set_ui(x,n,MPFR_RNDN);} static void NEG(mpfr_t y,mpfr_t x,mpfr_rnd_t r){mpfr_t z;I(z);U(z,0);mpfr_sub(y,z,x,r);mpfr_clear(z);} static void P(const char*n,mpfr_t x,mpfr_rnd_t r){printf("%-24s %.17g\n",n,mpfr_get_d(x,r));}
+int main(void){
+ mpfr_t Llo,Lhi,lamlo,rhoL,rhoU,piL,piU,x0,den,tmp,tmp2,tmp3,Z1,Z2,Zsum,h,eAB,Nmin,ln3,p3,c1,c2,corr,eC,lnNlo,lnNhi,jump,E0,ratio,E1,pad0,pad1;
+ mpfr_t *v[]={&Llo,&Lhi,&lamlo,&rhoL,&rhoU,&piL,&piU,&x0,&den,&tmp,&tmp2,&tmp3,&Z1,&Z2,&Zsum,&h,&eAB,&Nmin,&ln3,&p3,&c1,&c2,&corr,&eC,&lnNlo,&lnNhi,&jump,&E0,&ratio,&E1,&pad0,&pad1};for(size_t i=0;i<sizeof(v)/sizeof(v[0]);i++)I(*v[i]);
+ /* Lmin = 6.19/0.22 = 619/22 */ U(tmp,619);U(tmp2,22);mpfr_div(Llo,tmp,tmp2,MPFR_RNDD);mpfr_div(Lhi,tmp,tmp2,MPFR_RNDU);S(lamlo,"6.19",MPFR_RNDD);S(rhoL,"0.1",MPFR_RNDD);S(rhoU,"0.1",MPFR_RNDU);mpfr_const_pi(piL,MPFR_RNDD);mpfr_const_pi(piU,MPFR_RNDU);
+ mpfr_exp(x0,Llo,MPFR_RNDD);mpfr_mul(x0,x0,piL,MPFR_RNDD);U(tmp,4);mpfr_mul(x0,x0,tmp,MPFR_RNDD);
+ /* Zsum <= zeta(1.27)+1.003 zeta(1.17), zeta(s)<=1+1/(s-1) */ S(den,"0.27",MPFR_RNDD);U(tmp,1);mpfr_div(tmp,tmp,den,MPFR_RNDU);mpfr_add_ui(Z1,tmp,1,MPFR_RNDU);S(den,"0.17",MPFR_RNDD);U(tmp,1);mpfr_div(tmp,tmp,den,MPFR_RNDU);mpfr_add_ui(Z2,tmp,1,MPFR_RNDU);S(tmp,"1.003",MPFR_RNDU);mpfr_mul(Z2,Z2,tmp,MPFR_RNDU);mpfr_add(Zsum,Z1,Z2,MPFR_RNDU);
+ /* deliberately loose eAB: (L^2/64+.627)/(x-rho-6.66) */ mpfr_sqr(tmp,Lhi,MPFR_RNDU);U(tmp2,64);mpfr_div(tmp,tmp,tmp2,MPFR_RNDU);S(tmp2,"0.627",MPFR_RNDU);mpfr_add(tmp,tmp,tmp2,MPFR_RNDU);mpfr_sub(den,x0,rhoU,MPFR_RNDD);S(tmp2,"6.66",MPFR_RNDU);mpfr_sub(den,den,tmp2,MPFR_RNDD);mpfr_div(h,tmp,den,MPFR_RNDU);mpfr_expm1(tmp,h,MPFR_RNDU);mpfr_mul(eAB,Zsum,tmp,MPFR_RNDU);
+ /* eC0 endpoint upper with Nmin=1,287,000 and +1e-6 exponent slack */ U(Nmin,1287000);U(tmp,3);mpfr_log(ln3,tmp,MPFR_RNDU);mpfr_mul(tmp,rhoU,ln3,MPFR_RNDU);mpfr_exp(p3,tmp,MPFR_RNDU);mpfr_add_ui(tmp,p3,1,MPFR_RNDU);S(tmp2,"1.24",MPFR_RNDU);mpfr_mul(tmp,tmp,tmp2,MPFR_RNDU);S(tmp2,"0.125",MPFR_RNDU);mpfr_sub(den,Nmin,tmp2,MPFR_RNDD);mpfr_div(c1,tmp,den,MPFR_RNDU);
+ mpfr_sqr(tmp,Lhi,MPFR_RNDU);mpfr_sqr(tmp2,piU,MPFR_RNDU);U(tmp3,4);mpfr_div(tmp2,tmp2,tmp3,MPFR_RNDU);mpfr_add(tmp,tmp,tmp2,MPFR_RNDU);mpfr_sqrt(tmp,tmp,MPFR_RNDU);U(tmp2,3);mpfr_mul(tmp,tmp,tmp2,MPFR_RNDU);S(tmp2,"10.44",MPFR_RNDU);mpfr_add(tmp,tmp,tmp2,MPFR_RNDU);U(tmp2,12);mpfr_sub(den,x0,tmp2,MPFR_RNDD);mpfr_div(c2,tmp,den,MPFR_RNDU);mpfr_add(corr,c1,c2,MPFR_RNDU);
+ S(tmp,"0.25",MPFR_RNDD);U(tmp2,16);mpfr_div(tmp2,lamlo,tmp2,MPFR_RNDD);mpfr_add(tmp,tmp,tmp2,MPFR_RNDD);mpfr_mul(tmp,tmp,Llo,MPFR_RNDD);NEG(tmp,tmp,MPFR_RNDU);mpfr_add(tmp,tmp,corr,MPFR_RNDU);S(tmp2,"0.000001",MPFR_RNDU);mpfr_add(tmp,tmp,tmp2,MPFR_RNDU);mpfr_exp(eC,tmp,MPFR_RNDU);
+ /* one jump: N^-1.27(1+1.003 N^.1) */ mpfr_log(lnNlo,Nmin,MPFR_RNDD);mpfr_log(lnNhi,Nmin,MPFR_RNDU);S(tmp2,"1.27",MPFR_RNDD);mpfr_mul(tmp,tmp2,lnNlo,MPFR_RNDD);NEG(tmp,tmp,MPFR_RNDU);mpfr_exp(jump,tmp,MPFR_RNDU);S(tmp2,"0.1",MPFR_RNDU);mpfr_mul(tmp,tmp2,lnNhi,MPFR_RNDU);mpfr_exp(tmp,tmp,MPFR_RNDU);S(tmp2,"1.003",MPFR_RNDU);mpfr_mul(tmp,tmp,tmp2,MPFR_RNDU);mpfr_add_ui(tmp,tmp,1,MPFR_RNDU);mpfr_mul(jump,jump,tmp,MPFR_RNDU);
+ mpfr_add(E0,eAB,eC,MPFR_RNDU);mpfr_add(E0,E0,jump,MPFR_RNDU);
+ /* endpoint product upper; analytic monotonicity is proved separately */ S(tmp,"0.026",MPFR_RNDU);mpfr_mul(tmp,tmp,Lhi,MPFR_RNDU);mpfr_exp(ratio,tmp,MPFR_RNDU);mpfr_mul(E1,E0,ratio,MPFR_RNDU);mpfr_div(E1,E1,rhoL,MPFR_RNDU);
+ S(pad0,"0.001",MPFR_RNDD);S(pad1,"0.02",MPFR_RNDD);
+ printf("LAMBDA>=6.19, 0<t<=0.22 GLOBAL ERROR AUDIT PREC=%d\n",PREC);P("Lmin lower",Llo,MPFR_RNDD);P("x0 lower",x0,MPFR_RNDD);P("Zsum upper",Zsum,MPFR_RNDU);P("eAB upper",eAB,MPFR_RNDU);P("eC0 upper",eC,MPFR_RNDU);P("jump upper",jump,MPFR_RNDU);P("E0 upper",E0,MPFR_RNDU);P("ratio endpoint",ratio,MPFR_RNDU);P("E1 endpoint upper",E1,MPFR_RNDU);int pass=mpfr_cmp(E0,pad0)<0&&mpfr_cmp(E1,pad1)<0;printf("PAD_RESULT pass=%d\n",pass);return pass?0:1;
+}
