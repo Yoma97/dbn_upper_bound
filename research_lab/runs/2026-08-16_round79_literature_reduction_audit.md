@@ -1,100 +1,107 @@
 # Round 79 — Literature-reduction audit and program refocus
 
-**Date:** 2026-08-16
-
+**Date:** 2026-08-16  
 **RH status:** OPEN.
 
 ## Executive conclusion
 
-The proposed literature reduction is mathematically insightful but mixes two proof policies that must be separated.
+The proposed literature reduction is substantially correct as a mathematical strategy, but it mixes two proof policies that must remain separate.
 
-### Unrestricted published-input track U
-If one admits all unconditional published theorems, including those whose proofs use finite-height verification of RH, then Polymath's theorem `Lambda <= 0.22` may be used. Together with a strict heat-operator simplicity theorem for Laguerre–Polya functions, this removes `t>0.22` from any multiple-zero search. For every fixed epsilon>0, Polymath Theorem 1.5 then makes the large-x part of `epsilon<=t<=0.22` finite, leaving only a compact validated-computation problem. On this track the genuinely noncompact analytic regime is indeed the singular wedge `t->0+`, `log x ~ 1/t`.
+1. **Unrestricted published-input track U.** If the published unconditional theorem `Lambda <= 0.22` is admitted as a black box, then the region `t>0.22` is finished: choose `Lambda<s<t`; `H_s` has only real zeros, and strict forward heat evolution rules out multiple zeros. Our backward-heat/Hermite argument already proves the needed implication `t>Lambda => all zeros of H_t are simple`.
 
-### Strict project track S
-The project constitution forbids finite-height RH verification anywhere in the proof ancestry. Polymath Theorem 1.1 `Lambda<=0.22` fails this stricter admissibility test because its proof uses Theorem 1.2 hypothesis (i), numerical verification of RH at time zero. Therefore `t>0.22` cannot be declared finished on the strict track by that theorem.
+2. **Strict project track S.** The project constitution forbids finite-height RH verification anywhere in the dependency closure. Polymath Theorem 1.1 (`Lambda<=0.22`) is mathematically unconditional but its proof uses finite-height RH verification. Therefore `t>0.22 is finished` is **not admissible on Track S**. It is a valid Track-U simplification only.
 
-However, this does **not** destroy the main strategic insight. Polymath Theorem 1.5 is an unconditional analytic large-x theorem and is admissible independently of Theorem 1.1. Hence for every fixed epsilon>0, the large-x region `epsilon<=t<=1/2` is already controlled by literature, leaving a compact finite rectangle plus the same singular wedge as epsilon tends to zero. Thus the singular wedge remains the correct place for new uniform analysis even on the strict track; only the numerical top time is `1/2` rather than `0.22` unless an admissible strict upper bound for Lambda is supplied.
+This distinction is mandatory.
 
-## Corrections to individual claims
+## Claims confirmed from the literature
 
-1. **`Lambda<=0.22`**: unconditional in the ordinary mathematical sense, but not admissible under the project's transitive no-finite-height-RH-verification policy. Keep it only on Track U.
+### Polymath Theorem 1.5
 
-2. **Heat operator and simplicity**: the Craven–Csordas theorem does provide a ready-made strict simplicity result: if `f` is in the Laguerre–Polya class and has order less than two, then `exp(-alpha D^2) f` has only real simple zeros for `alpha>0`. This can replace the project's custom local backward-Hermite proof of interior simplicity on Track U, once the hypotheses for `H_s` are explicitly checked. In particular, do not merely infer `H_s in LP` from “all zeros real” without checking the growth/genus hypothesis; for the de Bruijn–Newman family this check should be recorded explicitly.
+For `0<t<=1/2`, sufficiently large absolute `C`, and `x>=exp(C/t)`, every zero `H_t(x+iy)=0` has `y=0` and lies `O(x^{-ct})` from an explicit real location `x_n`. Conversely, for sufficiently large `n` there is exactly one zero, counting multiplicity, in a small disk around `x_n`; hence that large zero is real and simple.
 
-3. **Ki–Kim–Lee**: the useful statement is fixed-time asymptotic simplicity/reality: for each fixed positive deformation parameter, all but finitely many zeros are real and simple. It is not by itself a uniform theorem as `t->0`; the threshold may escape rapidly. Therefore it motivates the reduction but does not remove the singular wedge.
+This is an unconditional effective refinement of Ki--Kim--Lee and is directly useful on the strict track.
 
-4. **Polymath Theorem 1.5**: this is the effective uniform replacement needed by the program. For `0<t<=1/2`, sufficiently large zeros are controlled once `x>=exp(C/t)` for an absolute C. Its proof improves/makes effective the Ki–Kim–Lee asymptotics. The argument-principle part yields uniqueness counting multiplicity in the relevant large-x boxes, so simplicity is available there, not merely reality.
+### Ki--Kim--Lee (2009)
 
-5. **Compact reduction**: for each fixed epsilon>0, `exp(C/t)<=exp(C/epsilon)`. Thus the complement of the large-x theorem inside `epsilon<=t<=Tmax` is compact. This is a valid structural reduction. It does **not** mean one finite computation settles all positive t, because `X(epsilon)` diverges exponentially as epsilon->0.
+For every fixed positive heat parameter, all but finitely many zeros are real and simple. This is qualitatively strong but not by itself uniform as `t->0`; Polymath Theorem 1.5 supplies the effective scale `x>=exp(C/t)`.
 
-6. **Singular wedge**: the natural scale is `lambda=t log(x/(4 pi))=O(1)`. This is exactly the noncompact boundary layer left by `x~exp(C/t)`. The existing exact-weight PSC, APVC, and Riemann–Siegel work should be reinterpreted as tools for this wedge, not as a need to rebuild all fixed-positive-time asymptotics.
+### Platt--Trudgian
 
-7. **de Bruijn strip contraction**: useful for zero-strip geometry and the definition/monotonicity of Lambda, but not a substitute for simplicity. Keep as background/reduction machinery.
+They rigorously verified RH up to height `3*10^12`. This can strengthen numerical-verification inputs in upper-bound criteria, but any such use is excluded from Track S by policy. A `~0.20` de Bruijn--Newman upper bound must not be promoted here without an independent derivation through the full Polymath criterion.
 
-8. **Laguerre inequality L1**: `L1=f'^2-ff''`. Positivity of L1 is a necessary LP inequality and is useful as a local collision diagnostic, but L1 alone does not characterize LP or globally exclude all nonreal zeros. Generalized Laguerre inequalities require all orders.
+### PF5 obstruction
 
-9. **Zero-motion ODEs**: use only after simplicity is already known. Polymath explicitly points to the Ki–Kim–Lee verification in the regime `t>Lambda`; these ODEs must not be used to prove the simplicity needed to justify themselves.
+The 2026 preprint by Wojciech Michalowski gives a certified negative 5x5 Toeplitz minor for the classical de Bruijn--Newman kernel, proving it is not PF5. Therefore any route requiring the original kernel to be PF_infinity (or even PF5) is impossible. The global PF4 question remains open, so the correct conclusion is to archive **PF_infinity / total positivity of the original kernel as a direct route**, not every finite-order positivity idea.
 
-10. **PF5 obstruction**: the 2026 preprint arXiv:2602.20313 gives a certified negative 5x5 Toeplitz minor for the original de Bruijn–Newman kernel, proving it is not PF5. This kills the direct strategy “prove the original kernel is PF-infinity”. It does not rule out every total-positivity-inspired transformed-kernel argument. Also, the preprint's global PF4 status is not the same as its certified Toeplitz configuration statement; do not overstate it.
+## Corrections to the proposed reduction
 
-11. **Platt–Trudgian height 3e12**: their published theorem rigorously verifies RH up to height `3*10^12` and simplicity there. This can improve a Polymath-style upper-bound computation on Track U, but the exact resulting Lambda bound must be independently certified from the Polymath criterion; do not simply import an approximate `0.20` as a theorem of Platt–Trudgian themselves.
+### Correction 1: Theorem 1.5 does not hand us a small explicit numerical `C`
 
-## Program changes
+The theorem states existence of sufficiently large absolute constants `C,c`. For a formal validated-computation rectangle one must extract/instantiate constants from the proof, or use our stronger explicit shoulder certificate.
 
-### Archive / stop developing as primary routes
+### Correction 2: the remaining singular region is a compact lambda window
 
-- Global “invent a collision barrier for every `0<t<=1/2` at once”.
-- Direct PF-infinity / total positivity of the original de Bruijn–Newman kernel.
-- Re-derivation of the effective Riemann–Siegel approximation already supplied by Polymath.
-- Zero-motion ODE as a pre-simplicity proof mechanism.
-- Using first Laguerre inequality alone as a global LP criterion.
+Theorem 1.5 removes `x>=exp(C/t)`, i.e. `lambda=t log(x/(4pi)) >= C+o(1)`. Our explicit strict shoulder certificate is numerically sharper: Round 80 records `lambda>=6.83`. Thus the unresolved escaping wedge is explicitly `lambda<6.83`, together with the bounded-x/core region.
 
-### Keep, but change role
+The singular difficulty is therefore the compact scaled window in lambda as `t->0+`, not arbitrary `x->infinity`.
 
-- Old PSC / exact weights: singular-wedge asymptotic certificate.
-- APVC / secant APVC / joint invariant J: singular-wedge transversality tools when the scalar PSC loses sign.
-- Validated finite-box computation: compact middle-region closer, not the main asymptotic theory.
-- Boundary-collision compactness argument: logical bridge showing why global positive-time no-collision would imply RH.
-- de Bruijn strip theorem: background geometry and compactness control.
+### Correction 3: fixed-epsilon reduction is logically finite, not automatically computationally cheap
 
-### Literature-completed modules
+For every `epsilon>0`, Theorem 1.5 gives a finite large-x cutoff, so `[epsilon,0.22]` on Track U or `[epsilon,1/2]` on Track S reduces to a bounded x-region plus an asymptotic tail. But the cutoff can be exponentially large in `1/epsilon`; this is a compactness reduction, not yet a practical computation.
 
-- Effective large-x fixed-positive-time asymptotics: Polymath Theorem 1.5.
-- Fixed-time qualitative eventual real/simple zeros: Ki–Kim–Lee.
-- Strict heat smoothing of an LP function to simple real zeros: Craven–Csordas, after explicit hypothesis check.
-- Effective Riemann–Siegel representation and errors: Polymath Theorem 1.3 / Corollary 6.5.
+### Correction 4: de Bruijn strip contraction is localization, not the missing singular proof
 
-## New canonical strict architecture
+The strip-shrinking theorem is an important global structural input. It does not eliminate the need to control the transition as `t->0`, where the relevant bounds degenerate.
 
-For every chosen epsilon>0:
+### Correction 5: Laguerre inequalities are not free positivity
 
-1. **Large x**: invoke Polymath Theorem 1.5 on `epsilon<=t<=1/2`; no new asymptotic proof is needed there.
-2. **Compact middle**: certify the finite rectangle left below the effective threshold by validated computation or stronger analytic certificates.
-3. **Singular wedge**: seek a theorem uniform as `t->0+` with `lambda=t log(x/(4pi))` bounded. This is the primary innovation target.
-4. **Match/overlap** the wedge theorem to the fixed-positive-time large-x theorem and compact certificates.
+`L1=f'^2-ff''` is an exact identity/functional. But asserting its global nonnegativity for the relevant entire function can encode real-rootedness/Laguerre--Polya information. It must not be imported as automatic in the unknown region.
 
-On unrestricted Track U, replace `1/2` above by `0.22`, and use Craven–Csordas plus `Lambda<=0.22` to remove all `t>0.22` entirely.
+### Correction 6: zero-motion ODEs remain downstream tools
 
-## Immediate research task
+Use them only where simplicity has already been established (for example `t>Lambda`), not to prove simplicity in the unknown region. Polymath explicitly flags this restriction.
 
-Before pushing the numerical shoulder from 6.85 toward 6.83 further, pause the brute-force frontier campaign and perform a dedicated literature survey for the singular scaling
+## Program decision
 
-` t -> 0+, x = exp(lambda/t + O(1)), lambda=O(1) `.
+### Archive as primary research routes
 
-Search specifically for:
+- rebuilding the Polymath Riemann--Siegel approximation from scratch;
+- PF_infinity / total positivity of the original de Bruijn--Newman kernel;
+- global zero-motion ODE as a simplicity proof;
+- trying to invent one monolithic certificate over all `(t,x)`;
+- on Track U only: any work devoted to `t>0.22`.
 
-- uniform saddle-point / steepest-descent expansions of `H_t` in the double-scaling regime;
-- Ki–Kim–Lee asymptotics with explicit dependence on t;
-- Polymath Proposition 9.1 / Theorem 1.5 constants and whether their `exp(C/t)` threshold can be sharpened in the lambda coordinate;
-- Stokes transitions and two-saddle interference for the Riemann xi heat deformation;
-- uniform asymptotics of the heat-weighted Riemann–Siegel sum when `t log x` is fixed;
-- entire-function zero-exclusion criteria adapted to a dominant term plus conjugate saddle;
-- any existing transversality/simple-zero theorem uniform in this scaling;
-- rigorous asymptotic control of the exact weights `b_n^t n^{-s_*}` as `t->0` at fixed lambda.
+### Retain as infrastructure
 
-The research question is no longer “how do we control all positive times?” but:
+- Polymath Theorem 1.3 / Corollary 6.5 explicit approximation and errors;
+- Theorem 1.5 / KKL for far-tail structure and compactness;
+- de Bruijn strip contraction for global localization;
+- local LP/heat-flow simplicity theorem or the equivalent backward-Hermite proof for already-real-rooted times;
+- PSC/APVC/secant/joint-jet certificates as local tools;
+- validated computation for compact rectangles;
+- dependency/circularity auditing.
 
-> Can the singular double-scaling wedge be given a uniform no-multiple-zero theorem whose constants overlap the already literature-controlled fixed-positive-time region?
+### New primary analytic target
 
-That is the canonical innovation target after this audit.
+Study the singular double scaling
+
+` t -> 0+,   x -> infinity,   lambda=t log(x/(4pi)) in a fixed compact interval.`
+
+The current strict shoulder theorem means the only escaping wedge that can still contain a positive-time multiple real zero is `lambda<6.83`. The next literature survey should therefore target **uniform asymptotics in this double scaling**, not general de Bruijn--Newman theory.
+
+Search themes:
+
+- uniform steepest descent / saddle-point asymptotics with `t log x` fixed;
+- uniform Riemann--Siegel expansions under heat flow;
+- transition asymptotics for the two conjugate saddle contributions `A+B-C`;
+- uniform derivative asymptotics (`H_t,H_t'`) in the scaled variable;
+- entire-function zero simplicity under small Gaussian heat perturbations;
+- logarithmic-derivative and phase-velocity asymptotics in the lambda scaling;
+- whether Ki--Kim--Lee or later refinements contain uniform constants in this regime;
+- strong universal factors and strip contraction with quantitative small-time constants.
+
+## Policy
+
+Track U and Track S are both mathematically useful, but only Track S is canonical under the user's no-finite-height-RH-verification rule.
+
+Do not silently use `Lambda<=0.22` in Track S.
