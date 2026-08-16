@@ -1,0 +1,17 @@
+HOSTILE DEPENDENCY AUDIT: direct K=2048 cover from lambda 6.19 to canonical lambda 7.08
+GitHub Actions run: 31924487091
+Precision: 512 bits
+
+PSC lambda [6.19,7.08] t<=0.22 PREC=512 ibox=[0,32) boxes=2848 fail=0
+minimum_margin_lower=0.049218384939129022
+worst_t=[0.219500,0.220000] lambda=[6.1900,6.2000]
+A0_upper=0.82853202750245358 A1_upper=2.3383369555918039
+GRID_RESULT pass=1
+
+Original committed verifier SHA256:
+2f3baa98f8c8e289fe6ee7aa270196c2fc4757a8230378c2a6ca861c4164f040
+
+Deterministically extended verifier SHA256:
+376b2d065089da19c3f878c432fbf265e51d2567130ca729972835930b89196d
+
+The extended verifier differs only by increasing the number of 0.01-wide lambda boxes from 85 to 89, updating the printed box count, and changing the diagnostic label from [6.19,7.04] to [6.19,7.08]. All mathematical inequalities and directed-rounding operations are unchanged.
