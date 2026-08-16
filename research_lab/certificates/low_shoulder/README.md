@@ -5,211 +5,185 @@
 **Referee verification:** PENDING.  
 **Novelty:** UNVERIFIED.
 
-This directory now tracks **two logically different proof policies**. They must not be conflated.
+This directory tracks two logically distinct proof policies. They must not be conflated.
 
 ---
 
-## 1. Strict project track — canonical for this research program
+## 1. Canonical strict track
 
-The user's research constitution forbids finite-height verification of RH from entering the global proof dependency closure.
+The project constitution forbids finite-height verification of RH anywhere in the global proof dependency closure.
 
-Under that rule, the strongest currently certified shoulder theorem is Round 76:
+The strongest currently certified strict shoulder theorem is Round 78:
 
 \[
 \boxed{
 0<t\le\frac12,
 \qquad
-\lambda=t\log\frac{|x|}{4\pi}\ge6.90
+\lambda=t\log\frac{|x|}{4\pi}\ge6.85
 \Longrightarrow
 (H_t(x),H_t'(x))\ne(0,0).
 }
 \]
 
-Thus
+Hence
 
 \[
-\boxed{C_{\rm strict}=6.90.}
+\boxed{C_{\rm strict}=6.85.}
 \]
 
 Status:
 
 - `INTERNALLY_PROVED`;
 - `512/768-BIT DIRECTED-ROUNDING CERTIFIED`;
-- direct/transitive dependency audit currently passes the no-finite-height-RH-verification rule;
+- strict direct/transitive dependency audit passed internally;
 - `REFEREE_VERIFIED: PENDING`;
+- `NOVELTY_UNVERIFIED`;
 - RH remains OPEN.
 
-Canonical strict ingredients:
+### Round-78 proof cover
 
-- unconditional analytic effective Riemann--Siegel estimates of D.H.J. Polymath (Theorem 1.3 / Corollary 6.5 and explicit error bounds), not the paper's global `Lambda<=0.22` theorem;
-- Round 64 exact-weight moment collapse;
-- Round 65 scaled PSC limit;
-- Round 66 true-weight convex tails;
-- Round 74 anchored phase-velocity certificate (APVC) and its soft cutoff-slope addendum;
-- MPFR 512/768-bit finite covers from Round 76.
+1. `0<t<=0.01`, `6.85<=lambda<=6.90`: old PSC scalar audit;
+2. `0.01<=t<=0.39`, `6.85<=lambda<=6.90`: old PSC finite box cover;
+3. `0.39<=t<=0.40`, `6.85<=lambda<=6.90`: one-box hybrid PSC/APVC bridge;
+4. `0.40<=t<=0.50`, `6.85<=lambda<=6.90`: hybrid PSC/soft-APVC finite cover;
+5. `lambda>=6.90`: Round 76.
 
-Round-76 strict proof cover:
+Small-time 512/768 outputs both give
 
-1. `0<t<=0.01`, `6.90<=lambda<=7.08`: old PSC scalar audit;
-2. `0.01<=t<=0.40`, `6.90<=lambda<=7.08`: old PSC full box cover;
-3. `0.40<=t<=0.50`, `6.90<=lambda<=7.08`: hybrid PSC/APVC cover;
-4. `lambda>=7.08`: previously certified strict shoulder theorem.
+\[
+A_0\le0.79029481144039537,
+\quad
+A_1\le1.1024916858605442,
+\]
 
-Key Round-76 certificates:
+\[
+S_0\ge0.20970518855960468,
+\]
 
-- `small_time_lambda690_audit.c`;
-- `small_time_lambda690_audit_512.txt`;
-- `small_time_lambda690_audit_768.txt`;
+\[
+E_0<9.66030175757482\times10^{-189},
+\quad
+E_1<8.2364361699484526\times10^{-165},
+\]
+
+with final margin
+
+\[
+70.715136308661144>0.
+\]
+
+Lower compact cover `0.01<=t<=0.39`:
+
+- 3550 certified leaves;
+- 0 unresolved;
+- exact area `0.0190`;
+- min margin `0.001044027968617486`;
+- identical 512/768 certified SHA  
+  `49ce2af659a22dbcf1785f563753f90f3bcc7e2d1629e3943628625b0a810dc6`.
+
+Narrow APVC bridge `0.39<=t<=0.40`:
+
+- 1 certified leaf at both precisions;
+- 0 unresolved;
+- exact area `0.0005`;
+- margin `0.045343087717464883`;
+- identical certified SHA  
+  `25ef22025eee18a222e973ee58c5419f651a8a3afad2181e39822fa0768e4145`.
+
+Upper compact cover `0.40<=t<=0.50`:
+
+- 2491 certified leaves;
+- 0 unresolved;
+- exact area `0.0050`;
+- min margin `0.000052714776399973518`;
+- identical certified SHA  
+  `cc3cb2434f76519df67a68fc4b7653ea87919c88122eb91ce55353d59e570d13`.
+
+Canonical strict tools:
+
+- `small_time_lambda685_audit.c`;
+- `strict_small_time_lambda685_512.txt`;
+- `strict_small_time_lambda685_768.txt`;
 - `convex_tail_psc_box_mpfr.c`;
+- `adaptive_psc_lambda_tiler.py`;
 - `make_hybrid_apvc_verifier.py`;
 - `soften_hybrid_apvc.py`;
-- `adaptive_psc_lambda_tiler.py`.
-
-The high-time hybrid cover at `K=512` had, identically at 512 and 768 bits:
-
-- `409` certified leaves;
-- `0` unresolved;
-- exact area `0.0180`;
-- minimum lower margin `0.000013123697123932965`;
-- certified-manifest SHA256  
-  `d2d632971fcc3f0bbfcecc41e674005e1aeaa4cc48ed58b9ed70572a2bc12734`.
-
-The lower-time cover had:
-
-- `3301` certified leaves;
-- `0` unresolved;
-- exact area `0.0702`;
-- minimum lower margin `0.0083044035209287551`;
-- certified-manifest SHA256  
-  `d09a13b1fb2d17cba892d2bf6975b2ce002c405a240f09a999c90ee7a04fef0c`.
+- `lower_apvc_activation.py`;
+- Round 74 APVC and soft cutoff-slope addendum;
+- Round 75 convex-secant APVC (reserved sharpening).
 
 The next strict target is
 
 \[
-\boxed{C_{\rm strict,target}=6.85.}
+\boxed{C_{\rm strict,target}=6.83.}
 \]
+
+A 512/768 diagnostic has been launched with old PSC on lower time and soft APVC on the upper corner. `6.83` is not proved unless and until a complete cover and small-time audit pass.
 
 ---
 
-## 2. Unrestricted published-input track — useful but noncanonical here
+## 2. Unrestricted unconditional published-input track
 
-If every mathematically unconditional published theorem is allowed as a black-box input regardless of its computational proof ancestry, Rounds 73/75 establish
+If all mathematically unconditional published results are admitted regardless of their computational proof ancestry, the project also has
 
 \[
-\boxed{C_{\rm unrestricted}=6.19.}
+\boxed{C_U=6.19.}
 \]
 
-using the published Polymath theorem
+This route uses the published D.H.J. Polymath theorem
 
 \[
 \Lambda\le0.22
 \]
 
-to discard all times `t>0.22`, plus a K=2048 PSC certificate on `0<t<=0.22`.
+to remove all `t>0.22`, together with a K=2048 direct PSC certificate on `0<t<=0.22`.
 
-The associated numerical certificate is substantial and remains valuable:
+The `6.19` theorem is mathematically unconditional in the usual sense, but it is **not canonical on the strict track** because the proof of Polymath Theorem 1.1 uses a finite-height numerical verification of RH as an ingredient in its upper-bound criterion. Round 77 records the transitive dependency audit.
 
-- direct rectangle `0<t<=0.22`, `6.19<=lambda<=7.08`;
-- 2848 exact rational boxes;
-- 512/768-bit reruns;
-- weakest margin `0.049218384939129022`;
-- no failed boxes.
+Thus:
 
-Canonical unrestricted files include:
+\[
+\boxed{C_U=6.19,\qquad C_{\rm strict}=6.85.}
+\]
 
-- `convex_tail_psc_lambda619_mpfr.c`;
-- `lambda619_error_audit.c`;
-- `lambda619_error_512.txt`;
-- `lambda619_error_768.txt`;
-- `extend_lambda619_to708.py`;
-- `convex_tail_psc_lambda619_to708_512.txt`;
-- `convex_tail_psc_lambda619_to708_768_chunks.txt`.
-
-Original K=2048 source SHA256:
-
-`2f3baa98f8c8e289fe6ee7aa270196c2fc4757a8230378c2a6ca861c4164f040`.
-
-Generated `[6.19,7.08]` verifier SHA256:
-
-`376b2d065089da19c3f878c432fbf265e51d2567130ca729972835930b89196d`.
+The distinction is methodological, not a claim that the published `Lambda<=0.22` theorem is conditional.
 
 ---
 
-## 3. Why `6.19` is not canonical on the strict track
+## 3. Strict admissible analytic inputs
 
-The earlier hostile audit incorrectly stated that the `6.19` dependency graph did not use finite-height verification of RH.
+The strict route uses the analytic effective Riemann--Siegel estimates in D.H.J. Polymath Theorem 1.3 / Corollary 6.5. Their analytic proof is separate from the finite-height numerical-verification hypothesis used for Theorem 1.1.
 
-That statement was correct only for the **direct** Round-73 code and false for the **transitive** dependency graph.
+The strict route does **not** use, directly or transitively:
 
-D.H.J. Polymath's proof of Theorem 1.1 (`Lambda<=0.22`) explicitly uses an upper-bound criterion whose hypothesis (i) is titled
-
-`Numerical verification of RH at initial time 0`.
-
-The paper applies the criterion with `X` close to `6 x 10^10` and explicitly explains that this choice is near the limit of the known numerical verification of RH needed for that hypothesis.
-
-Therefore
-
-\[
-\text{finite-height RH verification}
-\to
-\Lambda\le0.22
-\to
-\text{time reduction}
-\to
-C=6.19.
-\]
-
-This does **not** make `Lambda<=0.22` conditional or mathematically circular. It is an unconditional published theorem. But it violates the stricter project rule that finite-height RH verification not appear anywhere in the proof ancestry.
-
-The correction is formalized in:
-
-`research_lab/runs/2026-08-16_round77_transitive_dependency_audit_lambda619.md`.
+- RH;
+- `Lambda<=0` or `Lambda=0`;
+- Polymath Theorem 1.1 `Lambda<=0.22`;
+- finite-height RH verification;
+- all-real zeros of `H_0`;
+- GUE/pair correlation as proof facts;
+- Laguerre--Polya membership;
+- negative-time Rodgers--Tao estimates whose proof starts inside a `Lambda<0` contradiction setup.
 
 ---
 
-## 4. Interior simplicity lemma
+## 4. Current mathematical frontier
 
-The local lemma used on the unrestricted track remains valid:
-
-\[
-t>\Lambda
-\Longrightarrow
-\text{every zero of }H_t\text{ is simple}.
-\]
-
-If a real zero at `t_0>Lambda` had multiplicity `m>=2`, a sufficiently small backward heat step has scaled local leading model
-
-\[
-e^{+\partial_w^2}w^m=i^{-m}Q_m(iw),
-\]
-
-where `Q_m=e^{-\partial_w^2}w^m` has distinct real Hermite zeros. The backward model therefore has a nonreal zero, and Rouche/Hurwitz transfers it to the exact function at a nearby time still greater than `Lambda`, contradicting the definition of `Lambda`.
-
-The lemma is not the problem; only the strict admissibility of the numerical value `0.22` is.
-
----
-
-## 5. Current research frontier
-
-For the canonical strict program:
-
-\[
-\boxed{C_{\rm strict}=6.90.}
-\]
-
-The immediate target is `6.85` using the hierarchy:
-
-1. old exact-weight PSC for small and lower times;
-2. Round-74 soft APVC for the finite-time upper corner;
-3. Round-75 convex-secant APVC if residual boxes are due to majorant loss;
-4. joint invariant `J` / exact joint-jet only after a genuine pointwise APVC obstruction is localized.
-
-The deeper asymptotic sign floor of the unchanged triangle PSC remains
+The old triangle PSC has small-time asymptotic sign floor
 
 \[
 \lambda_*=4.914588956\ldots,
 \]
 
 which is not a collision threshold.
+
+The active finite-time obstruction occurs much higher, near `t=1/2`. Round 74's anchored phase-velocity certificate materially improved this corner. Its pointwise diagnostic boundary at `t=1/2` is near `lambda≈6.8188`; this number is **heuristic/diagnostic, not a theorem**.
+
+The current execution order is:
+
+1. test strict `6.83` with old PSC + soft APVC;
+2. if only majorant/interval losses remain, deploy Round-75 convex-secant APVC;
+3. if a genuine pointwise APVC failure persists, stop subdivision and move to the phase-sensitive invariant `J` or exact joint-jet certificate;
+4. keep the Round-65 small-time PSC as the stronger singular-limit mechanism.
 
 RH remains OPEN.
