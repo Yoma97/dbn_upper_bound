@@ -1,0 +1,91 @@
+as_of: 2026-08-16
+purpose: "Addendum for the singular-wedge/exponential-sum program developed in Rounds 82-88. This file supplements source_registry.yaml and does not silently promote partially audited inputs."
+
+sources:
+  - id: arias_de_reyna_vdc_2024
+    tier: B
+    type: current_preprint
+    author: "Juan Arias de Reyna"
+    arxiv: "2407.02094"
+    title: "Explicit van der Corput's d-th derivative estimate"
+    result: "Gives an explicit d-th derivative exponential-sum estimate with finite constants; Round 84 reconstructs the d=3 specialization for f(u)=|tau| log(u)/(2pi), yielding a direct bound for the individual logarithmic half-sum."
+    restriction: "Current preprint. The d=3 consequence used by Round 84 was independently derived from the theorem statement; referee verification of the project application remains pending."
+
+  - id: trudgian_yang_exponent_pairs_2026
+    tier: B
+    type: current_preprint
+    authors: "Tim Trudgian; Andrew Yang"
+    arxiv: "2306.05599"
+    result: "Records the standard exponent-pair normalization for model phases, published historical exponent pairs, and new current-preprint exponent pairs/beta bounds. The logarithmic phase f(u)=|tau| log(u)/(2pi) fits the sigma=1 model exactly."
+    restriction: "Use published historical rows as a source map subject to original-source auditing. New Trudgian-Yang rows remain frontier inputs until independently reconstructed."
+
+  - id: antedb_beta_database
+    tier: B
+    type: living_research_database
+    maintainers: "Terence Tao; Tim Trudgian; Andrew Yang and contributors"
+    result: "Defines beta(alpha) for logarithmic exponential sums and records piecewise published/current best upper bounds with bibliographic provenance. Round 86 uses a finite published-only envelope and verifies the finite rational assembly independently."
+    restriction: "A living database is not a substitute for primary-source theorem lines. Use as a theorem map; preserve PARTIAL_SOURCE_LINE_AUDIT labels where originals were not opened."
+
+  - id: sargos_1995_exponent_pair
+    tier: A
+    type: published
+    author: "Patrick Sargos"
+    journal: "Proceedings of the London Mathematical Society 70 (1995), 285-312"
+    title: "Points entiers au voisinage d'une courbe, sommes trigonometriques courtes et paires d'exposants"
+    result: "Published exponent pair recorded by Trudgian-Yang/ANTEDB: (1959/21656, 16135/21656). Its affine beta line is a binding component in Round 86."
+    restriction: "Bibliographic provenance cross-checked; exact paywalled original theorem line not directly transcribed in this project run, so Round 86 keeps PRIMARY_SOURCE_LINE_AUDIT=PARTIAL."
+
+  - id: huxley_kolesnik_2001_pair
+    tier: A
+    type: published
+    authors: "M. N. Huxley; G. Kolesnik"
+    publication: "Number Theory (Turku, 1999), de Gruyter, 2001, pp. 131-143"
+    title: "Exponential sums with a large second derivative"
+    result: "Published exponent pair recorded by Trudgian-Yang/ANTEDB: (516247/6629696, 5080955/6629696)."
+    restriction: "Not used in the final published-only Round 86 binding kink; retained for Round 85 comparison. Exact original theorem line not directly transcribed here."
+
+  - id: huxley_beta_tables
+    tier: A
+    type: published_monograph_results
+    author: "M. N. Huxley"
+    result: "Published piecewise beta(alpha) bounds recorded in the classical Tables 17.1 and 19.2 and reproduced with exact rational lines in ANTEDB. Round 86 uses these rows in a finite published-only beta envelope."
+    restriction: "Finite assembly checked exactly by project verifier. Some original monograph table lines were accessed through the independent ANTEDB/Trudgian-Yang transcription rather than direct paywalled primary pages; preserve PARTIAL_SOURCE_LINE_AUDIT."
+
+  - id: bourgain_2017_beta_bounds
+    tier: A
+    type: published
+    author: "Jean Bourgain"
+    arxiv: "1408.5794"
+    journal: "Journal of the American Mathematical Society 30 (2017), 205-224"
+    doi: "10.1090/jams/860"
+    result: "Published logarithmic exponential-sum/subconvexity bounds. ANTEDB records the relevant piecewise beta(alpha) lines and the limiting exponent pair (13/84,55/84). Rounds 85-86 use these only as direct half-sum exponential-sum inputs, not as a full-zeta nonvanishing theorem."
+
+  - id: polymath_dbn_analytic_theorem13
+    tier: A
+    type: published
+    arxiv: "1904.12438"
+    result: "Theorem 1.3 gives the effective heat-flow Riemann-Siegel approximation with explicit errors. Equation (23) has the full numerator [t^2 log^2(...)/16 + 0.626] divided by x-6.66; this placement was hostile-audited before Rounds 84-86."
+    restriction: "The analytic approximation is admissible on the strict track. Do not import Theorem 1.1/Lambda<=0.22 because its proof ancestry contains finite-height RH verification."
+
+statuses:
+  round84_vdc3:
+    external_input: "arias_de_reyna_vdc_2024"
+    project_status: "INTERNALLY_PROVED; INDEPENDENT_RECONSTRUCTION_PENDING"
+  round85_bourgain_corollary:
+    external_input: "bourgain_2017_beta_bounds"
+    project_status: "INTERNALLY_PROVED"
+    threshold: "84/29"
+  round86_published_beta:
+    external_inputs:
+      - sargos_1995_exponent_pair
+      - huxley_beta_tables
+      - bourgain_2017_beta_bounds
+      - antedb_beta_database
+    project_status: "INTERNALLY_PROVED_RELATIVE_TO_RECORDED_PUBLISHED_BOUNDS; EXACT_RATIONAL_ASSEMBLY_CI_PASS; PRIMARY_SOURCE_LINE_AUDIT_PARTIAL"
+    threshold: "1818938190755/715895297312"
+  round87_lambda2_barrier:
+    external_input: null
+    project_status: "PROVED_STRUCTURAL_NO_GO"
+  round88_endpoint_moment_constraint:
+    external_input: null
+    project_status: "PROVED_IDENTITY_AND_KERNEL_NO_GO; EMT_OPEN"
