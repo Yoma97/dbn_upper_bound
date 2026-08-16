@@ -244,17 +244,25 @@ For invention value, not theorem strength,
 
 The older local heat-flow routes remain valid diagnostics but are no longer the primary invention target.
 
-## Round 62 target
+## Round 62 invention gate
 
-Start prime-side, not zero-side.
+The next round must start prime-side, not by postulating an operator whose spectrum is the zero set.
 
-Construct the lowest-complexity candidate generating functional from local prime/divisor variables and compare its logarithmic fourth coefficient with the exact four-shift cumulant of `Lambda`.
+Construct the lowest-complexity generating functional from local prime/divisor variables and compare its logarithmic fourth coefficient with the exact four-shift cumulant of `Lambda`.
 
 Mandatory falsification test:
 
 > If the local/Euler-product predicted fourth connected coefficient differs from the true von-Mangoldt fourth cumulant by a main-order term, naive local independence is refuted. Isolate that mismatch and ask whether it is a bilinear/dispersion correction already controlled by sieve or large-sieve technology.
 
-If instead the mismatch is small under an established theorem, that would be the first concrete candidate for a finite all-orders arithmetic generator.
+Promotion gate:
+
+1. the construction must be defined prime-side without unknown zero locations;
+2. its second and fourth connected coefficients must be derived, not postulated;
+3. any mismatch at fourth order must be bounded using a theorem weaker than Hardy--Littlewood for all quadruples;
+4. the same structure must plausibly generate higher connected orders from one uniform estimate;
+5. it must have an application outside RH, for example to long Dirichlet-polynomial variance or short-interval prime fluctuations.
+
+If the fourth-order mismatch is main order and irreducible to controlled bilinear/dispersion input, the naive local-prime generator is rejected and the precise missing global-coupling correction becomes the next new-tool target.
 
 A parallel lower-risk branch should seek a fixed fractional `kappa>0` variance saving for the exact triangular/Gaussian weights, since even a partial horizontal zero-free band would be a genuine theorem and a useful testbed.
 
