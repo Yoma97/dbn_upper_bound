@@ -1,0 +1,40 @@
+{
+  "proved_uniform_threshold": 10.52,
+  "rho": 0.1,
+  "worst_L": 21.04,
+  "p_majorant": 1.814,
+  "moment_bounds_512": {
+    "A0_upper": 0.86163407218445032,
+    "A1_upper": 1.4447738039620295,
+    "M": 1000000
+  },
+  "scalar_audit_512": {
+    "E0_upper": 2.7089628056294753e-8,
+    "E1_upper": 4.6814403659606247e-7,
+    "phase_lhs_lower": 0.0051788904933024764,
+    "margin_lower": 0.0051784223492658803,
+    "pass": true
+  },
+  "scalar_audit_768": {
+    "E0_upper": 2.7089628056294753e-8,
+    "E1_upper": 4.6814403659606247e-7,
+    "phase_lhs_lower": 0.0051788904933024764,
+    "margin_lower": 0.0051784223492658803,
+    "pass": true
+  },
+  "full_boundary_regression_512_768": {
+    "t": [0.5, 0.5],
+    "x": [17249073123, 17249073124],
+    "N": 37049,
+    "A0_upper": 0.20955042280644084,
+    "S0_lower": 0.79044957719355913,
+    "A1_upper": 0.22794011633558037,
+    "phi_x_abs_lower": 5.2600000000084099,
+    "E0_upper": 6.1712779628413665e-9,
+    "E1_upper": 1.050380124067183e-7,
+    "phase_margin_lower": 8.0875893307159448,
+    "pass": true
+  },
+  "status": "PROVED_HIGH_SHOULDER_ONLY",
+  "warning": "4.914588956... is not a proved collision-exclusion threshold."
+}
