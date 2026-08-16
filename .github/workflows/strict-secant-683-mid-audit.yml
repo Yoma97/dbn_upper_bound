@@ -1,0 +1,47 @@
+name: Strict secant APVC lambda 6.83 middle audit
+
+on:
+  push:
+    branches: [research-lab-agents]
+    paths:
+      - '.github/workflows/strict-secant-683-mid-audit.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        prec: [512, 768]
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Generate Round-75 secant source
+        run: |
+          python research_lab/certificates/low_shoulder/make_hybrid_apvc_verifier.py
+          python research_lab/certificates/low_shoulder/soften_hybrid_apvc.py
+          python research_lab/certificates/low_shoulder/lower_apvc_activation_035.py
+          python research_lab/certificates/low_shoulder/use_secant_apvc.py
+      - name: Compile verifier
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} research_lab/certificates/low_shoulder/hybrid_psc_apvc_box_mpfr.c -lmpfr -lgmp -o secant_box
+      - name: Run middle-time secant cover
+        run: |
+          python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            ./secant_box 0.35 0.48 6.83 6.85 10 512 secant683-mid-${{ matrix.prec }} 8
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: secant683-mid-${{ matrix.prec }}
+          path: |
+            secant683-mid-${{ matrix.prec }}_summary.json
+            secant683-mid-${{ matrix.prec }}_unresolved.csv
+            secant683-mid-${{ matrix.prec }}_certified.csv
