@@ -1,0 +1,6 @@
+PSC lambda [7.039,7.040] PREC=512 ibox=[0,121) boxes=2420 fail=0
+minimum_margin_lower=8.1308819976975806e-05
+worst_t=[0.499995000,0.500000000] lambda=[7.039000,7.039050]
+A0_upper=0.75336953480989255 A1_upper=1.7284927358380489
+GRID_RESULT pass=1
+Local source SHA256 before commit: c9088de84d25d7d4cb4af8809741fb9eaa07361571430461f6fe8166e0bc86bf
