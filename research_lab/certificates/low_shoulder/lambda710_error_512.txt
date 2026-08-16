@@ -1,0 +1,11 @@
+LAMBDA>=7.10 GLOBAL ERROR AUDIT (PREC=512)
+x0 lower                 18458291.789353717
+Zsum upper               8.1006665821225408
+eAB upper                1.657861696252715e-06
+eC0 upper                5.2795790783535657e-05
+jump upper               0.00016204135129968517
+E0 upper                 0.00021649500377947354
+ratio upper              1.4465768901231553
+E1 upper                 0.0031317666929451156
+PAD_RESULT E0<3e-4,E1<5e-3 pass=1
+SHA256(source)=3fef4b8bb91b43ac2219f1b403d8e01ac693c36319488b070fd11765d54ddbb9
