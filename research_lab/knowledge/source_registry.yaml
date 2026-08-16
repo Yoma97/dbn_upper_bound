@@ -1,4 +1,4 @@
-as_of: 2026-08-14
+as_of: 2026-08-16
 
 trust_policy:
   tier_A:
@@ -41,6 +41,22 @@ sources:
     type: published
     arxiv: "1904.12438"
     result: "Lambda <= 0.22 via effective heat-flow estimates, numerical verification, and barrier method."
+
+  - id: bourgain_zeta_subconvexity
+    tier: A
+    type: published
+    arxiv: "1408.5794"
+    journal: "Journal of the American Mathematical Society 30 (2017), 205-224"
+    doi: "10.1090/jams/860"
+    result: "Critical-line subconvexity |zeta(1/2+it)| <<_epsilon t^(13/84+epsilon)."
+    restriction: "Pointwise critical-line growth input only. Round 44 shows that fixed interior-strip pointwise improvements cannot improve the current collision gate while this endpoint exponent remains unchanged."
+
+  - id: yang_interior_zeta_bounds
+    tier: B
+    type: current_preprint
+    arxiv: "2301.03165"
+    result: "For every integer k>=4, at sigma_k=1-k/(2^k-2), |zeta(sigma_k+it)| <= 1.546 t^(1/(2^k-2)) log t for t>=3; these lines sharpen ordinary interpolation inside the strip."
+    restriction: "Interior pointwise input only. Round 44 proves that these sharper anchors do not move the endpoint-dominated lambda gate unless the critical-line exponent itself is improved or pointwise control is replaced by genuinely new arithmetic cancellation."
 
   - id: li_positivity_1997
     tier: A
@@ -165,7 +181,7 @@ sources:
     tier: C
     type: certified_computational_record_listing
     result: "Current Tao optimization page lists Lambda <= 0.1965 and <= 0.1875 June-2026 record packages."
-    restriction: "Do not promote to Tier A without independent provenance/proof/certificate audit."
+    restriction: "Do not promote to Tier A without independent provenance/proof/certificate audit. They may be mined as computational methodology only."
 
   - id: arbitrary_unverified_rh_claims
     tier: D
