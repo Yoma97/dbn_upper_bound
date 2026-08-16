@@ -1,156 +1,193 @@
-# Low-shoulder certificate bundle
+# Low-shoulder certificate bundle — canonical state
 
 This directory contains the current finite/analytic proof layer for the project shoulder theorem
 
 \[
-0<t\le1/2,
+0<t\le\frac12,
 \qquad
-\lambda=t\log(|x|/(4\pi))\ge7.08
+\lambda=t\log\frac{|x|}{4\pi}\ge6.19
 \quad\Longrightarrow\quad
 (H_t(x),H_t'(x))\ne(0,0).
 \]
 
-**Status:** `INTERNALLY_PROVED + 512/768-BIT CERTIFIED`; `REFEREE_VERIFIED: PENDING`; novelty unverified; RH remains open.
+**Current status:** `INTERNALLY_PROVED + 512/768-BIT DIRECTED-ROUNDING CERTIFIED`; `REFEREE_VERIFIED: PENDING`; `NOVELTY_UNVERIFIED`; RH remains OPEN.
 
-The proof is a finite union of three regions:
+The key logical improvement over the older `7.08/7.04/7.039` certificates is that the published unconditional Polymath theorem
 
-1. `0<t<=0.01`, `7.08<=lambda<=10.52`: analytic small-time certificate of Round 73, with independent 512/768-bit scalar audits;
-2. `0.01<=t<=0.5`, `7.08<=lambda<=7.10`: directed-rounding rectangular certificate, rerun at 512/768 bits;
-3. `lambda>=7.10`: the previously certified Round-71/72 theorem, which itself joins the `7.10--10.52` bridge to the corrected `lambda>=10.52` high-shoulder theorem.
+\[
+\Lambda\le0.22
+\]
 
-No gap remains above `lambda=7.08`.
+removes the whole interval `t>0.22` from the multiple-real-zero problem. A local Hermite collision argument proves that every zero is simple for every `t>Lambda`. Therefore PSC only has to cover `0<t<=0.22`; the endpoint `t=0.22` remains included because equality `Lambda=0.22` is not excluded by the published upper bound.
 
-## Canonical sources
+The canonical proof is therefore the union of:
 
-Current extension:
+1. `0<t<=0.22`, `6.19<=lambda<=7.04`: the new K=2048 true-weight PSC certificate below;
+2. `0<t<=0.22`, `lambda>=7.04`: the already certified historical shoulder chain;
+3. `0.22<t<=1/2`, every real `x`: interior simplicity from `t>Lambda` and unconditional `Lambda<=0.22`.
 
-- `small_time_lambda708_audit.c`
-- `convex_tail_psc_box_mpfr.c`
-- `adaptive_psc_lambda_tiler.py`
+The theorem and circularity audit are recorded in
 
-Historical/cross-check source:
+- `research_lab/runs/2026-08-16_round73_lambda619_via_upper_bound_reduction.md`.
 
-- `small_time_lambda710_audit.c`
+Because the research history contains two independent files carrying the label `Round 73` (`lambda708` and `lambda619`), future references should use the full filename or the threshold label rather than the bare round number.
 
-The hardened tiler accepts a leaf only when the C verifier both prints `RESULT status=CERTIFIED` and exits with code zero.
+## Canonical lambda-6.19 sources
 
-## Small-time `lambda >= 7.08`
+- `convex_tail_psc_lambda619_mpfr.c` — K=2048 directed-rounding PSC verifier;
+- `convex_tail_psc_lambda619_512.txt` — monolithic 512-bit run;
+- `convex_tail_psc_lambda619_768_chunks.txt` — independent 768-bit run in four disjoint time chunks;
+- `lambda619_error_audit.c` — directed-rounding Polymath/Cauchy error audit;
+- `lambda619_error_512.txt`;
+- `lambda619_error_768.txt`.
 
-Compile the same source independently at two precisions:
+Local source SHA256 values recorded before commit:
 
-```bash
-cc -O2 -Wall -Wextra -DPREC=512 small_time_lambda708_audit.c -lmpfr -lgmp -o small708_512
-cc -O2 -Wall -Wextra -DPREC=768 small_time_lambda708_audit.c -lmpfr -lgmp -o small708_768
+- K=2048 PSC verifier:  
+  `2f3baa98f8c8e289fe6ee7aa270196c2fc4757a8230378c2a6ca861c4164f040`;
+- error verifier:  
+  `bc2ea71b968e26034f502744e9871aea416617cc128f4f97b98c8cf0983de1b6`.
+
+## Error audit
+
+At the worst geometric endpoint
+
+\[
+t=0.22,
+\qquad
+\lambda=6.19,
+\qquad
+L=\frac{619}{22}=28.13636\ldots,
+\]
+
+both 512- and 768-bit directed-rounding audits certify
+
+\[
+e_A+e_B\le7.2420515225931095\times10^{-12},
+\]
+
+\[
+e_{C,0}\le1.6509274020979614\times10^{-8},
+\]
+
+\[
+E_{\rm jump}\le8.871220157240477\times10^{-8},
+\]
+
+hence
+
+\[
+\boxed{E_0\le1.0522871764490697\times10^{-7}},
+\]
+
+and, after the symmetric normalization/Cauchy factor,
+
+\[
+\boxed{E_1\le2.1869579473011833\times10^{-6}}.
+\]
+
+The PSC grid deliberately uses the much weaker padded constants
+
+\[
+E_0=10^{-3},
+\qquad
+E_1=0.02,
+\]
+
+so the final box certification is not sensitive to microscopic changes in the error audit.
+
+## Exact lambda-6.19 finite cover
+
+The time interval `[0,0.22]` is partitioned exactly into 32 rational boxes:
+
+- 18 boxes of width `0.01` on `[0,0.18]`;
+- 6 boxes of width `0.005` on `[0.18,0.21]`;
+- 4 boxes of width `0.002` on `[0.21,0.218]`;
+- 4 boxes of width `0.0005` on `[0.218,0.22]`.
+
+The lambda interval `[6.19,7.04]` is partitioned into 85 rational boxes of width `0.01`.
+
+Total:
+
+\[
+32\times85=2720
+\]
+
+boxes. Every acceptance decision uses MPFR-directed rational endpoints; binary floating point is used only for printed diagnostics.
+
+### 512-bit result
+
+```text
+PSC lambda [6.19,7.04] t<=0.22 PREC=512 ibox=[0,32) boxes=2720 fail=0
+minimum_margin_lower=0.049218384939129022
+worst_t=[0.219500,0.220000] lambda=[6.1900,6.2000]
+A0_upper=0.82853202750245358 A1_upper=2.3383369555918039
+GRID_RESULT pass=1
 ```
 
-Both GitHub Actions jobs in run `31924049344` returned `AUDIT_RESULT pass=1` with the same outward decimal projections:
+### 768-bit result
+
+The same source was rebuilt at 768 bits and run on four disjoint time-index chunks. Each chunk contains 680 boxes and returns `fail=0`; together they exhaust all 2720 boxes. The global minimum is again
 
 \[
-A_0\le0.73098651914361068,
+\boxed{0.049218384939129022>0}
+\]
+
+on the same terminal box
+
+\[
+t\in[0.2195,0.22],
 \qquad
-A_1\le0.98190929449905862,
+\lambda\in[6.19,6.20].
 \]
 
-\[
-S_0\ge0.26901348085638938,
-\]
+Thus the new finite-time bottleneck has moved from the old neighborhood of `t=1/2` to the genuine terminal time `t=0.22`.
 
-\[
-E_0\le4.8829945288638576\times10^{-205},
-\qquad
-E_1\le4.1632729250572989\times10^{-181},
-\]
+## Historical certified layers retained as cross-checks
 
-and final PSC margin
+These files remain useful for independent regression but are no longer the canonical threshold:
 
-\[
-\boxed{94.241518840456663>0}.
-\]
+- `lambda>=10.52` corrected high-shoulder V2 certificate;
+- `lambda>=7.10` global PSC theorem;
+- `lambda>=7.08` small-time + quadtree bridge;
+- `lambda>=7.04` K=1024 certified extension;
+- narrow strip `[7.039,7.040]`, K=1130, with 2420 boxes and minimum margin `8.1308819976975806e-05`.
 
-Canonical outputs:
-
-- `small_time_lambda708_audit_512.txt`
-- `small_time_lambda708_audit_768.txt`
-
-The analytic inequalities producing the constants are recorded in Round 73. They use conservative powers `2.019` and `1.384`, not a floating-point fit.
-
-## Compact strip `7.08 <= lambda <= 7.10`
-
-The canonical Actions run `31923760219` executed
-
-```bash
-python adaptive_psc_lambda_tiler.py ./psc_box 0.01 0.5 7.08 7.10 10 128 lambda708-512 4
-python adaptive_psc_lambda_tiler.py ./psc_box 0.01 0.5 7.08 7.10 10 128 lambda708-768 4
-```
-
-at 512 and 768 bits respectively.
-
-Both runs produced exactly:
-
-- `5572` certified terminal leaves;
-- `0` unresolved leaves;
-- exact root area `0.0098` and certified area `0.0098`;
-- coverage fraction `1`;
-- minimum outward-projected margin
-  `0.000070306587867159615`;
-- identical certified-leaf SHA256  
-  `af319fc74b08f293a39a0966dabc636bbe41d89cd5911d9ce724a183f081e9df`;
-- identical unresolved-manifest SHA256  
-  `fe704924de06b6b7332e7b92a82b4477fce3a0986e8902d45a7e5f741213d98e`.
-
-This is a box cover, not point sampling.
-
-## Previously certified `lambda >= 7.10`
-
-The earlier canonical theorem remains part of the proof chain. Its compact `7.10--10.52` run had:
-
-- `7219` certified leaves;
-- `0` unresolved;
-- exact certified area `1.6758`;
-- minimum margin `0.018395736848899086`;
-- certified-leaf SHA256  
-  `e95a62f0555efa04b9156363c1c986587da90b715113f02ec97dc91f134dc104`.
-
-The historical scalar source/outputs remain in this directory for reproducibility.
-
-## Diagnostic below `7.08` — not a theorem
-
-A 512-bit diagnostic over
-
-\[
-0.01\le t\le0.5,
-\qquad
-7.06\le\lambda\le7.10
-\]
-
-certified `99.5807647705078125%` of the exact area at quadtree depth 10, leaving `4396` unresolved boxes. All terminal failures were `PSC_CORE` failures. They are localized near
-
-\[
-0.490908203125\lesssim t\le0.5,
-\qquad
-7.06\lesssim\lambda\lesssim7.077891.
-\]
-
-Therefore `7.06` is **not refuted**, but deeper global subdivision is not the favored next step. The evidence points to a finite-time PSC-core boundary near `t=1/2`, requiring a stronger local collision-conditioned certificate.
+The older finite-time obstruction near `t=1/2` is now logically irrelevant to the global collision problem because `t>0.22` lies strictly above the known unconditional upper bound for `Lambda`.
 
 ## Mathematical dependency and circularity
 
-The certificate uses only:
+The `lambda>=6.19` theorem uses only:
 
-- unconditional D.H.J. Polymath effective Riemann--Siegel bounds;
+- the unconditional published bound `Lambda<=0.22`;
+- the local heat/Hermite splitting of a hypothetical multiple real zero, to prove simplicity for `t>Lambda`;
+- unconditional D.H.J. Polymath effective Riemann--Siegel bounds on `0<t<=0.22`;
 - phase-slope transversality algebra;
-- true heat weights with convex/integral positive-tail envelopes;
-- fixed-point Cauchy remainders plus the explicit one-term cutoff bridge;
+- true heat weights with a finite head and convex/exponential positive-tail envelopes;
+- the fixed-cutoff one-jump bridge;
 - Schwarz symmetry and Cauchy's estimate;
-- MPFR directed rounding;
-- exact finite partition accounting.
+- MPFR directed rounding and exact finite partition accounting.
 
-It does **not** use RH, `Lambda<=0`, `Lambda=0`, finite-height RH verification, zero-spacing assumptions, GUE/pair correlation, Laguerre--Polya membership, or Rodgers--Tao estimates whose proof assumes negative `Lambda` in a contradiction setup.
+It does **not** use RH, `Lambda<=0`, `Lambda=0`, real-rootedness at any `t<=0.22`, zero-spacing assumptions, GUE/pair correlation, generalized Laguerre positivity, or Rodgers--Tao estimates whose proof begins with a negative-`Lambda` contradiction hypothesis.
 
-## Current project constant
+Using the known coarse unconditional upper bound `Lambda<=0.22` is not circular with the target `Lambda<=0`: it removes only a region already known to lie strictly inside the real-rooted regime.
+
+## Current project constant and open frontier
 
 \[
-\boxed{C_{\rm project-proved}=7.08.}
+\boxed{C_{\rm project-proved}=6.19.}
 \]
 
-This is a genuine improvement of the shoulder theorem, not a proof of RH. The low-shoulder region below `7.08` and the remaining bounded/core regimes are still open.
+This is a genuine shoulder improvement, **not a proof of RH**.
+
+The next quantitative PSC frontier is the terminal line `t=0.22` below `lambda=6.19`. A direct non-rigorous moment diagnostic suggests some further improvement toward roughly `lambda~6.1` may be available by enlarging the exact head/refining the terminal boxes.
+
+The deeper structural frontier remains the small-time triangle-envelope sign floor
+
+\[
+\lambda_*=4.914588956\ldots,
+\]
+
+which is not a collision threshold. Below that value the unchanged `n=1` triangle-envelope mechanism loses its fixed-lambda asymptotic sign and a genuinely changed certificate is required.
+
+RH remains OPEN.
