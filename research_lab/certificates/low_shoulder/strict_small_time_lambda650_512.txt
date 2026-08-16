@@ -1,0 +1,9 @@
+STRICT SMALL-TIME lambda>=6.50 audit PREC=512
+A0_upper                 0.89710880510761826
+A1_upper                 1.3361223014476078
+S0_lower                 0.10289119489238177
+E0_upper                 2.2738911968749703e-171
+E1_upper                 1.938734438164193e-147
+lhs_lower                32.098785970075724
+margin_lower             32.098785970075724
+AUDIT_RESULT pass=1
