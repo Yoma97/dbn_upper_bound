@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  audit:
+  rectangle:
     strategy:
       fail-fast: false
       matrix:
@@ -33,7 +33,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: research-lab-agents
+          ref: psc-708-audit-run
       - name: Install MPFR/GMP
         run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
       - name: Compile canonical rectangular PSC verifier
@@ -52,7 +52,7 @@ jobs:
           sha256sum research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c \
                     research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
             > ${{ matrix.label }}_source_sha256.txt
-      - name: Upload audit artifacts
+      - name: Upload rectangle artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -62,3 +62,34 @@ jobs:
             ${{ matrix.label }}_unresolved.csv
             ${{ matrix.label }}_certified.csv
             ${{ matrix.label }}_source_sha256.txt
+
+  small-time:
+    strategy:
+      fail-fast: false
+      matrix:
+        prec: [512, 768]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: psc-708-audit-run
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Compile and run small-time audit
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} \
+            research_lab/certificates/low_shoulder/small_time_lambda708_audit.c \
+            -lmpfr -lgmp -o small708
+          ./small708 | tee small_time_lambda708_audit_${{ matrix.prec }}.txt
+          sha256sum research_lab/certificates/low_shoulder/small_time_lambda708_audit.c \
+            > small_time_lambda708_source_${{ matrix.prec }}_sha256.txt
+      - name: Upload small-time artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: small-time-708-${{ matrix.prec }}
+          path: |
+            small_time_lambda708_audit_${{ matrix.prec }}.txt
+            small_time_lambda708_source_${{ matrix.prec }}_sha256.txt
