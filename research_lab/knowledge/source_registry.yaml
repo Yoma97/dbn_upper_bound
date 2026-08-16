@@ -58,6 +58,39 @@ sources:
     result: "For every integer k>=4, at sigma_k=1-k/(2^k-2), |zeta(sigma_k+it)| <= 1.546 t^(1/(2^k-2)) log t for t>=3; these lines sharpen ordinary interpolation inside the strip."
     restriction: "Interior pointwise input only. Round 44 proves that these sharper anchors do not move the endpoint-dominated lambda gate unless the critical-line exponent itself is improved or pointwise control is replaced by genuinely new arithmetic cancellation."
 
+  - id: bgstb_unconditional_montgomery
+    tier: A
+    type: published
+    arxiv: "2306.04799"
+    journal: "Acta Arithmetica 214 (2024), 357-376"
+    doi: "10.4064/aa230612-20-3"
+    result: "Published RH-free form of Montgomery's pair-correlation theorem; the normalized asymptotic is proved uniformly in the classical range 0<=alpha<=1."
+    restriction: "Rounds 49 and 53 use its exact RH-free Gram representation. The present theorem does not provide sparse-single-orbit control in the long alpha range needed by the extremal projection."
+
+  - id: montgomery_soundararajan_short_intervals
+    tier: A
+    type: published
+    arxiv: "math/0409258"
+    journal: "Communications in Mathematical Physics 252 (2004), 589-617"
+    doi: "10.1007/s00220-004-1222-4"
+    result: "Develops the approximately Gaussian short-interval prime model with variance H log(N/H), with high-moment analysis tied to strong Hardy-Littlewood prime-correlation input."
+    restriction: "Use as structural evidence for the cumulant/connected-correlation program, not as an unconditional all-orders prime-cumulant theorem."
+
+  - id: matomaki_merikoski_short_intervals
+    tier: A
+    type: published
+    journal: "International Mathematics Research Notices 2023, no. 23, 20337-20384"
+    doi: "10.1093/imrn/rnad069"
+    result: "Records the current unconditional almost-all prime asymptotic range H >= X^(1/6+o(1)) and proves stronger short-interval variance results under a Landau-Siegel-zero hypothesis."
+    restriction: "The unconditional almost-all statement is not by itself the global Selberg L2 bound required in Round 57; exceptional intervals may dominate a second moment. The stronger displayed variance theorem in that paper is conditional on the existence of a Siegel zero and cannot be imported as an unconditional input."
+
+  - id: goldston_suriajaya_long_pair_2022
+    tier: B
+    type: research_preprint
+    arxiv: "2205.06503"
+    result: "Studies long-range pair-correlation hypotheses and shows that sufficiently uniform long-range bounds have strong consequences for prime-number-theorem errors."
+    restriction: "Long-range pair-correlation input is conjectural/conditional in the decisive ranges. Use as a map of arithmetic difficulty, not as a theorem toward RH."
+
   - id: li_positivity_1997
     tier: A
     type: published
@@ -71,7 +104,7 @@ sources:
     type: published
     journal: "Journal of Number Theory 77 (1999), 274-287"
     doi: "10.1006/jnth.1999.2392"
-    result: "Li's criterion follows from general inequalities for multisets of complex numbers; Li positivity is related through the Guinand-Weil explicit formula to Weil's RH positivity criterion."
+    result: "Li's criterion follows from general inequalities for multisets of complex numbers and is related through the Guinand-Weil explicit formula to Weil's positivity criterion."
     restriction: "Use as a structural template for no-go laws and violation amplification, not as a free proof of positivity."
 
   - id: lagarias_xi_positivity_1999
@@ -95,7 +128,7 @@ sources:
     arxiv: "2206.03682"
     journal: "Journal of the London Mathematical Society (2023)"
     doi: "10.1112/jlms.12785"
-    result: "Develops the zeta screw function and RH-equivalent positivity/moment/Hankel determinant conditions; under RH-false scenarios obtains associated degeneracy identities."
+    result: "Develops the zeta screw function and RH-equivalent positivity conditions including moment/Hankel formulations."
     restriction: "Moment/Hankel positivity is endpoint-equivalent unless an independent source of positivity is found."
 
   - id: conrey_li_debranges_difficulty
@@ -131,12 +164,6 @@ sources:
     type: current_preprint
     arxiv: "2405.20552"
     result: "N(sigma,T) <= T^(30(1-sigma)/13+o(1)) and new Dirichlet-polynomial large-value estimates."
-
-  - id: bgstb_unconditional_montgomery
-    tier: B
-    type: current_preprint
-    arxiv: "2306.04799"
-    result: "Unconditional form of Montgomery pair-correlation theorem; applications under narrow-box/strong zero-density assumptions."
 
   - id: bgstb_pair_correlation_critical
     tier: B
@@ -180,7 +207,7 @@ sources:
   - id: tao_expdb_dbn_records
     tier: C
     type: certified_computational_record_listing
-    result: "Current Tao optimization page lists Lambda <= 0.1965 and <= 0.1875 June-2026 record packages."
+    result: "Current Tao optimization page lists June-2026 certificate packages claiming Lambda <= 0.1965 and <= 0.1875."
     restriction: "Do not promote to Tier A without independent provenance/proof/certificate audit. They may be mined as computational methodology only."
 
   - id: arbitrary_unverified_rh_claims
