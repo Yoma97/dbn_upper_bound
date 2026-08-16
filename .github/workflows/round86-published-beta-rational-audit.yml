@@ -1,0 +1,30 @@
+name: Round 86 published-beta exact rational audit
+
+on:
+  push:
+    branches: [research-lab-agents]
+    paths:
+      - '.github/workflows/round86-published-beta-rational-audit.yml'
+      - 'research_lab/certificates/singular_wedge/verify_round86_published_beta_threshold.py'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+      - name: Run exact rational verifier
+        run: python3 research_lab/certificates/singular_wedge/verify_round86_published_beta_threshold.py | tee round86_rational_audit.txt
+      - name: Hash verifier
+        run: sha256sum research_lab/certificates/singular_wedge/verify_round86_published_beta_threshold.py > round86_verifier.sha256
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: round86-published-beta-rational-audit
+          path: |
+            round86_rational_audit.txt
+            round86_verifier.sha256
