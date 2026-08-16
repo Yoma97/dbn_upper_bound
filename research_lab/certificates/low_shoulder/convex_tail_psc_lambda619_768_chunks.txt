@@ -1,0 +1,34 @@
+PREC=768 complete partition audit for the K=2048 lambda-6.19 verifier.
+Local source SHA256 before commit: 2f3baa98f8c8e289fe6ee7aa270196c2fc4757a8230378c2a6ca861c4164f040
+
+CHUNK [0,8):
+PSC lambda [6.19,7.04] t<=0.22 PREC=768 ibox=[0,8) boxes=680 fail=0
+minimum_margin_lower=12.456560911890461
+worst_t=[0.070000,0.080000] lambda=[6.1900,6.2000]
+A0_upper=0.64913628482871355 A1_upper=1.0952740360415829
+GRID_RESULT pass=1
+
+CHUNK [8,16):
+PSC lambda [6.19,7.04] t<=0.22 PREC=768 ibox=[8,16) boxes=680 fail=0
+minimum_margin_lower=3.0034496597067775
+worst_t=[0.150000,0.160000] lambda=[6.1900,6.2000]
+A0_upper=0.74431888006180014 A1_upper=1.9185349658255526
+GRID_RESULT pass=1
+
+CHUNK [16,24):
+PSC lambda [6.19,7.04] t<=0.22 PREC=768 ibox=[16,24) boxes=680 fail=0
+minimum_margin_lower=0.30040464591597071
+worst_t=[0.205000,0.210000] lambda=[6.1900,6.2000]
+A0_upper=0.81880910181313449 A1_upper=2.345302932055163
+GRID_RESULT pass=1
+
+CHUNK [24,32):
+PSC lambda [6.19,7.04] t<=0.22 PREC=768 ibox=[24,32) boxes=680 fail=0
+minimum_margin_lower=0.049218384939129022
+worst_t=[0.219500,0.220000] lambda=[6.1900,6.2000]
+A0_upper=0.82853202750245358 A1_upper=2.3383369555918039
+GRID_RESULT pass=1
+
+TOTAL boxes=2720 fail=0; time partition [0,0.22] covered by 32 disjoint boxes; lambda partition [6.19,7.04] covered by 85 disjoint boxes.
+GLOBAL minimum_margin_lower=0.049218384939129022.
+Local combined-output SHA256 before commit: 190393c2aefabc7c1448b3e72bef2a418c406e448e289e6868111b9019e3477d
