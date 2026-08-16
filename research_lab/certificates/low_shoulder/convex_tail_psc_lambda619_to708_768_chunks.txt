@@ -1,0 +1,40 @@
+HOSTILE DEPENDENCY AUDIT: direct K=2048 cover from lambda 6.19 to canonical lambda 7.08
+GitHub Actions run: 31924487091
+Precision: 768 bits, four disjoint time-index chunks
+
+CHUNK [0,8):
+PSC lambda [6.19,7.08] t<=0.22 PREC=768 ibox=[0,8) boxes=712 fail=0
+minimum_margin_lower=12.456560911890461
+worst_t=[0.070000,0.080000] lambda=[6.1900,6.2000]
+A0_upper=0.64913628482871355 A1_upper=1.0952740360415829
+GRID_RESULT pass=1
+
+CHUNK [8,16):
+PSC lambda [6.19,7.08] t<=0.22 PREC=768 ibox=[8,16) boxes=712 fail=0
+minimum_margin_lower=3.0034496597067775
+worst_t=[0.150000,0.160000] lambda=[6.1900,6.2000]
+A0_upper=0.74431888006180014 A1_upper=1.9185349658255526
+GRID_RESULT pass=1
+
+CHUNK [16,24):
+PSC lambda [6.19,7.08] t<=0.22 PREC=768 ibox=[16,24) boxes=712 fail=0
+minimum_margin_lower=0.30040464591597071
+worst_t=[0.205000,0.210000] lambda=[6.1900,6.2000]
+A0_upper=0.81880910181313449 A1_upper=2.345302932055163
+GRID_RESULT pass=1
+
+CHUNK [24,32):
+PSC lambda [6.19,7.08] t<=0.22 PREC=768 ibox=[24,32) boxes=712 fail=0
+minimum_margin_lower=0.049218384939129022
+worst_t=[0.219500,0.220000] lambda=[6.1900,6.2000]
+A0_upper=0.82853202750245358 A1_upper=2.3383369555918039
+GRID_RESULT pass=1
+
+TOTAL: 2848 boxes, fail=0. The chunks are disjoint and exhaust all 32 time boxes and all 89 lambda boxes.
+Global minimum directed lower margin: 0.049218384939129022.
+
+Original committed verifier SHA256:
+2f3baa98f8c8e289fe6ee7aa270196c2fc4757a8230378c2a6ca861c4164f040
+
+Deterministically extended verifier SHA256 (identical in all four jobs):
+376b2d065089da19c3f878c432fbf265e51d2567130ca729972835930b89196d
