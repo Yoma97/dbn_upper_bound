@@ -1,10 +1,8 @@
 name: PSC lambda 7.08 certified audit
 
 on:
-  push:
+  pull_request:
     branches: [research-lab-agents]
-    paths:
-      - '.github/workflows/psc-708-audit.yml'
   workflow_dispatch:
 
 jobs:
@@ -16,14 +14,17 @@ jobs:
           - label: lambda708-512
             prec: 512
             lam0: '7.08'
+            lam1: '7.10'
             depth: 10
           - label: lambda708-768
             prec: 768
             lam0: '7.08'
+            lam1: '7.10'
             depth: 10
           - label: lambda706-diagnostic-512
             prec: 512
             lam0: '7.06'
+            lam1: '7.08'
             depth: 10
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -35,7 +36,7 @@ jobs:
           ref: research-lab-agents
       - name: Install MPFR/GMP
         run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
-      - name: Compile rectangular PSC verifier
+      - name: Compile canonical rectangular PSC verifier
         run: |
           cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} \
             research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c \
@@ -43,7 +44,8 @@ jobs:
       - name: Run adaptive certified cover
         run: |
           python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
-            ./psc_box 0.01 0.5 ${{ matrix.lam0 }} 7.10 ${{ matrix.depth }} 128 ${{ matrix.label }} 4
+            ./psc_box 0.01 0.5 ${{ matrix.lam0 }} ${{ matrix.lam1 }} \
+            ${{ matrix.depth }} 128 ${{ matrix.label }} 4
       - name: Record source hashes
         if: always()
         run: |
