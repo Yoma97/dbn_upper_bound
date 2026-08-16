@@ -1,0 +1,15 @@
+SMALL-TIME lambda>=7.08 audit PREC=768
+A0_head_upper            0.73098651914361057
+A1_head_upper            0.98190929449905295
+A0_tail_upper            5.4797490564521362e-17
+A1_tail_upper            5.6224508547972441e-15
+A0_upper                 0.73098651914361068
+A1_upper                 0.98190929449905862
+S0_lower                 0.26901348085638938
+E0_upper                 4.8829945288638576e-205
+R_upper_at_T             8.5260651029768427e+22
+E1_upper                 4.1632729250572989e-181
+Y_lower                  0.26901348085638938
+lhs_lower                94.241518840456663
+margin_lower             94.241518840456663
+AUDIT_RESULT pass=1
