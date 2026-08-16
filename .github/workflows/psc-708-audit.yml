@@ -1,0 +1,62 @@
+name: PSC lambda 7.08 certified audit
+
+on:
+  push:
+    branches: [research-lab-agents]
+    paths:
+      - '.github/workflows/psc-708-audit.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: lambda708-512
+            prec: 512
+            lam0: '7.08'
+            depth: 10
+          - label: lambda708-768
+            prec: 768
+            lam0: '7.08'
+            depth: 10
+          - label: lambda706-diagnostic-512
+            prec: 512
+            lam0: '7.06'
+            depth: 10
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Compile rectangular PSC verifier
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} \
+            research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c \
+            -lmpfr -lgmp -o psc_box
+      - name: Run adaptive certified cover
+        run: |
+          python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            ./psc_box 0.01 0.5 ${{ matrix.lam0 }} 7.10 ${{ matrix.depth }} 128 ${{ matrix.label }} 4
+      - name: Record source hashes
+        if: always()
+        run: |
+          sha256sum research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c \
+                    research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            > ${{ matrix.label }}_source_sha256.txt
+      - name: Upload audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.label }}
+          path: |
+            ${{ matrix.label }}_summary.json
+            ${{ matrix.label }}_unresolved.csv
+            ${{ matrix.label }}_certified.csv
+            ${{ matrix.label }}_source_sha256.txt
