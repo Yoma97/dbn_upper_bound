@@ -1,0 +1,33 @@
+PREC=768 complete partition audit for convex_tail_psc_lambda704_mpfr.c
+source SHA256=7032c454b9e2684380931c7b2a0bf45e53eedc72668f38912170e69c9c3c81d6
+
+CHUNK [0,25):
+ibox=[0,25) boxes=1500 fail=0
+minimum_margin_lower=4.9491313340775802
+worst_t=[0.240000,0.250000] lambda=[7.040000,7.041000]
+worst_A0_upper=0.56719490108787596 worst_A1_upper=1.1384862545013694
+GRID_RESULT pass=1
+
+CHUNK [25,50):
+ibox=[25,50) boxes=1500 fail=0
+minimum_margin_lower=0.40178778645906971
+worst_t=[0.458000,0.460000] lambda=[7.040000,7.041000]
+worst_A0_upper=0.72682632596991081 worst_A1_upper=1.68122137145766
+GRID_RESULT pass=1
+
+CHUNK [50,73):
+ibox=[50,73) boxes=1380 fail=0
+minimum_margin_lower=0.008549673938693653
+worst_t=[0.497000,0.498000] lambda=[7.040000,7.041000]
+worst_A0_upper=0.75269308912100785 worst_A1_upper=1.7320182571203129
+GRID_RESULT pass=1
+
+CHUNK [73,83):
+ibox=[73,83) boxes=600 fail=0
+minimum_margin_lower=0.00040963841947196192
+worst_t=[0.499800,0.500000] lambda=[7.040000,7.041000]
+worst_A0_upper=0.75326441340950723 worst_A1_upper=1.7291497771607698
+GRID_RESULT pass=1
+
+TOTAL boxes=4980, total fail=0.
+Global minimum margin lower=0.00040963841947196192.
