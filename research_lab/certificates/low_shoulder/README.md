@@ -16,11 +16,13 @@ The small-time part `0<t<=0.01` is analytic (Round 70); the finite rectangle `0.
 - `convex_tail_psc_box_mpfr.c`
 - `adaptive_psc_lambda_tiler.py`
 
-The exact local sources compiled for the canonical runs had SHA256:
+The exact local sources compiled/executed for the canonical runs had SHA256:
 
 - small-time scalar audit source: `d40819ac2d84e41af8542732930ad5fd43a861ba0d1d22f63897e73d211cd93f`
 - rectangular PSC source: `87072c1b7e5beacdb7242019c85686c601a05a53591effe6b0997f8b748cdb1f`
-- adaptive tiler source: `4a32038e85834bf303df198d06d251a42c49c3df760e4e154fff7026b5a6ed2c`
+- hardened adaptive tiler source: `172048a1553ad4fa87a33c894069d6f2657abb0fcd3d8b51ea278551ba7fd79c`
+
+The hardened tiler accepts a leaf only when the executable both prints `RESULT status=CERTIFIED` and exits with status code zero. The full 512/768-bit rectangle runs were repeated after this change and produced the same leaf partition and hashes.
 
 ## Build
 
@@ -56,7 +58,7 @@ python adaptive_psc_lambda_tiler.py ./psc_box_512 0.01 0.5 7.10 10.52 9 128 run5
 python adaptive_psc_lambda_tiler.py ./psc_box_768 0.01 0.5 7.10 10.52 9 128 run768 24
 ```
 
-Both canonical runs produced:
+Both canonical hardened runs produced:
 
 - `7219` certified terminal leaves;
 - `0` unresolved leaves;
