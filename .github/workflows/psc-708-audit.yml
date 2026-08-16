@@ -1,4 +1,4 @@
-name: PSC lambda 7.076 certified audit
+name: PSC lambda 7.076 closure and lower probe
 
 on:
   pull_request:
@@ -6,35 +6,44 @@ on:
   workflow_dispatch:
 
 jobs:
-  audit:
+  small-time:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - label: candidate7076-768
-            prec: 768
-            t0: '0.01'
-            t1: '0.5'
-            lam0: '7.076'
-            lam1: '7.08'
-            depth: 13
-            k: 128
-          - label: patch7076-512
-            prec: 512
-            t0: '0.49994'
-            t1: '0.5'
-            lam0: '7.076'
-            lam1: '7.07611'
-            depth: 10
-            k: 512
-          - label: patch7076-768
-            prec: 768
-            t0: '0.49994'
-            t1: '0.5'
-            lam0: '7.076'
-            lam1: '7.07611'
-            depth: 10
-            k: 512
+        prec: [512, 768]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: psc-708-audit-run
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Build lambda 7.076 small-time source from audited 7.08 source
+        run: |
+          cp research_lab/certificates/low_shoulder/small_time_lambda708_audit.c small_time_lambda7076_audit.c
+          sed -i 's/"2.019"/"2.018"/' small_time_lambda7076_audit.c
+          sed -i 's/"7.08"/"7.076"/g' small_time_lambda7076_audit.c
+          sed -i 's/"4.72236"/"4.7196"/' small_time_lambda7076_audit.c
+          sed -i 's/"176.99"/"176.89"/' small_time_lambda7076_audit.c
+          sed -i 's/lambda>=7.08/lambda>=7.076/' small_time_lambda7076_audit.c
+      - name: Compile and run directed audit
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} small_time_lambda7076_audit.c -lmpfr -lgmp -o small7076
+          ./small7076 | tee small_time_lambda7076_${{ matrix.prec }}.txt
+          sha256sum small_time_lambda7076_audit.c > small_time_lambda7076_${{ matrix.prec }}_source_sha256.txt
+      - name: Upload small-time artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: small7076-${{ matrix.prec }}
+          path: |
+            small_time_lambda7076_audit.c
+            small_time_lambda7076_${{ matrix.prec }}.txt
+            small_time_lambda7076_${{ matrix.prec }}_source_sha256.txt
+
+  probe:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
@@ -45,29 +54,26 @@ jobs:
           ref: psc-708-audit-run
       - name: Install MPFR/GMP
         run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
-      - name: Compile canonical rectangular PSC verifier
+      - name: Compile canonical verifier at 512 bits
         run: |
-          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} \
-            research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c \
-            -lmpfr -lgmp -o psc_box
-      - name: Run adaptive certified cover
+          cc -O2 -Wall -Wextra -DPREC=512 research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c -lmpfr -lgmp -o psc_box
+      - name: Probe finite-time K1024 strip
         run: |
           python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
-            ./psc_box ${{ matrix.t0 }} ${{ matrix.t1 }} ${{ matrix.lam0 }} ${{ matrix.lam1 }} \
-            ${{ matrix.depth }} ${{ matrix.k }} ${{ matrix.label }} 8
-      - name: Record source hashes
+            ./psc_box 0.499 0.5 7.04 7.076 10 1024 probe704-k1024-512 8
+      - name: Record hashes
         if: always()
         run: |
           sha256sum research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c \
                     research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
-            > ${{ matrix.label }}_source_sha256.txt
-      - name: Upload audit artifacts
+            > probe704-k1024-512_source_sha256.txt
+      - name: Upload probe artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.label }}
+          name: probe704-k1024-512
           path: |
-            ${{ matrix.label }}_summary.json
-            ${{ matrix.label }}_unresolved.csv
-            ${{ matrix.label }}_certified.csv
-            ${{ matrix.label }}_source_sha256.txt
+            probe704-k1024-512_summary.json
+            probe704-k1024-512_unresolved.csv
+            probe704-k1024-512_certified.csv
+            probe704-k1024-512_source_sha256.txt
