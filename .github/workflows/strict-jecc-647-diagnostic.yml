@@ -1,0 +1,41 @@
+name: Strict JECC lambda 6.47 diagnostic
+
+on:
+  push:
+    branches: [research-lab-agents]
+    paths:
+      - '.github/workflows/strict-jecc-647-diagnostic.yml'
+  workflow_dispatch:
+
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 80
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Generate Round-80 verifier
+        run: python research_lab/certificates/low_shoulder/make_joint_ellipse_verifier.py
+      - name: Compile 512-bit verifier
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=512 \
+            research_lab/certificates/low_shoulder/joint_ellipse_psc_box_mpfr.c \
+            -lmpfr -lgmp -o jecc_box
+      - name: Run frontier diagnostic
+        run: |
+          python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            ./jecc_box 0.01 0.50 6.47 6.50 12 128 jecc647-512 8
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jecc647-512
+          path: |
+            jecc647-512_summary.json
+            jecc647-512_unresolved.csv
+            jecc647-512_certified.csv
