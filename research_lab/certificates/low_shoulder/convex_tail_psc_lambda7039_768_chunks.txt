@@ -1,0 +1,33 @@
+PREC=768 complete partition audit for the K=1130 lambda-7.039 verifier.
+Local source SHA256 before commit: c9088de84d25d7d4cb4af8809741fb9eaa07361571430461f6fe8166e0bc86bf
+
+CHUNK [0,50):
+boxes=1000 fail=0
+minimum_margin_lower=0.4001340327315302
+worst_t=[0.458000000,0.460000000] lambda=[7.039000,7.039050]
+A0_upper=0.72701168571769059 A1_upper=1.68116011644171
+GRID_RESULT pass=1
+
+CHUNK [50,90):
+boxes=800 fail=0
+minimum_margin_lower=0.0028220557571236719
+worst_t=[0.498500000,0.499000000] lambda=[7.039000,7.039050]
+A0_upper=0.75317776469351927 A1_upper=1.7305794115041058
+GRID_RESULT pass=1
+
+CHUNK [90,110):
+boxes=400 fail=0
+minimum_margin_lower=0.00041460497342819119
+worst_t=[0.499850000,0.499900000] lambda=[7.039000,7.039050]
+A0_upper=0.75334615146140216 A1_upper=1.7286709872409878
+GRID_RESULT pass=1
+
+CHUNK [110,121):
+boxes=220 fail=0
+minimum_margin_lower=8.1308819976975806e-05
+worst_t=[0.499995000,0.500000000] lambda=[7.039000,7.039050]
+A0_upper=0.75336953480989255 A1_upper=1.7284927358380489
+GRID_RESULT pass=1
+
+TOTAL boxes=2420; total fail=0; no partition gaps.
+Global minimum margin lower=8.1308819976975806e-05.
