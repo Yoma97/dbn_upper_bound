@@ -1,105 +1,156 @@
 # Low-shoulder certificate bundle
 
-This directory contains the finite proof layer used by Round 71 for
+This directory contains the current finite/analytic proof layer for the project shoulder theorem
 
 \[
 0<t\le1/2,
 \qquad
-\lambda=t\log(|x|/(4\pi))\ge7.10.
+\lambda=t\log(|x|/(4\pi))\ge7.08
+\quad\Longrightarrow\quad
+(H_t(x),H_t'(x))\ne(0,0).
 \]
 
-The small-time part `0<t<=0.01` is analytic (Round 70); the finite rectangle `0.01<=t<=0.5`, `7.10<=lambda<=10.52` is covered by the rectangular MPFR certificate; `lambda>=10.52` uses the separately corrected high-shoulder bundle.
+**Status:** `INTERNALLY_PROVED + 512/768-BIT CERTIFIED`; `REFEREE_VERIFIED: PENDING`; novelty unverified; RH remains open.
+
+The proof is a finite union of three regions:
+
+1. `0<t<=0.01`, `7.08<=lambda<=10.52`: analytic small-time certificate of Round 73, with independent 512/768-bit scalar audits;
+2. `0.01<=t<=0.5`, `7.08<=lambda<=7.10`: directed-rounding rectangular certificate, rerun at 512/768 bits;
+3. `lambda>=7.10`: the previously certified Round-71/72 theorem, which itself joins the `7.10--10.52` bridge to the corrected `lambda>=10.52` high-shoulder theorem.
+
+No gap remains above `lambda=7.08`.
 
 ## Canonical sources
 
-- `small_time_lambda710_audit.c`
+Current extension:
+
+- `small_time_lambda708_audit.c`
 - `convex_tail_psc_box_mpfr.c`
 - `adaptive_psc_lambda_tiler.py`
 
-The exact local sources compiled/executed for the canonical runs had SHA256:
+Historical/cross-check source:
 
-- small-time scalar audit source: `d40819ac2d84e41af8542732930ad5fd43a861ba0d1d22f63897e73d211cd93f`
-- rectangular PSC source: `87072c1b7e5beacdb7242019c85686c601a05a53591effe6b0997f8b748cdb1f`
-- hardened adaptive tiler source: `172048a1553ad4fa87a33c894069d6f2657abb0fcd3d8b51ea278551ba7fd79c`
+- `small_time_lambda710_audit.c`
 
-The hardened tiler accepts a leaf only when the executable both prints `RESULT status=CERTIFIED` and exits with status code zero. The full 512/768-bit rectangle runs were repeated after this change and produced the same leaf partition and hashes.
+The hardened tiler accepts a leaf only when the C verifier both prints `RESULT status=CERTIFIED` and exits with code zero.
 
-## Build
+## Small-time `lambda >= 7.08`
 
-With MPFR and GMP installed, compile the same C source at two precisions, for example
+Compile the same source independently at two precisions:
 
 ```bash
-cc -O2 -Wall -Wextra -DPREC=512 convex_tail_psc_box_mpfr.c -lmpfr -lgmp -o psc_box_512
-cc -O2 -Wall -Wextra -DPREC=768 convex_tail_psc_box_mpfr.c -lmpfr -lgmp -o psc_box_768
-
-cc -O2 -Wall -Wextra -DPREC=512 small_time_lambda710_audit.c -lmpfr -lgmp -o small_512
-cc -O2 -Wall -Wextra -DPREC=768 small_time_lambda710_audit.c -lmpfr -lgmp -o small_768
+cc -O2 -Wall -Wextra -DPREC=512 small_time_lambda708_audit.c -lmpfr -lgmp -o small708_512
+cc -O2 -Wall -Wextra -DPREC=768 small_time_lambda708_audit.c -lmpfr -lgmp -o small708_768
 ```
 
-The audit container used the versioned runtime library path because the unversioned development symlink was absent; that does not change arithmetic semantics.
+Both GitHub Actions jobs in run `31924049344` returned `AUDIT_RESULT pass=1` with the same outward decimal projections:
 
-## Small-time scalar rerun
+\[
+A_0\le0.73098651914361068,
+\qquad
+A_1\le0.98190929449905862,
+\]
 
-Both precisions return `AUDIT_RESULT pass=1` with outward-projected PSC margin
+\[
+S_0\ge0.26901348085638938,
+\]
 
-`96.25440729041982`.
+\[
+E_0\le4.8829945288638576\times10^{-205},
+\qquad
+E_1\le4.1632729250572989\times10^{-181},
+\]
+
+and final PSC margin
+
+\[
+\boxed{94.241518840456663>0}.
+\]
 
 Canonical outputs:
 
-- `small_time_lambda710_audit_512.txt`
-- `small_time_lambda710_audit_768.txt`
+- `small_time_lambda708_audit_512.txt`
+- `small_time_lambda708_audit_768.txt`
 
-## Finite rectangle rerun
+The analytic inequalities producing the constants are recorded in Round 73. They use conservative powers `2.019` and `1.384`, not a floating-point fit.
 
-Run
+## Compact strip `7.08 <= lambda <= 7.10`
+
+The canonical Actions run `31923760219` executed
 
 ```bash
-python adaptive_psc_lambda_tiler.py ./psc_box_512 0.01 0.5 7.10 10.52 9 128 run512 24
-python adaptive_psc_lambda_tiler.py ./psc_box_768 0.01 0.5 7.10 10.52 9 128 run768 24
+python adaptive_psc_lambda_tiler.py ./psc_box 0.01 0.5 7.08 7.10 10 128 lambda708-512 4
+python adaptive_psc_lambda_tiler.py ./psc_box 0.01 0.5 7.08 7.10 10 128 lambda708-768 4
 ```
 
-Both canonical hardened runs produced:
+at 512 and 768 bits respectively.
 
-- `7219` certified terminal leaves;
+Both runs produced exactly:
+
+- `5572` certified terminal leaves;
 - `0` unresolved leaves;
-- exact certified area `1.6758`, equal to the root rectangle area;
-- minimum outward-projected leaf margin `0.018395736848899086`;
-- identical projected certified-leaf SHA256  
+- exact root area `0.0098` and certified area `0.0098`;
+- coverage fraction `1`;
+- minimum outward-projected margin
+  `0.000070306587867159615`;
+- identical certified-leaf SHA256  
+  `af319fc74b08f293a39a0966dabc636bbe41d89cd5911d9ce724a183f081e9df`;
+- identical unresolved-manifest SHA256  
+  `fe704924de06b6b7332e7b92a82b4477fce3a0986e8902d45a7e5f741213d98e`.
+
+This is a box cover, not point sampling.
+
+## Previously certified `lambda >= 7.10`
+
+The earlier canonical theorem remains part of the proof chain. Its compact `7.10--10.52` run had:
+
+- `7219` certified leaves;
+- `0` unresolved;
+- exact certified area `1.6758`;
+- minimum margin `0.018395736848899086`;
+- certified-leaf SHA256  
   `e95a62f0555efa04b9156363c1c986587da90b715113f02ec97dc91f134dc104`.
 
-The full 2.4 MB leaf CSV is deterministic output of the committed tiler and is represented compactly by `lambda710_tiling_manifest.json`. The manifest expands to all 262144 cells of the depth-9 grid exactly once, with no missing or overlapping cell.
+The historical scalar source/outputs remain in this directory for reproducibility.
 
-Canonical summaries:
+## Diagnostic below `7.08` — not a theorem
 
-- `lambda710_tiling_512_summary.json`
-- `lambda710_tiling_768_summary.json`
-- `lambda710_tiling_manifest.json`
-
-## Weakest leaf regression
-
-The smallest projected margin occurs on
+A 512-bit diagnostic over
 
 \[
-t\in[0.47703125,0.4846875],
+0.01\le t\le0.5,
 \qquad
-\lambda\in[7.10,7.1534375].
+7.06\le\lambda\le7.10
 \]
 
-Both precision reruns give
+certified `99.5807647705078125%` of the exact area at quadtree depth 10, leaving `4396` unresolved boxes. All terminal failures were `PSC_CORE` failures. They are localized near
 
-`margin_lower = 0.018395736848899086`.
+\[
+0.490908203125\lesssim t\le0.5,
+\qquad
+7.06\lesssim\lambda\lesssim7.077891.
+\]
 
-Files:
+Therefore `7.06` is **not refuted**, but deeper global subdivision is not the favored next step. The evidence points to a finite-time PSC-core boundary near `t=1/2`, requiring a stronger local collision-conditioned certificate.
 
-- `lambda710_worst_leaf_512.txt`
-- `lambda710_worst_leaf_768.txt`
+## Mathematical dependency and circularity
 
-## Mathematical dependency
+The certificate uses only:
 
-The executable implements the analytic box theorems of Rounds 68--69, including the Round-69 absolute-log correction. The proof inputs are the unconditional D.H.J. Polymath effective Riemann--Siegel bounds, the phase-slope transversality algebra, convex/integral positive-tail estimates, Schwarz symmetry, and Cauchy's estimate.
+- unconditional D.H.J. Polymath effective Riemann--Siegel bounds;
+- phase-slope transversality algebra;
+- true heat weights with convex/integral positive-tail envelopes;
+- fixed-point Cauchy remainders plus the explicit one-term cutoff bridge;
+- Schwarz symmetry and Cauchy's estimate;
+- MPFR directed rounding;
+- exact finite partition accounting.
 
-No RH, `Lambda<=0`, finite-height RH verification, pair-correlation/GUE input, zero-spacing hypothesis, or Laguerre--Polya assumption is used.
+It does **not** use RH, `Lambda<=0`, `Lambda=0`, finite-height RH verification, zero-spacing assumptions, GUE/pair correlation, Laguerre--Polya membership, or Rodgers--Tao estimates whose proof assumes negative `Lambda` in a contradiction setup.
 
-## Status
+## Current project constant
 
-The `7.10` theorem is `INTERNALLY_PROVED + 512/768-BIT CERTIFIED`, but remains `NOT YET REFEREE_VERIFIED` under the project's independent-reconstruction policy. Novelty is unverified. RH remains open.
+\[
+\boxed{C_{\rm project-proved}=7.08.}
+\]
+
+This is a genuine improvement of the shoulder theorem, not a proof of RH. The low-shoulder region below `7.08` and the remaining bounded/core regimes are still open.
