@@ -1,0 +1,58 @@
+name: Soft hybrid PSC APVC lambda 6.90 audit
+
+on:
+  push:
+    branches: [research-lab-agents]
+    paths:
+      - '.github/workflows/hybrid-apvc-soft-690-audit.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        prec: [512, 768]
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Generate hybrid source and soften cutoff-slope defect
+        run: |
+          python research_lab/certificates/low_shoulder/make_hybrid_apvc_verifier.py
+          python research_lab/certificates/low_shoulder/soften_hybrid_apvc.py
+      - name: Compile hybrid verifier
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} \
+            research_lab/certificates/low_shoulder/hybrid_psc_apvc_box_mpfr.c \
+            -lmpfr -lgmp -o hybrid_box
+      - name: Run adaptive cover
+        run: |
+          python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            ./hybrid_box 0.01 0.5 6.90 7.08 10 128 soft690-${{ matrix.prec }} 8
+      - name: Record source hashes
+        if: always()
+        run: |
+          sha256sum research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c \
+                    research_lab/certificates/low_shoulder/make_hybrid_apvc_verifier.py \
+                    research_lab/certificates/low_shoulder/soften_hybrid_apvc.py \
+                    research_lab/certificates/low_shoulder/hybrid_psc_apvc_box_mpfr.c \
+                    research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            > soft690-${{ matrix.prec }}_source_sha256.txt || true
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: soft690-${{ matrix.prec }}
+          path: |
+            soft690-${{ matrix.prec }}_summary.json
+            soft690-${{ matrix.prec }}_unresolved.csv
+            soft690-${{ matrix.prec }}_certified.csv
+            soft690-${{ matrix.prec }}_source_sha256.txt
+            research_lab/certificates/low_shoulder/hybrid_psc_apvc_box_mpfr.c
