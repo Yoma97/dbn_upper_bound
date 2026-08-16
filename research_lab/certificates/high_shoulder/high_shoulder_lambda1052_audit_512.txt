@@ -1,0 +1,17 @@
+HIGH-SHOULDER lambda>=10.52 scalar audit (PREC=512)
+x0 lower                     17249073122.812439
+A0 upper                     0.86163407218445109
+S0 lower                     0.13836592781554899
+A1 upper                     1.444773803962031
+Zsum upper                   4.6362631332631334
+errarg upper                 4.3735103615390486e-10
+eAB upper                    2.0276744856581838e-09
+eC0 upper                    5.1014978066439878e-09
+jump upper                   1.9960455763992581e-08
+E0 upper                     2.7089628056294753e-08
+ratio surrogate              1.7281301744830748
+E1 upper                     4.6814403659606247e-07
+Y lower                      0.13836592781554832
+phase lhs lower              0.0051788904933024764
+final margin lower           0.0051784223492658803
+AUDIT_RESULT pass=1
