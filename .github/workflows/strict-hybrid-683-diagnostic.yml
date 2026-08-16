@@ -1,0 +1,54 @@
+name: Strict PSC APVC lambda 6.83 frontier diagnostic
+
+on:
+  push:
+    branches: [research-lab-agents]
+    paths:
+      - '.github/workflows/strict-hybrid-683-diagnostic.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        prec: [512, 768]
+        region: [low, high]
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Generate soft hybrid source
+        run: |
+          python research_lab/certificates/low_shoulder/make_hybrid_apvc_verifier.py
+          python research_lab/certificates/low_shoulder/soften_hybrid_apvc.py
+          python research_lab/certificates/low_shoulder/lower_apvc_activation_035.py
+      - name: Compile verifiers
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c -lmpfr -lgmp -o psc_box
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} research_lab/certificates/low_shoulder/hybrid_psc_apvc_box_mpfr.c -lmpfr -lgmp -o hybrid_box
+      - name: Run lower-time old-PSC diagnostic
+        if: matrix.region == 'low'
+        run: |
+          python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            ./psc_box 0.01 0.35 6.83 6.85 11 128 strict683-low-${{ matrix.prec }} 8
+      - name: Run high-time soft-APVC diagnostic
+        if: matrix.region == 'high'
+        run: |
+          python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            ./hybrid_box 0.35 0.50 6.83 6.85 12 900 strict683-high-${{ matrix.prec }} 8
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strict683-${{ matrix.region }}-${{ matrix.prec }}
+          path: |
+            strict683-${{ matrix.region }}-${{ matrix.prec }}_summary.json
+            strict683-${{ matrix.region }}-${{ matrix.prec }}_unresolved.csv
+            strict683-${{ matrix.region }}-${{ matrix.prec }}_certified.csv
