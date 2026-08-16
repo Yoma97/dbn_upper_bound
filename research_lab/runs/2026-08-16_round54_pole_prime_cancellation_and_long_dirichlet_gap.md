@@ -1,52 +1,36 @@
-# Round 54 — The `O(x)` term is pole–prime cancellation: reduction to a long Dirichlet-polynomial mean square
+# Round 54 — Pole–prime cancellation and the long Dirichlet-polynomial gap
 
 **Date:** 2026-08-16
 
+**CORRECTED after direct audit of the proof of the RH-free pair-correlation theorem.**
+
 **RH status:** OPEN.
 
-**Status labels:** PROVED SOURCE DECOMPOSITION / CIRCULARITY GUARD / ARITHMETIC GAP / NOVELTY UNVERIFIED.
+**Status labels:** PROVED SOURCE DECOMPOSITION / CORRECTED / CIRCULARITY GUARD / ARITHMETIC GAP / TRUNCATION GAP / NOVELTY UNVERIFIED.
 
-## 0. Executive verdict
+## 0. Correction and executive verdict
 
-Round 53 solved sparse localization on the zero side and left one question: why does the unconditional explicit-formula proof lose an `O(x)` term that dominates every off-line signal `x^{2delta}` with `delta<1/2`?
+An earlier version of this round overstated the origin of the `O(x)` barrier by saying that it came entirely from separating the pole at `s=1` from the continuous main term of the prime polynomial.
 
-The answer is precise.
+That statement is **CORRECTED**.
 
-The apparent `O(x)` is the square of an `O(x^{1/2})` term arising from the pole at `s=1` **after that pole term has been separated from a prime Dirichlet polynomial of the same leading size**. The continuous main term of the prime polynomial equals the pole contribution exactly.
+There are at least two logically distinct long-range `O(x)`-scale channels in the published RH-free proof:
 
-Thus the true long-range arithmetic object is the cancellation
+1. a **prime/pole channel**: the exact pole term has size `x^{1/2}` and is also the continuous main term of the prime polynomial; bounding these separately loses an `O(x)` contribution after squaring;
+2. a **zero-window truncation channel**: in the step converting the all-zero explicit-formula square to the finite-height statistic `F(x,T)`, truncating zeros at `Z=T log^2 T` already contributes `O(x)`, independently of the prime/pole separation. The proof also incurs a zero-free-region-dependent term of shape
+   \[
+   O\!\left(x^{1-2\eta(T\log^2T)}\log^3T\right).
+   \]
 
-\[
-\boxed{
-E_x(t)=P_x(t)-I_x(t),}
-\]
+Therefore improving the long prime mean square alone does **not** automatically extend `F(x,T)` to `x>>T`. A successful LREF theorem must control **both** prime/pole cancellation and the mismatch between the all-zero explicit formula and the finite zero window.
 
-where
-
-\[
-P_x(t)
-:=\sum_{n\ge1}\frac{\Lambda(n)}{n^{1/2+it}}
-\min\!\left\{\frac nx,\frac xn\right\}
-\]
-
-and
-
-\[
-\boxed{
-I_x(t)
-=x^{1/2-it}
-\left(\frac1{3/2-it}+\frac1{1/2+it}\right).}
-\]
-
-The current short-range proof can afford to bound `I_x` separately because `x<=T`. Sparse long-range detection cannot.
-
-However, asking for a pointwise subpower bound on `E_x(t)` would merely repackage RH-strength cancellation. The non-circular target is therefore a **long Dirichlet-polynomial mean-square theorem in the `t`-variable**, strong for `x=T^alpha` with `alpha>1`.
+The exact pole--prime identity established below remains valid and useful.
 
 ---
 
-## 1. Source explicit formula
+## 1. RH-free explicit-formula side
 
-The RH-free Montgomery lemma used in the unconditional pair-correlation theorem states, schematically and with the source's precise smooth weight,
+The unconditional Montgomery-type lemma used in the pair-correlation theorem yields an all-zero resolvent of the schematic form
 
 \[
 \sum_\rho
@@ -56,56 +40,55 @@ The RH-free Montgomery lemma used in the unconditional pair-correlation theorem 
 -P_x(t)
 +x^{-1}(\log(|t|+2)+O(1))
 +O\!\left(\frac{x^{1/2}}{1+t^2}\right)
-+O\!\left(\frac{x^{-5/2}}{|t|+2}\right).
++O\!\left(\frac{x^{-5/2}}{|t|+2}\right),
 \]
 
-The source obtains this from Landau's explicit formula by taking `s=sigma+it`, reflecting `sigma` to `1-sigma`, subtracting, and finally taking `sigma=3/2`.
+where
 
-The `x^{1/2}` term comes from the `s=1` pole contribution; it is not a zero-density term.
+\[
+\boxed{
+P_x(t)
+:=\sum_{n\ge1}\frac{\Lambda(n)}{n^{1/2+it}}
+W(n/x),
+\qquad
+W(y):=\min(y,y^{-1}).}
+\]
+
+The `x^{1/2}` channel comes from the pole at `s=1`.
+
+Separately, in the proof relating the square of the all-zero sum to the finite-height pair statistic, one first truncates the zero set at
+
+\[
+Z=T\log^2T.
+\]
+
+The published estimate for the omitted tail is of size
+
+\[
+\ll \frac{xT\log^2Z}{Z}=O(x).
+\]
+
+After restricting from `|gamma|<=Z` to `0<=gamma<=T` and extending the `t`-integral, another term of size
+
+\[
+O\!\left(x^{1-2\eta(T\log^2T)}\log^3T\right)
+\]
+
+appears, together with `O(x)`.
+
+Thus the finite-window reconstruction has an `O(x)` obstruction even before any proposed improvement of the prime mean square is used.
 
 ---
 
 ## 2. Exact pole term before absolute-value bounding
 
-Start from the pole term in Landau's formula
+Start from the pole contribution in Landau's formula
 
 \[
 -\frac{x^{1-s}}{1-s}.
 \]
 
-After multiplying the `sigma` equation by `x^{sigma-1/2}`, the pole contribution is
-
-\[
--\frac{x^{1/2-it}}{1-\sigma-it}.
-\]
-
-The reflected `1-sigma` equation contributes
-
-\[
--\frac{x^{1/2-it}}{\sigma-it}.
-\]
-
-Subtracting reflected from original and setting `sigma=3/2` gives
-
-\[
-\begin{aligned}
-I_x(t)
-&=-x^{1/2-it}
-\left(
-\frac1{-1/2-it}
--
-\frac1{3/2-it}
-\right)\\
-&=x^{1/2-it}
-\left(
-\frac1{1/2+it}
-+
-\frac1{3/2-it}
-\right).
-\end{aligned}
-\]
-
-Hence
+After the reflection/subtraction step and setting `sigma=3/2`, the exact pole term is
 
 \[
 \boxed{
@@ -121,51 +104,37 @@ I_x(t)
 Its crude size is
 
 \[
-I_x(t)=O\!\left(\frac{x^{1/2}}{1+t^2}\right),
+I_x(t)=O\!\left(\frac{x^{1/2}}{1+t^2}\right).
 \]
-
-which is exactly the source error channel.
 
 ---
 
 ## 3. The same term is the continuous main term of the prime polynomial
 
-Let
-
-\[
-W(y):=\min(y,y^{-1}),
-\]
-
-so
+Write
 
 \[
 P_x(t)=\int_{1^-}^{\infty}
  u^{-1/2-it}W(u/x)\,d\psi(u),
-\]
-
-where
-
-\[
+\qquad
 \psi(u)=\sum_{n\le u}\Lambda(n).
 \]
 
-Replace `d psi(u)` by its continuous prime-number-theorem main term `du`:
+Replacing `d psi(u)` by `du`, define
 
 \[
 I_x^{\rm cont}(t)
 :=\int_0^\infty u^{-1/2-it}W(u/x)\,du.
 \]
 
-Split at `u=x`.
-
-For `u<=x`, `W(u/x)=u/x`, so
+Split at `u=x`. For `u<=x`,
 
 \[
 \frac1x\int_0^x u^{1/2-it}du
-=\frac{x^{1/2-it}}{3/2-it}.
+=\frac{x^{1/2-it}}{3/2-it},
 \]
 
-For `u>=x`, `W(u/x)=x/u`, so
+while for `u>=x`,
 
 \[
 x\int_x^\infty u^{-3/2-it}du
@@ -175,117 +144,92 @@ x\int_x^\infty u^{-3/2-it}du
 Therefore
 
 \[
-\boxed{
-I_x^{\rm cont}(t)=I_x(t).}
+\boxed{I_x^{\rm cont}(t)=I_x(t).}
 \]
 
-This identity is exact.
-
-Thus the large pole term is not an independent nuisance; it is precisely the continuous main term of the prime sum.
+This exact identity is unaffected by the correction above.
 
 ---
 
-## 4. The correct residual
+## 4. Centered prime residual
 
-Write
+Let
 
 \[
 R(u):=\psi(u)-u.
 \]
 
-Then
+Then, up to the harmless lower-end convention,
 
 \[
 \boxed{
 E_x(t)
 :=P_x(t)-I_x(t)
 =\int_{1^-}^{\infty}
- u^{-1/2-it}W(u/x)\,dR(u),}
+ u^{-1/2-it}W(u/x)\,dR(u).}
 \]
 
-up to the harmless lower-end convention at `u=1`.
+Thus one long-range obstruction is genuinely a smoothed Mellin transform of the PNT error.
 
-After Stieltjes integration by parts, `E_x(t)` is a smoothed Mellin transform of the PNT error `R(u)`.
-
-The long-range pair-correlation problem is therefore an arithmetic cancellation problem for `R(u)`, not a problem of estimating the pole term separately.
-
----
-
-## 5. Why the published proof produces `O(x)`
-
-If one bounds the pole channel only by
-
-\[
-|I_x(t)|\ll\frac{x^{1/2}}{1+t^2},
-\]
-
-then
-
-\[
-\int_0^T|I_x(t)|^2dt
-\ll x.
-\]
-
-This is exactly the scale of the `O(x)` term that appears when the square-integral zero statistic is compared with the prime-side mean square.
-
-For `x<=T`, this is harmless compared with the `T`-scale errors of Montgomery's theorem. For `x>>T`, it is fatal for sparse horizontal detection.
-
-Thus
+The key distinction is now:
 
 \[
 \boxed{
-O(x)\text{ is a short-range bookkeeping bound on a cancellation pair, not an intrinsic zero-side main term}.}
+\text{arithmetic residual }E_x(t)
+\quad\text{versus}\quad
+\text{finite-zero-window truncation}.}
+\]
+
+They must not be conflated.
+
+---
+
+## 5. Why separate pole bounds lose `O(x)`
+
+If the pole term is bounded separately,
+
+\[
+\int_0^T|I_x(t)|^2dt\ll x.
+\]
+
+So an `O(x)` channel is indeed created by failing to exploit the exact prime/pole cancellation.
+
+But this is **not the only `O(x)` channel** in the complete proof, because the zero truncation described in Section 1 contributes another `O(x)`.
+
+The correct conclusion is therefore
+
+\[
+\boxed{
+\text{pole subtraction is necessary for long range, but not sufficient}.}
 \]
 
 ---
 
-## 6. Why merely subtracting `I_x` does not solve the problem
+## 6. Circularity guard for pointwise PNT improvement
 
-One might try to define a pole-subtracted zero sum. This does not create a small object automatically.
-
-The exact equality says schematically
-
-\[
-\text{zero sum}
-=-(P_x-I_x)+\text{smaller explicit channels}.
-\]
-
-The required cancellation has simply become `E_x=P_x-I_x`.
-
-Moreover, for fixed `t`, a hypothetical off-line zero with displacement `delta>0` naturally generates a normalized Mellin contribution of size `x^delta`. Therefore a theorem such as
+A bound such as
 
 \[
 E_x(t)=x^{o(1)}
 \]
 
-uniformly pointwise in fixed `t` is already of RH strength.
+uniformly pointwise in fixed `t` is already of RH strength: a zero at horizontal displacement `delta>0` naturally produces Mellin growth `x^delta` after pole subtraction.
 
-Such a bound cannot be adopted as a new lemma without an independent mechanism.
+Therefore such a statement cannot be inserted as an apparently innocuous prime-side lemma.
+
+The legitimate opportunity is averaged control in `t`, not a pointwise zero-free-strength PNT error.
 
 ---
 
-## 7. Why the `t`-average is the non-circular opportunity
+## 7. Long Dirichlet-polynomial mean square
 
-The pair-correlation identity does not ask for pointwise control. It asks for an integral over a long vertical parameter range, schematically
+Expanding
 
 \[
-\boxed{
-\int_0^T|E_x(t)+\text{small explicit terms}|^2dt.}
+\int_0^T|P_x(t)|^2dt
 \]
 
-This opens the possibility of cancellation unavailable pointwise.
-
-When `x=T^alpha`, the prime polynomial has effective length about `x`. For `alpha<=1`, classical mean-value technology is strong enough and yields the unconditional Montgomery theorem.
-
-For `alpha>1`, the polynomial is longer than the `t`-averaging interval. Its mean square contains substantial off-diagonal terms involving correlations of the von Mangoldt function.
-
-Thus extending RH-free pair correlation beyond `alpha=1` is equivalent in difficulty to controlling a genuinely long prime Dirichlet polynomial, not merely refining a contour estimate.
-
----
-
-## 8. Prime-correlation form of the new gap
-
-Expanding the mean square of `P_x` gives terms of the form
+produces
 
 \[
 \sum_{m,n}
@@ -294,99 +238,88 @@ W(m/x)W(n/x)
 \int_0^T e^{it\log(m/n)}dt.
 \]
 
-The time integral is
+The oscillatory kernel obeys
 
 \[
-\frac{e^{iT\log(m/n)}-1}{i\log(m/n)},
+\left|\int_0^T e^{it\log(m/n)}dt\right|
+\ll
+\min\left(T,\frac1{|\log(m/n)|}\right).
 \]
 
-with size
+For `x=T^alpha`, near-coherent pairs satisfy roughly
 
 \[
-\ll\min\left(T,\frac1{|\log(m/n)|}\right).
+|m-n|\lesssim x/T=T^{\alpha-1}.
 \]
 
-When `x<=T`, only a relatively thin near-diagonal regime is dangerous. When `x=T^alpha` with `alpha>1`, many pairs with
-
-\[
-|m-n|\lesssim x/T
-\]
-
-remain coherent.
-
-Consequently the required arithmetic input is a weighted average of shifted-prime correlations
-
-\[
-\boxed{
-\sum_n\Lambda(n)\Lambda(n+h)\,\omega_{x,T}(n,h)}
-\]
-
-uniformly for shifts reaching roughly
-
-\[
-\boxed{|h|\lesssim x/T=T^{\alpha-1}.}
-\]
-
-This is the concrete prime-side meaning of the long-range pair-correlation gap.
+Thus extension beyond `alpha=1` requires averaged shifted-prime cancellation, or an equivalent short-interval variance theorem, for increasingly long prime polynomials.
 
 ---
 
-## 9. Relation to extended pair-correlation work
+## 8. A second long-range problem: zero-window tails
 
-Long-range pair-correlation conjectures are already known to have strong consequences for prime-number-theorem errors and primes in short intervals. Published work explicitly studies hypotheses of the form
+Let
 
 \[
-F(x,T)\ll T\log x
+S_x(t)
+:=\sum_\rho
+\frac{x^{\delta+i\gamma}}
+{1+((t-\gamma)+i\delta)^2}
 \]
 
-uniformly in ranges far beyond `x=T`, in some formulations reaching powers or much longer ranges, and notes that such estimates are currently out of reach.
+be the all-zero resolvent and `S_{x,T}` its restriction to the finite zero window defining `F(x,T)`.
 
-This is fully consistent with the reduction above: long-range control is measuring nontrivial cancellation in long von-Mangoldt Dirichlet polynomials.
+The source bound used in the unconditional theorem is based on
 
-The present project differs in purpose: we need an **RH-free horizontal-weighted** long-range theorem because Round 53 shows that its growth exponent measures the rightmost horizontal zero displacement.
+\[
+\left|S_x(t)-S_{x,Z}(t)\right|
+\ll x^{1/2}\frac{\log Z}{Z}
+\]
+
+for `0<=t<=T` after the zero-free-region bound and zero counting, leading after integration to the `O(x)` truncation scale at `Z=T log^2T`.
+
+For `x>>T`, a new theorem must improve this **without assuming a horizontal zero bound equivalent to RH**.
+
+Possible mechanisms include:
+
+- cancellation in the far-zero resolvent rather than absolute summation;
+- a smoother vertical cutoff replacing the hard `0<gamma<=T` window;
+- a statistic whose zero window and explicit-formula test are matched from the start, avoiding the all-zero-to-truncated-zero comparison;
+- a two-parameter transform in which the vertical cutoff is encoded analytically and prime-side errors decay with the cutoff smoothness.
 
 ---
 
-## 10. New-tool specification: LDP-MS
+## 9. Corrected tool specification
 
-### Long Dirichlet Polynomial Mean-Square theorem
+A long-range RH-free proof now needs **two** advances.
 
-Seek a theorem for
+### LDP-MS — Long Dirichlet Polynomial Mean Square
 
-\[
-E_x(t)=
-\sum_n\frac{\Lambda(n)}{n^{1/2+it}}W(n/x)-I_x(t)
-\]
-
-in a range `x=T^alpha`, `alpha>1`, of the form
+Control the centered arithmetic residual
 
 \[
-\boxed{
-\int_0^T|E_x(t)|^2dt
-\le \mathfrak B(x,T)}
+E_x(t)=P_x(t)-I_x(t)
 \]
 
-with `B` small enough, after the exact explicit-formula reconstruction, to rule out a zero-side contribution `x^{2delta}`.
+for `x>T` using averaged prime correlations / Selberg variance rather than RH-strength pointwise cancellation.
 
-The theorem must be proved from arithmetic structure and cannot simply assume RH-equivalent pointwise PNT error.
+### ZWT — Zero-Window Transfer theorem
 
-Promising inputs would be:
+Replace the existing `O(x)` finite-window truncation by an estimate compatible with `x^{2delta}` sparse signals, without assuming the desired horizontal zero localization.
 
-- cancellation in averaged `Lambda(n)Lambda(n+h)` beyond current diagonal mean-value estimates;
-- dispersion/large-sieve mechanisms adapted to the triangular Mellin weight `W`;
-- bilinear decompositions of `Lambda` that exploit averaging jointly in `t` and `h`;
-- a new positivity/duality argument converting known large-value estimates for Dirichlet polynomials into a long mean-square bound.
+The cleanest possibility would be to redesign the statistic so that no separate ZWT step is required.
 
 ---
 
-## 11. Program decision
+## 10. Program decision
 
-- The `O(x)` barrier is **NOT a fundamental pole term**; it comes from estimating pole and prime main terms separately.
 - Exact pole--prime main cancellation: **PROVED**.
-- Pointwise subpower residual bound: **REJECTED as RH-strength repackaging unless independently derived**.
-- Long `t`-mean-square residual: **LEGITIMATE NEW ARITHMETIC TARGET**.
-- The next mathematical tool is now concrete: a long von-Mangoldt Dirichlet-polynomial mean-square / shifted-prime-correlation theorem in the regime `x>T`.
+- Claim that the complete `O(x)` barrier comes only from that cancellation: **REFUTED / CORRECTED**.
+- Independent `O(x)` zero-window truncation: **PROVED FROM THE PRIMARY PAIR-CORRELATION PROOF**.
+- Pointwise PNT residual as shortcut: **REJECTED AS RH-STRENGTH**.
+- Long mean-square arithmetic cancellation: **OPEN / NEW TOOL NEEDED**.
+- Long-range finite-window transfer: **OPEN / NEW TOOL NEEDED**.
 
-The next round should quantify exactly what shifted-prime estimate would suffice for a hypothetical off-line displacement `delta`, and compare that requirement with the strongest unconditional averaged prime-correlation technology. This will show whether LDP-MS is merely another form of Hardy--Littlewood or whether a weaker averaged theorem could already close the sparse orbit.
+Round 55's Mellin-resolvent reduction remains valid for the prime-polynomial channel, but it must not be mistaken for a complete treatment of the finite-height statistic `F(x,T)`.
 
 **No proof of RH is claimed. Novelty remains unverified.**
