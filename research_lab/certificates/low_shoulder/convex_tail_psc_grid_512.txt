@@ -1,0 +1,7 @@
+CONVEX-TAIL PSC GRID lambda in [7.10,10.52], t in (0,.5] PREC=512
+boxes=17100 fail=0
+minimum_margin_lower=0.007822115980988701
+worst_t=[0.495000,0.500000] lambda=[7.100000,7.120000]
+worst_A0_upper=0.74864794909420085 worst_A1_upper=1.7682401446754208
+GRID_RESULT pass=1
+SHA256(source)=fb6bcc699653c9772e14b0877f5f7f1d3c6b17199d49dcc5784dfd2bc91a9c90
