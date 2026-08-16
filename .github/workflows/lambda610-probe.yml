@@ -1,0 +1,73 @@
+name: Probe lower lambda thresholds below 6.19
+
+on:
+  pull_request:
+    branches: [research-lab-agents]
+  workflow_dispatch:
+
+jobs:
+  probe:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: probe615-512
+            base: 615
+          - label: probe612-512
+            base: 612
+          - label: probe610-512
+            base: 610
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: lambda610-probe
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Generate candidate K2048 verifier
+        env:
+          BASE: ${{ matrix.base }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          b=int(os.environ['BASE'])
+          n=708-b
+          src=Path('research_lab/certificates/low_shoulder/convex_tail_psc_lambda619_mpfr.c')
+          s=src.read_text()
+          checks={
+              'for(int j=0;j<85;j++)': f'for(int j=0;j<{n};j++)',
+              '(IHI-ILO)*85': f'(IHI-ILO)*{n}',
+              '619+lj': f'{b}+lj',
+              '620+lj': f'{b+1}+lj',
+              '619+minj': f'{b}+minj',
+              '620+minj': f'{b+1}+minj',
+              'lambda [6.19,7.04]': f'lambda [{b/100:.2f},7.08]',
+          }
+          for old,new in checks.items():
+              if old not in s:
+                  raise SystemExit(f'missing expected token {old!r}')
+              s=s.replace(old,new)
+          if '619+lj' in s or '620+lj' in s:
+              raise SystemExit('unreplaced lambda endpoint token')
+          Path('candidate.c').write_text(s)
+          print('candidate base',b/100,'boxes',n,'total',32*n)
+          PY
+      - name: Compile and run 512-bit directed grid
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=512 candidate.c -lmpfr -lgmp -o candidate
+          ./candidate | tee ${{ matrix.label }}.txt
+          sha256sum candidate.c research_lab/certificates/low_shoulder/convex_tail_psc_lambda619_mpfr.c \
+            > ${{ matrix.label }}_sha256.txt
+      - name: Upload diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.label }}
+          path: |
+            ${{ matrix.label }}.txt
+            ${{ matrix.label }}_sha256.txt
+            candidate.c
