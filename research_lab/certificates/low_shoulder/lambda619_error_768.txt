@@ -1,0 +1,12 @@
+LAMBDA>=6.19, 0<t<=0.22 GLOBAL ERROR AUDIT PREC=768
+Lmin lower               28.136363636363633
+x0 lower                 20829427435568.434
+Zsum upper               11.606703703703705
+eAB upper                7.2420515225931095e-12
+eC0 upper                1.6509274020979614e-08
+jump upper               8.871220157240477e-08
+E0 upper                 1.0522871764490697e-07
+ratio endpoint           2.0782900298006544
+E1 endpoint upper        2.1869579473011833e-06
+PAD_RESULT pass=1
+Local source SHA256 before commit: bc2ea71b968e26034f502744e9871aea416617cc128f4f97b98c8cf0983de1b6
