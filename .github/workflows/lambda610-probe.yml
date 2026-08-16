@@ -38,21 +38,21 @@ jobs:
           n=708-b
           src=Path('research_lab/certificates/low_shoulder/convex_tail_psc_lambda619_mpfr.c')
           s=src.read_text()
-          checks={
-              'for(int j=0;j<85;j++)': f'for(int j=0;j<{n};j++)',
-              '(IHI-ILO)*85': f'(IHI-ILO)*{n}',
-              '619+lj': f'{b}+lj',
-              '620+lj': f'{b+1}+lj',
-              '619+minj': f'{b}+minj',
-              '620+minj': f'{b+1}+minj',
-              'lambda [6.19,7.04]': f'lambda [{b/100:.2f},7.08]',
-          }
-          for old,new in checks.items():
+          mandatory=[
+              ('for(int j=0;j<85;j++)', f'for(int j=0;j<{n};j++)'),
+              ('(IHI-ILO)*85', f'(IHI-ILO)*{n}'),
+              ('619+lj', f'{b}+lj'),
+              ('620+lj', f'{b+1}+lj'),
+              ('lambda [6.19,7.04]', f'lambda [{b/100:.2f},7.08]'),
+          ]
+          for old,new in mandatory:
               if old not in s:
-                  raise SystemExit(f'missing expected token {old!r}')
+                  raise SystemExit(f'missing expected computational token {old!r}')
               s=s.replace(old,new)
+          # Optional printed diagnostic endpoints, if present in this source revision.
+          s=s.replace('619+minj', f'{b}+minj').replace('620+minj', f'{b+1}+minj')
           if '619+lj' in s or '620+lj' in s:
-              raise SystemExit('unreplaced lambda endpoint token')
+              raise SystemExit('unreplaced computational lambda endpoint token')
           Path('candidate.c').write_text(s)
           print('candidate base',b/100,'boxes',n,'total',32*n)
           PY
