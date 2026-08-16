@@ -1,0 +1,53 @@
+name: Split soft hybrid lambda 6.90 audit
+
+on:
+  push:
+    branches: [research-lab-agents]
+    paths:
+      - '.github/workflows/hybrid-apvc-soft-690-split-audit.yml'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      matrix:
+        prec: [512, 768]
+        region: [low, high]
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: research-lab-agents
+      - name: Install MPFR/GMP
+        run: sudo apt-get update && sudo apt-get install -y libmpfr-dev libgmp-dev
+      - name: Generate soft hybrid source
+        run: |
+          python research_lab/certificates/low_shoulder/make_hybrid_apvc_verifier.py
+          python research_lab/certificates/low_shoulder/soften_hybrid_apvc.py
+      - name: Compile verifiers
+        run: |
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} research_lab/certificates/low_shoulder/convex_tail_psc_box_mpfr.c -lmpfr -lgmp -o psc_box
+          cc -O2 -Wall -Wextra -DPREC=${{ matrix.prec }} research_lab/certificates/low_shoulder/hybrid_psc_apvc_box_mpfr.c -lmpfr -lgmp -o hybrid_box
+      - name: Run low-time PSC cover
+        if: matrix.region == 'low'
+        run: |
+          python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            ./psc_box 0.01 0.40 6.90 7.08 10 128 split690-low-${{ matrix.prec }} 8
+      - name: Run high-time hybrid cover
+        if: matrix.region == 'high'
+        run: |
+          python research_lab/certificates/low_shoulder/adaptive_psc_lambda_tiler.py \
+            ./hybrid_box 0.40 0.50 6.90 7.08 10 128 split690-high-${{ matrix.prec }} 8
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: split690-${{ matrix.region }}-${{ matrix.prec }}
+          path: |
+            split690-${{ matrix.region }}-${{ matrix.prec }}_summary.json
+            split690-${{ matrix.region }}-${{ matrix.prec }}_unresolved.csv
+            split690-${{ matrix.region }}-${{ matrix.prec }}_certified.csv
