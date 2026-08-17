@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-08-17",
+  "repository": "Yoma97/dbn_upper_bound",
+  "source_branch": "research-lab-agents",
+  "source_head": "5e371808389ee9aedbf24db7b4f4ddc7469542e8",
+  "audit_branch": "round-chronology-repair-130",
+  "chronology_status": "INCOMPLETE_PERSISTENCE",
+  "conversation_chronology": {
+    "current_completed_round": 129,
+    "next_active_round": 130,
+    "round_130_target": "NON-TAUTOLOGICAL CENTERED PHYSICAL JET RECONSTRUCTION",
+    "provenance": "Recovered from the active project conversation; not claimed to have been present in the audited GitHub branch."
+  },
+  "github_persisted_chronology": {
+    "max_verified_round": 88,
+    "verified_number_span": [1, 88],
+    "missing_standalone_round_numbers": [62],
+    "unpersisted_or_unavailable_round_numbers": [89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129],
+    "multi_artifact_rounds": {
+      "65": [
+        "research_lab/runs/2026-08-16_round65_normalization_ratio_audit.md",
+        "research_lab/runs/2026-08-16_round65_scaled_psc_limit_and_small_time_exclusion.md"
+      ],
+      "67": [
+        "research_lab/runs/2026-08-16_round67_high_shoulder_directed_rounding_reaudit.md",
+        "research_lab/runs/2026-08-16_round67_lambda710_global_collision_exclusion.md"
+      ],
+      "68": [
+        "research_lab/runs/2026-08-16_round68_lambda704_certified_extension.md",
+        "research_lab/runs/2026-08-16_round68_rectangular_true_weight_envelope.md"
+      ],
+      "69": [
+        "research_lab/runs/2026-08-16_round69_absolute_log_correction.md",
+        "research_lab/runs/2026-08-16_round69_rectangular_polymath_error_envelope.md"
+      ],
+      "70": [
+        "research_lab/runs/2026-08-16_round70_geometry_error_audit.md",
+        "research_lab/runs/2026-08-16_round70_small_time_lambda710_closure.md"
+      ],
+      "73": [
+        "research_lab/runs/2026-08-16_round73_lambda619_via_upper_bound_reduction.md",
+        "research_lab/runs/2026-08-16_round73_lambda708_global_extension.md"
+      ],
+      "74": [
+        "research_lab/runs/2026-08-16_round74_n1_anchored_phase_velocity_certificate.md",
+        "research_lab/runs/2026-08-16_round74_soft_cutoff_slope_defect_addendum.md"
+      ],
+      "75": [
+        "research_lab/runs/2026-08-16_round75_convex_phase_velocity_secant.md",
+        "research_lab/runs/2026-08-16_round75_lambda619_hostile_dependency_audit.md"
+      ],
+      "79": [
+        "research_lab/runs/2026-08-16_round79_literature_reduction_and_singular_wedge_program.md",
+        "research_lab/runs/2026-08-16_round79_literature_reduction_audit.md",
+        "research_lab/runs/2026-08-16_round79_literature_reduction_singular_wedge.md",
+        "research_lab/runs/2026-08-16_round79_piecewise_tangent_A1_lower_tail.md",
+        "research_lab/runs/2026-08-16_round79_singular_wedge_literature_audit.md"
+      ],
+      "80": [
+        "research_lab/runs/2026-08-16_round80_current_upper_bounds_and_wedge_update.md",
+        "research_lab/runs/2026-08-16_round80_joint_elliptic_collision_certificate.md",
+        "research_lab/runs/2026-08-16_round80_singular_wedge_literature_survey.md",
+        "research_lab/runs/2026-08-16_round80_strict_lambda683_global_extension.md"
+      ]
+    }
+  },
+  "numbering_policy": {
+    "active_round_number_is_monotone": true,
+    "historical_round_references_are_dependencies_not_active_rounds": true,
+    "round_99_role_from_round_130_onward": "HISTORICAL_DEPENDENCY_ONLY",
+    "do_not_renumber_dependency_citations": true,
+    "do_not_invent_missing_round_files": true,
+    "do_not_claim_rounds_89_129_are_persisted_until_source_files_are_backfilled": true
+  },
+  "round_129_freeze": {
+    "centered_riemann_siegel_extraction": "INTERNALLY_PROVED_EXACT",
+    "delta_cancellation": "INTERNALLY_PROVED_EXACT",
+    "centered_nc_algebra": "INTERNALLY_PROVED_EXACT",
+    "segment_geometry": "PROVED_WITH_REAL_INNER_PRODUCT_CORRECTION",
+    "endpoint_scale_hierarchy": "PROVED",
+    "F_prime_nonvanishing_off_zero": "UNVERIFIED",
+    "full_core_second_order_jet": "OPEN",
+    "physical_D_star_repair": "OPEN",
+    "global_nc": "OPEN",
+    "rh": "OPEN"
+  }
+}
