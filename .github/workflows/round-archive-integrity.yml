@@ -1,0 +1,27 @@
+name: Round archive integrity
+
+on:
+  push:
+    paths:
+      - 'research_lab/runs/**'
+      - 'research_lab/round_registry.json'
+      - 'research_lab/validate_round_archive.py'
+      - '.github/workflows/round-archive-integrity.yml'
+  pull_request:
+    paths:
+      - 'research_lab/runs/**'
+      - 'research_lab/round_registry.json'
+      - 'research_lab/validate_round_archive.py'
+      - '.github/workflows/round-archive-integrity.yml'
+  workflow_dispatch:
+
+jobs:
+  strict-round-archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Require authentic sequential archive through Round 129
+        run: python research_lab/validate_round_archive.py --complete-through 129 --strict
