@@ -1,0 +1,71 @@
+name: Privacy Cleanup Public Research Refs
+
+on:
+  push:
+    branches: [round-chronology-repair-130]
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  retire-public-research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      EXPECTED_MASTER: 5fde84e11ba80adad5c225a4eaa0a28b68dc925d
+      PRIVATE_ARCHIVE_MERGE: e4e97898c17c74e38722d021673525aeb7801e34
+    steps:
+      - name: Verify untouched public baseline before cleanup
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}"
+          master=$(curl -fsSL -H "Authorization: Bearer ${GITHUB_TOKEN}" -H 'Accept: application/vnd.github+json' "${api}/git/ref/heads/master" | jq -r '.object.sha')
+          echo "master=${master}"
+          echo "private_archive_merge=${PRIVATE_ARCHIVE_MERGE}"
+          test "${master}" = "${EXPECTED_MASTER}"
+
+      - name: Remove historical Actions runs from archived research branches when allowed
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}"
+          branches=(research-lab-agents research-lab-agents-v2 psc-708-audit-run lambda619-hostile-audit lambda610-probe lambda610-probe-v2 round-chronology-repair-130)
+          for b in "${branches[@]}"; do
+            echo "Scanning Actions runs for ${b}"
+            ids=$(curl -fsSL -G -H "Authorization: Bearer ${GITHUB_TOKEN}" -H 'Accept: application/vnd.github+json' --data-urlencode "branch=${b}" --data-urlencode 'per_page=100' "${api}/actions/runs" | jq -r '.workflow_runs[].id')
+            for id in ${ids}; do
+              if [ "${id}" = "${GITHUB_RUN_ID}" ]; then
+                echo "Skipping current cleanup run ${id}"
+                continue
+              fi
+              code=$(curl -sS -o /tmp/delete-run.json -w '%{http_code}' -X DELETE -H "Authorization: Bearer ${GITHUB_TOKEN}" -H 'Accept: application/vnd.github+json' "${api}/actions/runs/${id}" || true)
+              echo "delete Actions run ${id}: HTTP ${code}"
+            done
+          done
+
+      - name: Delete archived research branch refs
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}"
+          # Delete the branch carrying this workflow last.
+          branches=(research-lab-agents research-lab-agents-v2 psc-708-audit-run lambda619-hostile-audit lambda610-probe lambda610-probe-v2 round-chronology-repair-130)
+          for b in "${branches[@]}"; do
+            code=$(curl -sS -o /tmp/delete-ref.json -w '%{http_code}' -X DELETE -H "Authorization: Bearer ${GITHUB_TOKEN}" -H 'Accept: application/vnd.github+json' "${api}/git/refs/heads/${b}" || true)
+            echo "delete branch ${b}: HTTP ${code}"
+            if [ "${code}" != "204" ] && [ "${code}" != "422" ]; then
+              cat /tmp/delete-ref.json || true
+              exit 1
+            fi
+          done
+
+      - name: Verify public branch surface is baseline-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.github.com/repos/${GITHUB_REPOSITORY}"
+          names=$(curl -fsSL -H "Authorization: Bearer ${GITHUB_TOKEN}" -H 'Accept: application/vnd.github+json' "${api}/branches?per_page=100" | jq -r '.[].name' | sort)
+          printf 'remaining branches:\n%s\n' "${names}"
+          test "${names}" = "master"
