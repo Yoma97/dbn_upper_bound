@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
+      GITHUB_TOKEN: ${{ github.token }}
       EXPECTED_MASTER: 5fde84e11ba80adad5c225a4eaa0a28b68dc925d
       PRIVATE_ARCHIVE_MERGE: e4e97898c17c74e38722d021673525aeb7801e34
     steps:
