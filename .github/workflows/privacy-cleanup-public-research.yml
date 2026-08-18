@@ -3,6 +3,8 @@ name: Privacy Cleanup Public Research Refs
 on:
   push:
     branches: [round-chronology-repair-130]
+  pull_request:
+    branches: [master]
 
 permissions:
   contents: write
@@ -50,7 +52,6 @@ jobs:
         run: |
           set -euo pipefail
           api="https://api.github.com/repos/${GITHUB_REPOSITORY}"
-          # Delete the branch carrying this workflow last.
           branches=(research-lab-agents research-lab-agents-v2 psc-708-audit-run lambda619-hostile-audit lambda610-probe lambda610-probe-v2 round-chronology-repair-130)
           for b in "${branches[@]}"; do
             code=$(curl -sS -o /tmp/delete-ref.json -w '%{http_code}' -X DELETE -H "Authorization: Bearer ${GITHUB_TOKEN}" -H 'Accept: application/vnd.github+json' "${api}/git/refs/heads/${b}" || true)
