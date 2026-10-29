@@ -1,0 +1,49 @@
+name: Natural voice poem
+on:
+  push:
+    branches:
+      - audio-poem-natural-voice-2026
+  workflow_dispatch:
+
+jobs:
+  narrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install text-to-speech engine
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install edge-tts pydub
+      - name: Create natural neural narration
+        run: |
+          python - <<'PY'
+          import asyncio, pathlib, re
+          from pydub import AudioSegment
+          import edge_tts
+          
+          poem = "Even If I Run Out of Time\n\nIt's like walking alone,\nDown an endless road with no finish line.\nWhere the darkness whispers softly,\nAnd even the shadows seem to hide.\nThe air smells strangely sweet,\nYet there's no light to guide my eyes.\n\nThe ups and downs come crashing like restless waves,\nHolding me captive through the endless nights.\nI keep searching for a glimpse of joy,\nFor a fragile spark in the darkest times.\nBreathing heavily, fighting just to survive,\nIn a world where even life has lost its scent.\n\nLove and hatred.\nHappiness and sorrow.\nLight and darkness.\nAll tangled together inside my shattered heart.\n\nShould I live? Or should I die?\nShould I scream until the stars hear my cries?\nOr bury every broken feeling deep inside?\n\nIt feels like...\nLike painting dreams across a dark and empty sky!\nLost among a million stars,\nTrapped somewhere between death and life.\n\nNo one hears my silent screams.\nNo one sees the tears behind my eyes.\nNo one reaches through the darkness to whisper,\n\"I'm here. I'm by your side.\"\n\nMy heart trembles inside my chest,\nWhispering desperately,\n\"Are you alright?\nShould I make you heartless so you never feel this pain?\nOr should I make you blind so you never see the darkness again?\nTell me what it takes...\nWhatever it costs...\nI will do anything to keep you alive!\"\n\nFeel alive!\nEven when the world has stolen all your light.\nFeel the desperate hunger to breathe just one more night!\nLike a fallen star,\nBurning through the darkness,\nShine with everything you have before you touch the ground!\n\nIs this the end of life?\nOr merely the beginning of another fight?\n\nOn the darkest night,\nI fall apart into a thousand shimmering pieces.\nSharp and fragile.\nSmall and scattered.\nMaroon and black.\nSome as hard as stone,\nOthers as soft as forgotten memories.\nEach carrying a fragment of the soul I used to be.\n\nOhhhh...\nCome on!\nLet's rise one more time!\n\nLost inside the endless maze of life,\nOne year, ten years, a hundred years...\nNo matter how long the darkness lasts,\nI swear I'll find my way!\n\nYou will never break my heart again!\nNot after everything I've survived.\nNot after every silent battle\nThat nearly stole the fire from my eyes.\n\nLook into my eyes!\nTell me, what do you see?\nDo you see the scars?\nThe pain?\nThe shattered pieces of me?\n\nLook deeper!\n\nIt's my soul!\nStill sparkling beneath the ashes,\nStill fighting against the night,\nStill whispering through the pain,\n\"Stay alive!\"\n\nBrick by brick,\nI will rebuild my own castle.\nWith every scar, every tear,\nEvery broken dream and every fallen stone,\nI will build something the darkness can never own.\n\nI will be reborn!\nAgain, and again, and again!\nLike a phoenix rising from the ashes,\nWith burning wings and a fearless heart,\nI will rise above the flames\nThat once tore my world apart!\n\nAnd still...\nDespite the wounds you left behind,\nI will break through your walls\nJust to find the light you hide.\n\nI will reach into the flames\nTo save your burning soul\nBefore its final spark fades away.\n\nI will hold your trembling, warm hands,\nEven when my own are cold,\nAnd pull you back from the edge\nBefore the darkness takes its hold.\n\nWhy?\nWhy am I still searching for answers?\nFor the truth I buried long ago?\nFor the words I never dared to speak?\nFor the feelings I was too afraid to show?\n\nSilence...\nSilence is the poison of life.\nIt slowly devours everything we hide.\nYet silence is also the cruelest truth,\nRevealing what our words have always tried to disguise.\n\nAnd still, I hear your voice inside my head.\nWhispering through the memories\nOf everything we once had.\n\nAre you an illusion?\nA ghost of everything I lost?\nOr are you somewhere beneath this endless sky,\nStill breathing, still dreaming, still alive?\n\nI keep searching...\nSearching for the warmth I once embraced.\nSearching for the feelings that time erased.\nSearching through the ruins of my past,\nFor a piece of my heart I thought would last.\n\nAnd even when my soul grows weary,\nEven when my wings are torn apart,\nEven when the weight of a thousand memories\nThreatens to crush my fragile heart...\n\nI will rise.\nAnd rise.\nAnd rise again!\n\nWith my healed wings stretched toward the stars,\nWith every scar becoming a feather,\nWith every tear becoming a star,\nI will fly beyond the shadows of my past.\n\nTo the highest edge of this open world,\nWhere the darkness can no longer hold me,\nWhere my broken dreams can breathe again,\nAnd where my soul can finally be free.\n\nAnd if the road never ends...\nIf the stars fall silent...\nIf the last light fades from the sky...\n\nI will keep searching.\nI will keep fighting.\nI will keep rising.\n\nEven if I run out of time."
+          chunks = [x.strip() for x in re.split(r'\n\s*\n', poem)[1:] if x.strip()]
+          voice = "en-US-AndrewNeural"
+          async def main():
+              result = AudioSegment.silent(duration=900)
+              for i, chunk in enumerate(chunks):
+                  heroic = any(word in chunk.lower() for word in ["phoenix", "rise.", "rise again", "reborn", "rebuild"])
+                  vulnerable = any(word in chunk.lower() for word in ["should i live", "silent screams", "silence...", "are you an illusion"])
+                  rate = "+0%" if heroic else "-9%" if vulnerable else "-6%"
+                  path = f"/tmp/verse-{i:03d}.mp3"
+                  await edge_tts.Communicate(chunk, voice, rate=rate, pitch="-2Hz").save(path)
+                  result += AudioSegment.from_mp3(path) + AudioSegment.silent(duration=850 if vulnerable else 700)
+                  print("Rendered", i+1, "/", len(chunks), flush=True)
+              result.export("even_if_i_run_out_of_time_natural_voice.mp3", format="mp3", bitrate="192k", parameters=["-ar","44100"])
+          asyncio.run(main())
+          
+          PY
+      - name: Upload MP3 recording
+        uses: actions/upload-artifact@v4
+        with:
+          name: even-if-i-run-out-of-time-neural-mp3
+          path: even_if_i_run_out_of_time_natural_voice.mp3
+          if-no-files-found: error
