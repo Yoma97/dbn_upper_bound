@@ -1,4 +1,8 @@
 name: Natural voice poem
+concurrency:
+  group: natural-poem-narration
+  cancel-in-progress: true
+
 on:
   push:
     branches:
@@ -32,15 +36,21 @@ jobs:
           chunks = [x.strip() for x in re.split(r'\n\s*\n', poem)[1:] if x.strip()]
           voice = "en-US-AndrewNeural"
           async def main():
-              result = AudioSegment.silent(duration=900)
-              for i, chunk in enumerate(chunks):
+              limiter = asyncio.Semaphore(4)
+              async def render(i, chunk):
                   heroic = any(word in chunk.lower() for word in ["phoenix", "rise.", "rise again", "reborn", "rebuild"])
                   vulnerable = any(word in chunk.lower() for word in ["should i live", "silent screams", "silence...", "are you an illusion"])
                   rate = "+0%" if heroic else "-9%" if vulnerable else "-6%"
                   path = f"/tmp/verse-{i:03d}.mp3"
-                  await edge_tts.Communicate(chunk, voice, rate=rate, pitch="-2Hz").save(path)
+                  async with limiter:
+                      await edge_tts.Communicate(chunk, voice, rate=rate, pitch="-2Hz").save(path)
+                      print("Synthesized", i+1, "/", len(chunks), flush=True)
+                  return path, vulnerable
+              rendered = await asyncio.gather(*(render(i,chunk) for i,chunk in enumerate(chunks)))
+              result = AudioSegment.silent(duration=900)
+              for i,(path,vulnerable) in enumerate(rendered):
                   result += AudioSegment.from_mp3(path) + AudioSegment.silent(duration=850 if vulnerable else 700)
-                  print("Rendered", i+1, "/", len(chunks), flush=True)
+                  print("Assembled",i+1,"/",len(chunks),flush=True)
               result.export("even_if_i_run_out_of_time_natural_voice.mp3", format="mp3", bitrate="192k", parameters=["-ar","44100"])
           asyncio.run(main())
           
